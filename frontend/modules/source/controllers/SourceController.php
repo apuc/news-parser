@@ -2,6 +2,7 @@
 
 namespace frontend\modules\source\controllers;
 
+use frontend\modules\source\models\AddForm;
 use Yii;
 use common\models\Source;
 use frontend\modules\source\models\SourceSearch;
@@ -37,6 +38,9 @@ class SourceController extends Controller
     {
         $searchModel = new SourceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query
+            ->where(['source_user.user_id' => Yii::$app->user->identity->id])
+            ->innerJoin('source_user', 'source.id = source_user.source_id');
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -107,6 +111,21 @@ class SourceController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function actionAdd()
+    {
+        $model = new AddForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            \frontend\modules\source\models\Source::addData($model->domains);
+            return $this->redirect('/source/source');
+        } else {
+            return $this->render('add', ['model' => $model]);
+        }
     }
 
     /**

@@ -52,11 +52,11 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Название',
             'source_id' => 'Source ID',
             'source_type' => 'Source Type',
-            'language' => 'Language',
-            'text' => 'Text',
+            'language' => 'Язык',
+            'text' => 'Статья',
             'category_id' => 'Category ID',
             'user_id' => 'User ID',
         ];

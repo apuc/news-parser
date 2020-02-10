@@ -7,15 +7,14 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\modules\destination\models\DestinationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Destinations';
+$this->title = 'Сайты назначения';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="destination-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('Create Destination', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить', ['add'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Ручное добавление', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -26,10 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'id',
             'domain',
             'theme_id',
-            'user_id',
+            //'user_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

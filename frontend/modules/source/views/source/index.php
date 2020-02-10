@@ -7,15 +7,14 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\modules\source\models\SourceSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Sources';
+$this->title = 'Сайты источники';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="source-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('Create Source', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить', ['add'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Ручное добавление', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -26,17 +25,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'id',
             'domain',
             'title',
             'description',
-            'status',
+            //'status',
             //'created_at',
             //'updated_at',
             //'links',
             //'start_parse',
             //'end_parse',
-            //'theme_id',
+            'theme_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

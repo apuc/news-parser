@@ -2,6 +2,8 @@
 
 namespace frontend\modules\destination\controllers;
 
+
+use frontend\modules\destination\models\AddForm;
 use Yii;
 use common\models\Destination;
 use frontend\modules\destination\models\DestinationSearch;
@@ -37,6 +39,9 @@ class DestinationController extends Controller
     {
         $searchModel = new DestinationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query
+            ->where(['destination_user.user_id' => Yii::$app->user->identity->id])
+            ->innerJoin('destination_user', 'destination.id = destination_user.destination_id');
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -107,6 +112,21 @@ class DestinationController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function actionAdd()
+    {
+        $model = new AddForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            \frontend\modules\destination\models\Destination::addData($model->domains);
+            return $this->redirect('/destination/destination');
+        } else {
+            return $this->render('add', ['model' => $model]);
+        }
     }
 
     /**

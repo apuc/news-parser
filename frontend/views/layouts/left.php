@@ -6,21 +6,20 @@ use yii\helpers\Html;
 <aside class="main-sidebar">
 
     <section class="sidebar">
-
-        <!-- Sidebar user panel -->
-        <div class="user-panel">
+        <?php
+        try {
+            echo '<div class="user-panel">
             <div class="pull-left image">
-                <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
+                <img src="' . $directoryAsset . '/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
             </div>
-            <div class="pull-left info">
-                <p><?php echo Yii::$app->user->identity->username; ?></p>
-                <?= Html::a(
-                    '<span class="glyphicon glyphicon-log-out"></span> Выйти',
+            <div class="pull-left info"><p>'
+                . Yii::$app->user->identity->username . '</p>'
+                . Html::a('<span class="glyphicon glyphicon-log-out"></span> Выйти',
                     ['/site/logout'],
-                    ['data-method' => 'post']
-                ) ?>
-            </div>
-        </div>
+                    ['data-method' => 'post'])
+                . '</div></div>';
+        } catch (Exception $e) { }
+        ?>
 
         <?= dmstr\widgets\Menu::widget(
             [
@@ -62,18 +61,18 @@ use yii\helpers\Html;
                         'url' => ['/image/image'],
                         'active' => \Yii::$app->controller->id == 'image',
                     ],
-                    [
-                        'label' => 'Шаблоны',
-                        'icon' => 'file-o',
-                        'url' => ['/template/template'],
-                        'active' => \Yii::$app->controller->id == 'template',
-                    ],
-                    [
-                        'label' => 'Просмотры',
-                        'icon' => 'eye',
-                        'url' => ['/view/view'],
-                        'active' => \Yii::$app->controller->id == 'view',
-                    ],
+//                    [
+//                        'label' => 'Шаблоны',
+//                        'icon' => 'file-o',
+//                        'url' => ['/template/template'],
+//                        'active' => \Yii::$app->controller->id == 'template',
+//                    ],
+//                    [
+//                        'label' => 'Просмотры',
+//                        'icon' => 'eye',
+//                        'url' => ['/view/view'],
+//                        'active' => \Yii::$app->controller->id == 'view',
+//                    ],
                     [
                         'label' => 'Пользователи',
                         'icon' => 'user',
