@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\modules\destination\models\DestinationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Сайты назначения';
+$this->title = 'Сайты размещения';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="destination-index">
@@ -24,12 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            //'id',
+            ['class' => 'yii\grid\CheckboxColumn'],
             'domain',
-            'theme_id',
-            //'user_id',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

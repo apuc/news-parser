@@ -17,7 +17,7 @@ class DestinationSearch extends Destination
     public function rules()
     {
         return [
-            [['id', 'theme_id', 'user_id'], 'integer'],
+            [['id'], 'integer'],
             [['domain'], 'safe'],
         ];
     }
@@ -59,8 +59,6 @@ class DestinationSearch extends Destination
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'theme_id' => $this->theme_id,
-            'user_id' => $this->user_id,
         ]);
 
         $query->andFilterWhere(['like', 'domain', $this->domain]);

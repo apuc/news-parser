@@ -6,21 +6,19 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\Destination */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Destinations', 'url' => ['index']];
+$this->title = $model->domain;
+$this->params['breadcrumbs'][] = ['label' => 'Сайт размещения', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="destination-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => 'Вы уверенны, что хотите удалить этот сайт',
                 'method' => 'post',
             ],
         ]) ?>
@@ -29,10 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
             'domain',
-            'theme_id',
-            'user_id',
         ],
     ]) ?>
 

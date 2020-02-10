@@ -24,22 +24,5 @@ class m200206_124694_create_source_table extends Migration
             'start_parse' => $this->string(),
             'end_parse' => $this->string()
         ]);
-
-        $this->addColumn('{{%source}}', 'theme_id', $this->integer());
-
-        $this->createIndex(
-            '{{%idx-source-theme_id}}',
-            '{{%source}}',
-            'theme_id'
-        );
-
-        $this->addForeignKey(
-            '{{%fk-source-theme_id}}',
-            '{{%source}}',
-            'theme_id',
-            '{{%theme}}',
-            'id',
-            'CASCADE'
-        );
     }
 }

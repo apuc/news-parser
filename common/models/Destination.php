@@ -9,12 +9,9 @@ use Yii;
  *
  * @property int $id
  * @property string|null $domain
- * @property int|null $theme_id
- * @property int|null $user_id
  *
- * @property Theme $theme
- * @property User $user
  * @property DestinationArticle[] $destinationArticles
+ * @property DestinationTheme[] $destinationThemes
  * @property DestinationUser[] $destinationUsers
  * @property View[] $views
  */
@@ -34,10 +31,7 @@ class Destination extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['theme_id', 'user_id'], 'integer'],
             [['domain'], 'string', 'max' => 255],
-            [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::className(), 'targetAttribute' => ['theme_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -49,29 +43,7 @@ class Destination extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'domain' => 'Domain',
-            'theme_id' => 'Theme ID',
-            'user_id' => 'User ID',
         ];
-    }
-
-    /**
-     * Gets query for [[Theme]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTheme()
-    {
-        return $this->hasOne(Theme::className(), ['id' => 'theme_id']);
-    }
-
-    /**
-     * Gets query for [[User]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -82,6 +54,16 @@ class Destination extends \yii\db\ActiveRecord
     public function getDestinationArticles()
     {
         return $this->hasMany(DestinationArticle::className(), ['destination_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[DestinationThemes]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDestinationThemes()
+    {
+        return $this->hasMany(DestinationTheme::className(), ['destination_id' => 'id']);
     }
 
     /**

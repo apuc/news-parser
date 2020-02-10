@@ -5,13 +5,11 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Source */
 
-$this->title = 'Create Source';
-$this->params['breadcrumbs'][] = ['label' => 'Sources', 'url' => ['index']];
+$this->title = 'Добавить сайт источник';
+$this->params['breadcrumbs'][] = ['label' => 'Сайты источники', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="source-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

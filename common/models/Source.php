@@ -17,9 +17,8 @@ use Yii;
  * @property string|null $links
  * @property string|null $start_parse
  * @property string|null $end_parse
- * @property int|null $theme_id
  *
- * @property Theme $theme
+ * @property SourceTheme[] $sourceThemes
  * @property SourceUser[] $sourceUsers
  */
 class Source extends \yii\db\ActiveRecord
@@ -38,9 +37,8 @@ class Source extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status', 'created_at', 'updated_at', 'theme_id'], 'integer'],
+            [['status', 'created_at', 'updated_at'], 'integer'],
             [['domain', 'title', 'description', 'links', 'start_parse', 'end_parse'], 'string', 'max' => 255],
-            [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::className(), 'targetAttribute' => ['theme_id' => 'id']],
         ];
     }
 
@@ -60,18 +58,17 @@ class Source extends \yii\db\ActiveRecord
             'links' => 'Links',
             'start_parse' => 'Start Parse',
             'end_parse' => 'End Parse',
-            'theme_id' => 'Theme ID',
         ];
     }
 
     /**
-     * Gets query for [[Theme]].
+     * Gets query for [[SourceThemes]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTheme()
+    public function getSourceThemes()
     {
-        return $this->hasOne(Theme::className(), ['id' => 'theme_id']);
+        return $this->hasMany(SourceTheme::className(), ['source_id' => 'id']);
     }
 
     /**

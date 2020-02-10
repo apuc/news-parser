@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
+            ['class' => 'yii\grid\CheckboxColumn'],
             //'id',
             'domain',
             'title',
@@ -35,7 +35,6 @@ $this->params['breadcrumbs'][] = $this->title;
             //'links',
             //'start_parse',
             //'end_parse',
-            'theme_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

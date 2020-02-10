@@ -32,7 +32,7 @@ use yii\helpers\Html;
                         'active' => \Yii::$app->controller->id == 'article',
                     ],
                     [
-                        'label' => 'Сайты назначения',
+                        'label' => 'Сайты размещения',
                         'icon' => 'list-alt',
                         'url' => ['/destination/destination'],
                         'active' => \Yii::$app->controller->id == 'destination',

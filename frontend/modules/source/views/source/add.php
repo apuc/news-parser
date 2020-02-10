@@ -7,7 +7,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Добавить сайты';
+$this->title = 'Добавить сайты источники';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
