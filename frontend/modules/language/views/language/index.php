@@ -7,15 +7,12 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\modules\language\models\LanguageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Languages';
+$this->title = 'Языки';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="language-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('Create Language', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -26,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'id',
             'language',
 
             ['class' => 'yii\grid\ActionColumn'],
