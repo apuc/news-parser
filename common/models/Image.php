@@ -10,9 +10,8 @@ use Yii;
  * @property int $id
  * @property string|null $src
  * @property string|null $alt
- * @property int|null $category_id
  *
- * @property Category $category
+ * @property ImageCategory[] $imageCategories
  */
 class Image extends \yii\db\ActiveRecord
 {
@@ -30,9 +29,7 @@ class Image extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id'], 'integer'],
             [['src', 'alt'], 'string', 'max' => 255],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
 
@@ -45,17 +42,16 @@ class Image extends \yii\db\ActiveRecord
             'id' => 'ID',
             'src' => 'Src',
             'alt' => 'Alt',
-            'category_id' => 'Category ID',
         ];
     }
 
     /**
-     * Gets query for [[Category]].
+     * Gets query for [[ImageCategories]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getImageCategories()
     {
-        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+        return $this->hasMany(ImageCategory::className(), ['image_id' => 'id']);
     }
 }

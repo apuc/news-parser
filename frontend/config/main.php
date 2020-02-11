@@ -39,6 +39,9 @@ return [
         'user' => [
             'class' => 'frontend\modules\user\User',
         ],
+        'language' => [
+            'class' => 'frontend\modules\language\Language',
+        ],
     ],
     'components' => [
         'request' => [
@@ -70,6 +73,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => '/article/article',
             ],
         ],
     ],

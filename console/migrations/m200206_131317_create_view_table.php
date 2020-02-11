@@ -34,5 +34,22 @@ class m200206_131317_create_view_table extends Migration
             'id',
             'CASCADE'
         );
+
+        $this->addColumn('{{%view}}', 'article_id', $this->integer());
+
+        $this->createIndex(
+            '{{%idx-view-article_id}}',
+            '{{%view}}',
+            'article_id'
+        );
+
+        $this->addForeignKey(
+            '{{%fk-view-article_id}}',
+            '{{%view}}',
+            'article_id',
+            '{{%article}}',
+            'id',
+            'CASCADE'
+        );
     }
 }

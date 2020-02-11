@@ -11,7 +11,9 @@ use Yii;
  * @property int|null $created_at
  * @property string|null $ip
  * @property int|null $destination_id
+ * @property int|null $article_id
  *
+ * @property Article $article
  * @property Destination $destination
  */
 class View extends \yii\db\ActiveRecord
@@ -30,8 +32,9 @@ class View extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'destination_id'], 'integer'],
+            [['created_at', 'destination_id', 'article_id'], 'integer'],
             [['ip'], 'string', 'max' => 255],
+            [['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Article::className(), 'targetAttribute' => ['article_id' => 'id']],
             [['destination_id'], 'exist', 'skipOnError' => true, 'targetClass' => Destination::className(), 'targetAttribute' => ['destination_id' => 'id']],
         ];
     }
@@ -46,7 +49,18 @@ class View extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'ip' => 'Ip',
             'destination_id' => 'Destination ID',
+            'article_id' => 'Article ID',
         ];
+    }
+
+    /**
+     * Gets query for [[Article]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArticle()
+    {
+        return $this->hasOne(Article::className(), ['id' => 'article_id']);
     }
 
     /**

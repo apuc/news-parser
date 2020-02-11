@@ -32,16 +32,12 @@ use yii\helpers\Html;
                         'active' => \Yii::$app->controller->id == 'article',
                     ],
                     [
-                        'label' => 'Сайты размещения',
+                        'label' => 'Сайты',
                         'icon' => 'list-alt',
-                        'url' => ['/destination/destination'],
-                        'active' => \Yii::$app->controller->id == 'destination',
-                    ],
-                    [
-                        'label' => 'Сайты источники',
-                        'icon' => 'list-alt',
-                        'url' => ['/source/source'],
-                        'active' => \Yii::$app->controller->id == 'source',
+                        'items' => [
+                            ['label' => 'Сайты размещения', 'icon' => 'list-alt', 'url' => ['/destination/destination'], 'active' => \Yii::$app->controller->id == 'destination'],
+                            ['label' => 'Сайты источники', 'icon' => 'list-alt', 'url' => ['/source/source'], 'active' => \Yii::$app->controller->id == 'source'],
+                        ]
                     ],
                     [
                         'label' => 'Категории',
@@ -50,10 +46,10 @@ use yii\helpers\Html;
                         'active' => \Yii::$app->controller->id == 'category',
                     ],
                     [
-                        'label' => 'Темы',
-                        'icon' => 'tags',
-                        'url' => ['/theme/theme'],
-                        'active' => \Yii::$app->controller->id == 'theme',
+                        'label' => 'Языки',
+                        'icon' => 'comment',
+                        'url' => ['/language/language'],
+                        'active' => \Yii::$app->controller->id == 'language',
                     ],
                     [
                         'label' => 'Картинки',

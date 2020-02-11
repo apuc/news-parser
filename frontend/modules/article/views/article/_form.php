@@ -1,7 +1,9 @@
 <?php
 
+use mihaildev\ckeditor\CKEditor;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Article */
@@ -10,26 +12,62 @@ use yii\widgets\ActiveForm;
 
 <div class="article-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+//    $data = array();
+//    Pjax::begin(['id' => 'reload']);
+    $form = ActiveForm::begin();
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 
-    <?= $form->field($model, 'source_id')->textInput(['maxlength' => true]) ?>
+    echo $form->field($model, 'language_id')->dropDownList(
+        \yii\helpers\ArrayHelper::map(common\models\Language::find()->all(), 'id', 'language'),
+        ['prompt' => '...']
+    );
 
-    <?= $form->field($model, 'source_type')->textInput(['maxlength' => true]) ?>
+    echo $form->field($model, 'source_type')->dropDownList([
+            'Получено с сайта' => 'с сайта',
+            'Автоматический перевод' => 'перевод',
+            'Добавлено вручную' => 'добавлено вручную',
+            'Считано из файла' => 'из файла'
+        ], ['id' => 'rel',
+            'prompt' => '...',
+        ]
+    );
 
-    <?= $form->field($model, 'language')->textInput(['maxlength' => true]) ?>
+//    switch ($model->source_type) {
+//        case 'Получено с сайта':
+//            break;
+//        case 'Автоматический перевод':
+//            break;
+//        case 'Добавлено вручную':
+//            $data = \yii\helpers\ArrayHelper::map(common\models\User::find()->all(), 'id', 'username');
+//            break;
+//        case 'Считано из файла':
+//            break;
+//    }
+//
+//    echo $form->field($model, 'article_source')->dropDownList(
+//        $data,
+//        ['prompt' => '...', 'onchange' => 'reload();']
+//    );
 
-    <?= $form->field($model, 'text')->textarea(['rows' => 6]) ?>
+    echo $form->field($model, 'article_source')->textInput(['maxlength' => true]);
 
-    <?= $form->field($model, 'category_id')->textInput() ?>
-
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    echo $form->field($model, 'text')->widget(CKEditor::className(),[
+        'editorOptions' => [
+            'preset' => 'full',
+            'inline' => false,
+        ],
+    ]);
+    ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php
+    ActiveForm::end();
+    //Pjax::end();
+    ?>
 
 </div>

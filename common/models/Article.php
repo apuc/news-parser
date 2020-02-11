@@ -9,17 +9,16 @@ use Yii;
  *
  * @property int $id
  * @property string|null $name
- * @property string|null $source_id
+ * @property string|null $article_source
  * @property string|null $source_type
- * @property string|null $language
  * @property string|null $text
- * @property int|null $category_id
- * @property int|null $user_id
+ * @property int|null $language_id
  *
- * @property Category $category
- * @property User $user
+ * @property Language $language
+ * @property ArticleCategory[] $articleCategories
  * @property ArticleUser[] $articleUsers
  * @property DestinationArticle[] $destinationArticles
+ * @property View[] $views
  */
 class Article extends \yii\db\ActiveRecord
 {
@@ -38,10 +37,9 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['text'], 'string'],
-            [['category_id', 'user_id'], 'integer'],
-            [['name', 'source_id', 'source_type', 'language'], 'string', 'max' => 255],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['language_id'], 'integer'],
+            [['name', 'article_source', 'source_type'], 'string', 'max' => 255],
+            [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['language_id' => 'id']],
         ];
     }
 
@@ -52,34 +50,32 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Название',
-            'source_id' => 'Source ID',
-            'source_type' => 'Source Type',
-            'language' => 'Язык',
+            'name' => 'Заголовок',
+            'article_source' => 'Источник статьи',
+            'source_type' => 'Тип источника',
             'text' => 'Статья',
-            'category_id' => 'Category ID',
-            'user_id' => 'User ID',
+            'language_id' => 'Язык',
         ];
     }
 
     /**
-     * Gets query for [[Category]].
+     * Gets query for [[Language]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getLanguage()
     {
-        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+        return $this->hasOne(Language::className(), ['id' => 'language_id']);
     }
 
     /**
-     * Gets query for [[User]].
+     * Gets query for [[ArticleCategories]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
+    public function getArticleCategories()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasMany(ArticleCategory::className(), ['article_id' => 'id']);
     }
 
     /**
@@ -100,5 +96,15 @@ class Article extends \yii\db\ActiveRecord
     public function getDestinationArticles()
     {
         return $this->hasMany(DestinationArticle::className(), ['article_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Views]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getViews()
+    {
+        return $this->hasMany(View::className(), ['article_id' => 'id']);
     }
 }

@@ -17,12 +17,10 @@ class m200206_124694_create_source_table extends Migration
             'domain' => $this->string(),
             'title' => $this->string(),
             'description' => $this->string(),
-            'status' => $this->integer(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
             'links' => $this->string(),
             'start_parse' => $this->string(),
-            'end_parse' => $this->string()
+            'end_parse' => $this->string(),
+            'status' => $this->integer()
         ]);
     }
 }

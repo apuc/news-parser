@@ -11,14 +11,12 @@ use Yii;
  * @property string|null $domain
  * @property string|null $title
  * @property string|null $description
- * @property int|null $status
- * @property int|null $created_at
- * @property int|null $updated_at
  * @property string|null $links
  * @property string|null $start_parse
  * @property string|null $end_parse
+ * @property int|null $status
  *
- * @property SourceTheme[] $sourceThemes
+ * @property SourceCategory[] $sourceCategories
  * @property SourceUser[] $sourceUsers
  */
 class Source extends \yii\db\ActiveRecord
@@ -37,7 +35,7 @@ class Source extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['status'], 'integer'],
             [['domain', 'title', 'description', 'links', 'start_parse', 'end_parse'], 'string', 'max' => 255],
         ];
     }
@@ -52,23 +50,21 @@ class Source extends \yii\db\ActiveRecord
             'domain' => 'Domain',
             'title' => 'Title',
             'description' => 'Description',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
             'links' => 'Links',
             'start_parse' => 'Start Parse',
             'end_parse' => 'End Parse',
+            'status' => 'Status',
         ];
     }
 
     /**
-     * Gets query for [[SourceThemes]].
+     * Gets query for [[SourceCategories]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSourceThemes()
+    public function getSourceCategories()
     {
-        return $this->hasMany(SourceTheme::className(), ['source_id' => 'id']);
+        return $this->hasMany(SourceCategory::className(), ['source_id' => 'id']);
     }
 
     /**

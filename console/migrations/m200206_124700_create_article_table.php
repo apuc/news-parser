@@ -15,42 +15,24 @@ class m200206_124700_create_article_table extends Migration
         $this->createTable('{{%article}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(),
-            'source_id' => $this->string(),
+            'article_source' => $this->string(),
             'source_type' => $this->string(),
-            'language' => $this->string(),
             'text' => $this->text()
         ]);
 
-        $this->addColumn('{{%article}}', 'category_id', $this->integer());
+        $this->addColumn('{{%article}}', 'language_id', $this->integer());
 
         $this->createIndex(
-            '{{%idx-article-category_id}}',
+            '{{%idx-article-language_id}}',
             '{{%article}}',
-            'category_id'
+            'language_id'
         );
 
         $this->addForeignKey(
-            '{{%fk-article-category_id}}',
+            '{{%fk-article-language_id}}',
             '{{%article}}',
-            'category_id',
-            '{{%category}}',
-            'id',
-            'CASCADE'
-        );
-
-        $this->addColumn('{{%article}}', 'user_id', $this->integer());
-
-        $this->createIndex(
-            '{{%idx-article-user_id}}',
-            '{{%article}}',
-            'user_id'
-        );
-
-        $this->addForeignKey(
-            '{{%fk-article-user_id}}',
-            '{{%article}}',
-            'user_id',
-            '{{%user}}',
+            'language_id',
+            '{{%language}}',
             'id',
             'CASCADE'
         );

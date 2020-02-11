@@ -17,7 +17,7 @@ class ImageSearch extends Image
     public function rules()
     {
         return [
-            [['id', 'category_id'], 'integer'],
+            [['id'], 'integer'],
             [['src', 'alt'], 'safe'],
         ];
     }
@@ -59,7 +59,6 @@ class ImageSearch extends Image
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'category_id' => $this->category_id,
         ]);
 
         $query->andFilterWhere(['like', 'src', $this->src])

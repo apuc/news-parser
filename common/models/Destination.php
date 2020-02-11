@@ -9,9 +9,12 @@ use Yii;
  *
  * @property int $id
  * @property string|null $domain
+ * @property string|null $title
+ * @property string|null $description
+ * @property int|null $status
  *
  * @property DestinationArticle[] $destinationArticles
- * @property DestinationTheme[] $destinationThemes
+ * @property DestinationCategory[] $destinationCategories
  * @property DestinationUser[] $destinationUsers
  * @property View[] $views
  */
@@ -31,7 +34,8 @@ class Destination extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['domain'], 'string', 'max' => 255],
+            [['status'], 'integer'],
+            [['domain', 'title', 'description'], 'string', 'max' => 255],
         ];
     }
 
@@ -43,6 +47,9 @@ class Destination extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'domain' => 'Domain',
+            'title' => 'Title',
+            'description' => 'Description',
+            'status' => 'Status',
         ];
     }
 
@@ -57,13 +64,13 @@ class Destination extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[DestinationThemes]].
+     * Gets query for [[DestinationCategories]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getDestinationThemes()
+    public function getDestinationCategories()
     {
-        return $this->hasMany(DestinationTheme::className(), ['destination_id' => 'id']);
+        return $this->hasMany(DestinationCategory::className(), ['destination_id' => 'id']);
     }
 
     /**

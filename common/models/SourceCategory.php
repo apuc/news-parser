@@ -5,23 +5,23 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "source_theme".
+ * This is the model class for table "source_category".
  *
  * @property int $id
  * @property int|null $source_id
- * @property int|null $theme_id
+ * @property int|null $category_id
  *
+ * @property Category $category
  * @property Source $source
- * @property Theme $theme
  */
-class SourceTheme extends \yii\db\ActiveRecord
+class SourceCategory extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'source_theme';
+        return 'source_category';
     }
 
     /**
@@ -30,9 +30,9 @@ class SourceTheme extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['source_id', 'theme_id'], 'integer'],
+            [['source_id', 'category_id'], 'integer'],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['source_id'], 'exist', 'skipOnError' => true, 'targetClass' => Source::className(), 'targetAttribute' => ['source_id' => 'id']],
-            [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::className(), 'targetAttribute' => ['theme_id' => 'id']],
         ];
     }
 
@@ -44,8 +44,18 @@ class SourceTheme extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'source_id' => 'Source ID',
-            'theme_id' => 'Theme ID',
+            'category_id' => 'Category ID',
         ];
+    }
+
+    /**
+     * Gets query for [[Category]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
     /**
@@ -56,15 +66,5 @@ class SourceTheme extends \yii\db\ActiveRecord
     public function getSource()
     {
         return $this->hasOne(Source::className(), ['id' => 'source_id']);
-    }
-
-    /**
-     * Gets query for [[Theme]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTheme()
-    {
-        return $this->hasOne(Theme::className(), ['id' => 'theme_id']);
     }
 }

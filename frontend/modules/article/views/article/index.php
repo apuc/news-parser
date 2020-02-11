@@ -26,12 +26,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'id',
             'name',
-            'source_id',
+            'article_source',
             'source_type',
-            'language',
+            'language.language',
             'text:ntext',
-            'category_id',
-            'user_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
