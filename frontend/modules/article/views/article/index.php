@@ -11,9 +11,9 @@ $this->title = 'Статьи';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="article-index">
-
     <p>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить статью', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить несколько статей', ['create'], ['class' => 'btn btn-success', 'id' => 'several_articles', 'title' => 'Функция еще не реализована']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -34,6 +34,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-
 
 </div>

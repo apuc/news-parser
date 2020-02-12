@@ -42,6 +42,9 @@ return [
         'language' => [
             'class' => 'frontend\modules\language\Language',
         ],
+        'api' => [
+            'class' => 'frontend\modules\api\Api',
+        ],
     ],
     'components' => [
         'request' => [
