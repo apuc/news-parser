@@ -21,7 +21,9 @@
         "dmstr/yii2-adminlte-asset": "^2.1",
         "mihaildev/yii2-ckeditor": "*",
       "ext-json": "*",
-        "kartik-v/yii2-widget-select2": "@dev"
+        "kartik-v/yii2-widget-select2": "@dev",
+      "ext-http": "*",
+        "true/punycode": "~2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
