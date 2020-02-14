@@ -46,9 +46,9 @@ class Destination extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'domain' => 'Domain',
-            'title' => 'Title',
-            'description' => 'Description',
+            'domain' => 'Домен',
+            'title' => 'Тайтл',
+            'description' => 'Описание',
             'status' => 'Status',
         ];
     }

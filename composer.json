@@ -20,10 +20,11 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "dmstr/yii2-adminlte-asset": "^2.1",
         "mihaildev/yii2-ckeditor": "*",
-      "ext-json": "*",
+        "ext-json": "*",
         "kartik-v/yii2-widget-select2": "@dev",
-      "ext-http": "*",
-        "true/punycode": "~2.0"
+        "ext-http": "*",
+        "true/punycode": "~2.0",
+        "mihaildev/yii2-elfinder": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

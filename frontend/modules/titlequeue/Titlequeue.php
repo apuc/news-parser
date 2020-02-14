@@ -1,16 +1,16 @@
 <?php
 
-namespace frontend\modules\api;
+namespace frontend\modules\titlequeue;
 
 /**
- * api module definition class
+ * titlequeue module definition class
  */
-class Api extends \yii\base\Module
+class Titlequeue extends \yii\base\Module
 {
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'frontend\modules\api\controllers';
+    public $controllerNamespace = 'frontend\modules\titlequeue\controllers';
 
     /**
      * {@inheritdoc}

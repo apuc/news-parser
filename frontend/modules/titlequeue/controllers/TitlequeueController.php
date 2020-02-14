@@ -1,21 +1,19 @@
 <?php
 
-namespace frontend\modules\article\controllers;
+namespace frontend\modules\titlequeue\controllers;
 
-use frontend\modules\article\models\ReadForm;
 use Yii;
-use common\models\Article;
-use frontend\modules\article\models\ArticleSearch;
-use yii\filters\AccessControl;
+use common\models\TitleQueue;
+use frontend\modules\titlequeue\models\TitlequeueSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
- * ArticleController implements the CRUD actions for Article model.
+ * TitlequeueController implements the CRUD actions for TitleQueue model.
  */
-class ArticleController extends Controller
+class TitlequeueController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -23,15 +21,6 @@ class ArticleController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -42,12 +31,12 @@ class ArticleController extends Controller
     }
 
     /**
-     * Lists all Article models.
+     * Lists all TitleQueue models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ArticleSearch();
+        $searchModel = new TitlequeueSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -56,8 +45,30 @@ class ArticleController extends Controller
         ]);
     }
 
+    public function actionDestinationqueue()
+    {
+        $dataProvider = new ActiveDataProvider([
+            'query' => TitleQueue::find()->where(['not', ['destination_id' => null]]),
+        ]);
+
+        return $this->render('destinationqueue', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionSourcequeue()
+    {
+        $dataProvider = new ActiveDataProvider([
+            'query' => TitleQueue::find()->where(['not', ['source_id' => null]]),
+        ]);
+
+        return $this->render('sourcequeue', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
-     * Displays a single Article model.
+     * Displays a single TitleQueue model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -70,13 +81,13 @@ class ArticleController extends Controller
     }
 
     /**
-     * Creates a new Article model.
+     * Creates a new TitleQueue model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new \frontend\modules\article\models\Article();
+        $model = new TitleQueue();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -87,20 +98,8 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function actionRead()
-    {
-        $model = new ReadForm();
-
-        if (Yii::$app->request->isPost) {
-            $model->csv = UploadedFile::getInstances($model, 'csv');
-            $model->upload();
-            return $this->render('read', ['model' => $model]);
-        }
-        return $this->render('read', ['model' => $model]);
-    }
-
     /**
-     * Updates an existing Article model.
+     * Updates an existing TitleQueue model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -120,7 +119,7 @@ class ArticleController extends Controller
     }
 
     /**
-     * Deletes an existing Article model.
+     * Deletes an existing TitleQueue model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -134,15 +133,15 @@ class ArticleController extends Controller
     }
 
     /**
-     * Finds the Article model based on its primary key value.
+     * Finds the TitleQueue model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Article the loaded model
+     * @return TitleQueue the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Article::findOne($id)) !== null) {
+        if (($model = TitleQueue::findOne($id)) !== null) {
             return $model;
         }
 

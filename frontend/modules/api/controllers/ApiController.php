@@ -4,6 +4,7 @@ namespace frontend\modules\api\controllers;
 
 use common\models\Article;
 use common\models\Source;
+use common\models\TitleQueue;
 use common\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -36,4 +37,30 @@ class ApiController extends Controller
            return json_encode($result);
        }
    }
+
+   public function actionTitlesource()
+   {
+       if(Yii::$app->request->isAjax) {
+           $keys = $_POST['keys'];
+           if($keys)
+               foreach ($keys as $key) {
+                   $audit = new TitleQueue();
+                   $audit->source_id = $key;
+                   $audit->save();
+               }
+       }
+   }
+
+    public function actionTitledestination()
+    {
+        if(Yii::$app->request->isAjax) {
+            $keys = $_POST['keys'];
+            if($keys)
+                foreach ($keys as $key) {
+                    $audit = new TitleQueue();
+                    $audit->destination_id = $key;
+                    $audit->save();
+                }
+        }
+    }
 }

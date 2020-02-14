@@ -12,8 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="article-index">
     <p>
-        <?= Html::a('Добавить статью', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Добавить несколько статей', ['create'], ['class' => 'btn btn-success', 'id' => 'several_articles', 'title' => 'Функция еще не реализована']) ?>
+        <?= Html::a('Добавить статью вручную', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']) ?>
+        <?= Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']) ?>
+        <?= Html::button('Перевести статьи', ['class' => 'btn btn-success translate']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -23,15 +25,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'yii\grid\CheckboxColumn'],
+            ['class' => 'yii\grid\ActionColumn'],
 
-            //'id',
             'name',
             'article_source',
             'source_type',
             'language.language',
             'text:ntext',
-
-            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 

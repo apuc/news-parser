@@ -11,41 +11,6 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-    'modules' => [
-        'category' => [
-            'class' => 'frontend\modules\category\Category',
-        ],
-        'theme' => [
-            'class' => 'frontend\modules\theme\Theme',
-        ],
-        'template' => [
-            'class' => 'frontend\modules\template\Template',
-        ],
-        'image' => [
-            'class' => 'frontend\modules\image\Image',
-        ],
-        'destination' => [
-            'class' => 'frontend\modules\destination\Destination',
-        ],
-        'source' => [
-            'class' => 'frontend\modules\source\Source',
-        ],
-        'article' => [
-            'class' => 'frontend\modules\article\Article',
-        ],
-        'view' => [
-            'class' => 'frontend\modules\view\View',
-        ],
-        'user' => [
-            'class' => 'frontend\modules\user\User',
-        ],
-        'language' => [
-            'class' => 'frontend\modules\language\Language',
-        ],
-        'api' => [
-            'class' => 'frontend\modules\api\Api',
-        ],
-    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
@@ -81,4 +46,42 @@ return [
         ],
     ],
     'params' => $params,
+    'modules' => [
+        'category' => [
+            'class' => 'frontend\modules\category\Category',
+        ],
+        'theme' => [
+            'class' => 'frontend\modules\theme\Theme',
+        ],
+        'template' => [
+            'class' => 'frontend\modules\template\Template',
+        ],
+        'image' => [
+            'class' => 'frontend\modules\image\Image',
+        ],
+        'destination' => [
+            'class' => 'frontend\modules\destination\Destination',
+        ],
+        'source' => [
+            'class' => 'frontend\modules\source\Source',
+        ],
+        'article' => [
+            'class' => 'frontend\modules\article\Article',
+        ],
+        'view' => [
+            'class' => 'frontend\modules\view\View',
+        ],
+        'user' => [
+            'class' => 'frontend\modules\user\User',
+        ],
+        'language' => [
+            'class' => 'frontend\modules\language\Language',
+        ],
+        'api' => [
+            'class' => 'frontend\modules\api\Api',
+        ],
+        'titlequeue' => [
+            'class' => 'frontend\modules\titlequeue\Titlequeue',
+        ],
+    ],
 ];

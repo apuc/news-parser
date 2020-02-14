@@ -35,8 +35,17 @@ use yii\helpers\Html;
                         'label' => 'Сайты',
                         'icon' => 'list-alt',
                         'items' => [
-                            ['label' => 'Сайты размещения', 'icon' => 'list-alt', 'url' => ['/destination/destination'], 'active' => \Yii::$app->controller->id == 'destination'],
                             ['label' => 'Сайты источники', 'icon' => 'list-alt', 'url' => ['/source/source'], 'active' => \Yii::$app->controller->id == 'source'],
+                            ['label' => 'Сайты размещения', 'icon' => 'list-alt', 'url' => ['/destination/destination'], 'active' => \Yii::$app->controller->id == 'destination'],
+                        ]
+                    ],
+                    [
+                        'label' => 'Очередь',
+                        'icon' => 'hourglass',
+                        'active' => \Yii::$app->controller->id == 'titlequeue',
+                        'items' => [
+                            ['label' => 'Сайты источники', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/sourcequeue'],],
+                            ['label' => 'Сайты размещения', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/destinationqueue'],],
                         ]
                     ],
                     [

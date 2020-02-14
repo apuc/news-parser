@@ -47,9 +47,9 @@ class Source extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'domain' => 'Domain',
-            'title' => 'Title',
-            'description' => 'Description',
+            'domain' => 'Домен',
+            'title' => 'Тайтл',
+            'description' => 'Описание',
             'links' => 'Links',
             'start_parse' => 'Start Parse',
             'end_parse' => 'End Parse',

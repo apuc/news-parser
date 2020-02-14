@@ -5,6 +5,7 @@ namespace common\classes;
 
 
 use http\Exception;
+use TrueBV\Punycode;
 
 class AuditService
 {

@@ -4,15 +4,18 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\modules\language\models\LanguageSearch */
+/* @var $searchModel frontend\modules\titlequeue\models\TitlequeueSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Языки';
+$this->title = 'Title Queues';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="language-index">
+<div class="title-queue-index">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
     <p>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Title Queue', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -23,8 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            //'id',
-            'language',
+            'id',
+            'source_id',
+            'destination_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

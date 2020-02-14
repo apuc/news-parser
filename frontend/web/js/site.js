@@ -1,23 +1,9 @@
 "use strict";
 
 $(document).ready(function() {
-    // $("#source_type").attr("disabled", true);
-    // $("#article_source").attr("disabled", true);
-    $("#several_articles").attr("disabled", true);
-
-    // $('#language').change(function(){
-    //     if($('#language').val())
-    //         $("#source_type").attr("disabled", false);
-    //     else $("#source_type").attr("disabled", true);
-    // });
-
     $('#source_type').change(function(){
         let source_type = $('#source_type').val();
         let article_source = $("#article_source");
-
-        // if(source_type)
-        //     article_source.attr("disabled", false);
-        // else article_source.attr("disabled", true);
 
         article_source.empty();
 
@@ -48,5 +34,39 @@ $(document).ready(function() {
                 console.log(res);
             }
         });
+    });
+});
+
+$('.title_source').on('click', function () {
+    let keys = $('#grid').yiiGridView('getSelectedRows');
+    $.ajax({
+        url: '/api/api/titlesource',
+        type: 'POST',
+        data: {
+            keys: keys
+        },
+        success: function () {
+            window.alert('Сайты добавлены в очередь на получение заголовка.');
+        },
+        error: function () {
+            window.alert('Error!');
+        }
+    });
+});
+
+$('.title_destination').on('click', function () {
+    let keys = $('#grid').yiiGridView('getSelectedRows');
+    $.ajax({
+        url: '/api/api/titledestination',
+        type: 'POST',
+        data: {
+            keys: keys
+        },
+        success: function () {
+            window.alert('Сайты добавлены в очередь на получение заголовка.');
+        },
+        error: function () {
+            window.alert('Error!');
+        }
     });
 });
