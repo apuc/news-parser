@@ -36,4 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <?php
+    echo '<h3>Предпросмотр:</h3>';
+    echo '<pre style="background: lightgray; border: 1px solid lightgray; padding: 2px">';
+    echo $model->text;
+    echo '</pre>';
+    ?>
+
 </div>
