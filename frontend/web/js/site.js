@@ -81,7 +81,7 @@ $('.read').on('click', function () {
             filename: name
         },
         success: function () {
-
+            window.alert('Статьи успешно считаны!');
         },
         error: function () {
             window.alert('Error!');
