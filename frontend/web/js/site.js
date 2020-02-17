@@ -70,3 +70,68 @@ $('.title_destination').on('click', function () {
         }
     });
 });
+
+$('.read').on('click', function () {
+    let name = document.querySelector(".read").getAttribute("id");
+
+    $.ajax({
+        url: '/api/api/read',
+        type: 'POST',
+        data: {
+            filename: name
+        },
+        success: function () {
+
+        },
+        error: function () {
+            window.alert('Error!');
+        }
+    });
+});
+
+$('.category').on('click', function () {
+    let value = [];
+    let article_id = $(this).data("id");
+    let modal = $("#modalCategory");
+    let select2 = $('#category_ids');
+    select2.val(value);
+    select2.trigger('change');
+    modal.attr("data-article-id", article_id);
+
+    $.ajax({
+        url: '/api/api/selected',
+        type: 'POST',
+        data: {
+            id: article_id,
+        },
+        success: function (res) {
+            let value = JSON.parse(res);
+            console.log(value);
+
+            select2.val(value);
+            select2.trigger('change');
+        },
+        error: function () { }
+    });
+});
+
+$(document).on("click", "#modalCategoryButton", function () {
+    let article_id = document.getElementById('modalCategory').getAttribute("data-article-id");
+    let category_ids = $('#category_ids').select2('data');
+    category_ids = JSON.stringify(category_ids);
+
+    $.ajax({
+        url: '/api/api/category',
+        type: 'POST',
+        data: {
+            category_ids: category_ids,
+            article_id: article_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function () {
+            location.reload();
+        }
+    });
+});

@@ -3,9 +3,9 @@
 namespace frontend\modules\api\controllers;
 
 use common\models\Article;
+use common\models\ArticleCategory;
 use common\models\Source;
 use common\models\TitleQueue;
-use common\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -60,6 +60,68 @@ class ApiController extends Controller
                     $audit = new TitleQueue();
                     $audit->destination_id = $key;
                     $audit->save();
+                }
+        }
+    }
+
+    public function actionRead()
+    {
+        if(Yii::$app->request->isAjax) {
+            $filename = $_POST['filename'];
+            if (($handle = fopen('articles/' . $filename, 'r')) !== FALSE) {
+                while (($data = fgetcsv($handle, 0, ',','"')) !== FALSE) {
+                    $article  = new \frontend\modules\article\models\Article();
+                    $article->name = $data[0];
+                    $article->text = $data[1];
+                    $article->save();
+                }
+                fclose($handle);
+            }
+        }
+    }
+
+    public function actionSelected()
+    {
+        $themes = array();
+        if(Yii::$app->request->isAjax) {
+            $site = Article::findOne($_POST['id']);
+            if (isset($site->articleCategories)) {
+                foreach ($site->articleCategories as $val) {
+                    array_push($themes, $val->category_id);
+                }
+            }
+        }
+        return json_encode($themes);
+    }
+
+    public function actionCategory()
+    {
+        if(Yii::$app->request->isAjax) {
+            $category_ids = json_decode($_POST['category_ids']);
+            $selected_categories = ArticleCategory::find()->where(['article_id' => $_POST['article_id']])->all();
+            $new = array();
+            $old = array();
+
+            foreach ($category_ids as $val)
+                array_push($new, $val->id);
+
+            foreach ($selected_categories as $selected_category)
+                array_push($old, $selected_category->category_id);
+
+            $add = array_diff($new, $old);
+            $del = array_diff($old, $new);
+
+            if($add)
+                foreach ($add as $item) {
+                    $article_category  = new ArticleCategory();
+                    $article_category->article_id = $_POST['article_id'];
+                    $article_category->category_id = $item;
+                    $article_category->save();
+                }
+
+            if($del)
+                foreach ($del as $item) {
+                    ArticleCategory::deleteAll(['article_id' => $_POST['article_id'], 'category_id' => $item]);
                 }
         }
     }

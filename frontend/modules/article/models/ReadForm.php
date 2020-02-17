@@ -14,15 +14,21 @@ class ReadForm extends Model
     public function rules()
     {
         return [
-            [['csv'], 'file', 'extensions' => 'csv'],
             [['csv'], 'safe'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'csv' => '',
         ];
     }
 
     public function upload()
     {
         if ($this->validate()) {
-            $this->csv->saveAs("articles/{$this->csv->baseName}.{$this->csv->extension}");
+            $this->csv[0]->saveAs("articles/{$this->csv[0]->name}");
         } else return false;
     }
 }
