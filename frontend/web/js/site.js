@@ -135,3 +135,50 @@ $(document).on("click", "#modalCategoryButton", function () {
         }
     });
 });
+
+$('.dcategory').on('click', function () {
+    let value = [];
+    let destination_id = $(this).data("id");
+    let modal = $("#modalDCategory");
+    let select2 = $('#dcategory_ids');
+    select2.val(value);
+    select2.trigger('change');
+    modal.attr("data-destination-id", destination_id);
+
+    $.ajax({
+        url: '/api/api/dselected',
+        type: 'POST',
+        data: {
+            id: destination_id,
+        },
+        success: function (res) {
+            let value = JSON.parse(res);
+            console.log(value);
+
+            select2.val(value);
+            select2.trigger('change');
+        },
+        error: function () { }
+    });
+});
+
+$(document).on("click", "#modalDCategoryButton", function () {
+    let destination_id = document.getElementById('modalDCategory').getAttribute("data-destination-id");
+    let category_ids = $('#dcategory_ids').select2('data');
+    category_ids = JSON.stringify(category_ids);
+
+    $.ajax({
+        url: '/api/api/dcategory',
+        type: 'POST',
+        data: {
+            category_ids: category_ids,
+            destination_id: destination_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function () {
+            location.reload();
+        }
+    });
+});

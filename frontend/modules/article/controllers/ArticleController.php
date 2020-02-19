@@ -2,6 +2,7 @@
 
 namespace frontend\modules\article\controllers;
 
+use common\classes\Debug;
 use frontend\modules\article\models\ReadForm;
 use Yii;
 use common\models\Article;

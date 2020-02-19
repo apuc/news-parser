@@ -1,7 +1,12 @@
 <?php
 
+use common\models\ArticleCategory;
+use common\models\Category;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\modules\source\models\SourceSearch */
@@ -11,33 +16,23 @@ $this->title = 'Сайты источники';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="source-index">
+    <?php
+    echo Html::a('Добавить', ['add'], ['class' => 'btn btn-success']).'&nbsp';
 
-    <p>
-        <?= Html::a('Добавить', ['add'], ['class' => 'btn btn-success']) ?>
-        <?= Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']) ?>
-    </p>
+    echo Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']);
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
+    echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'id' => 'grid',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'yii\grid\CheckboxColumn'],
-            //'id',
             'domain',
             'title',
             'description',
-            //'status',
-            //'links',
-            //'start_parse',
-            //'end_parse',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
-
-
+    ]);
+    ?>
 </div>

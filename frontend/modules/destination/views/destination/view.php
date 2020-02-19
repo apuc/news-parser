@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Destination;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -28,6 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'domain',
+            'title',
+            [
+                'format' => 'raw',
+                'attribute' => 'Катеория',
+                'value' => function ($data) { return Destination::getCategory($data); },
+            ],
+            'description'
         ],
     ]) ?>
 

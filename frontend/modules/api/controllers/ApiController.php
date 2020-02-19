@@ -4,6 +4,8 @@ namespace frontend\modules\api\controllers;
 
 use common\models\Article;
 use common\models\ArticleCategory;
+use common\models\Destination;
+use common\models\DestinationCategory;
 use common\models\Source;
 use common\models\TitleQueue;
 use Yii;
@@ -84,9 +86,23 @@ class ApiController extends Controller
     {
         $themes = array();
         if(Yii::$app->request->isAjax) {
-            $site = Article::findOne($_POST['id']);
-            if (isset($site->articleCategories)) {
-                foreach ($site->articleCategories as $val) {
+            $article = Article::findOne($_POST['id']);
+            if (isset($article->articleCategories)) {
+                foreach ($article->articleCategories as $val) {
+                    array_push($themes, $val->category_id);
+                }
+            }
+        }
+        return json_encode($themes);
+    }
+
+    public function actionDselected()
+    {
+        $themes = array();
+        if(Yii::$app->request->isAjax) {
+            $site = Destination::findOne($_POST['id']);
+            if (isset($site->destinationCategories)) {
+                foreach ($site->destinationCategories as $val) {
                     array_push($themes, $val->category_id);
                 }
             }
@@ -98,31 +114,37 @@ class ApiController extends Controller
     {
         if(Yii::$app->request->isAjax) {
             $category_ids = json_decode($_POST['category_ids']);
-            $selected_categories = ArticleCategory::find()->where(['article_id' => $_POST['article_id']])->all();
-            $new = array();
-            $old = array();
 
-            foreach ($category_ids as $val)
-                array_push($new, $val->id);
+            if ($category_ids) {
+                ArticleCategory::deleteAll(['article_id' => $_POST['article_id']]);
 
-            foreach ($selected_categories as $selected_category)
-                array_push($old, $selected_category->category_id);
+                foreach ($category_ids as $item) {
+                    $category = new ArticleCategory();
+                    $category->article_id = $_POST['article_id'];
+                    $category->category_id = $item->id;
 
-            $add = array_diff($new, $old);
-            $del = array_diff($old, $new);
-
-            if($add)
-                foreach ($add as $item) {
-                    $article_category  = new ArticleCategory();
-                    $article_category->article_id = $_POST['article_id'];
-                    $article_category->category_id = $item;
-                    $article_category->save();
+                    $category->save();
                 }
+            }
+        }
+    }
 
-            if($del)
-                foreach ($del as $item) {
-                    ArticleCategory::deleteAll(['article_id' => $_POST['article_id'], 'category_id' => $item]);
+    public function actionDcategory()
+    {
+        if(Yii::$app->request->isAjax) {
+            $category_ids = json_decode($_POST['category_ids']);
+
+            if ($category_ids) {
+                DestinationCategory::deleteAll(['destination_id' => $_POST['destination_id']]);
+
+                foreach ($category_ids as $item) {
+                    $category = new DestinationCategory();
+                    $category->destination_id = $_POST['destination_id'];
+                    $category->category_id = $item->id;
+
+                    $category->save();
                 }
+            }
         }
     }
 }

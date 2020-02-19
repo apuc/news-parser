@@ -1,5 +1,6 @@
 <?php
 
+use frontend\modules\article\models\Article;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -27,11 +28,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            //'id',
             'name',
             'article_source',
             'source_type',
             'language.language',
+            [
+                'format' => 'raw',
+                'attribute' => 'Катеория',
+                'value' => function ($data) { return Article::getCategory($data); },
+            ],
             'text:ntext',
         ],
     ]) ?>
