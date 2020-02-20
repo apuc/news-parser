@@ -35,7 +35,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'Катеория',
                 'value' => function ($data) { return Destination::getCategory($data); },
             ],
-            'description'
         ],
     ]) ?>
 

@@ -40,7 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     . '" class="dcategory" title="Категории"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>&nbsp'
                     . Destination::getCategory($data); },
             ],
-            'description',
         ],
     ]); ?>
 </div>

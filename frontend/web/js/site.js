@@ -182,3 +182,27 @@ $(document).on("click", "#modalDCategoryButton", function () {
         }
     });
 });
+
+$(document).on("change", "#categories", function () {
+    let category_ids = $('#categories').select2('data');
+    category_ids = JSON.stringify(category_ids);
+
+    $.ajax({
+        url: '/api/api/destinations',
+        type: 'POST',
+        data: {
+            category_ids: category_ids,
+        },
+        success: function (res) {
+            if(res) {
+                let value = JSON.parse(res);
+                let select2 = $('#destinations_ids');
+                select2.val([]);
+                select2.val(value);
+                select2.trigger('change');
+            }
+        },
+        error: function () {
+        }
+    });
+});

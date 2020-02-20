@@ -29,8 +29,6 @@ use yii\widgets\ActiveForm;
     'pluginOptions' => ['allowClear' => true],
     'value' => $values
     ])->label('Категории');
-
-    echo $form->field($model, 'description')->textInput(['maxlength' => true]);
     ?>
 
     <div class="form-group">
