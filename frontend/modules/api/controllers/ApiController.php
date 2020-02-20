@@ -181,22 +181,20 @@ class ApiController extends Controller
         if (Yii::$app->request->isAjax) {
             $category_ids = json_decode($_POST['category_ids']);
             $res = array();
-            if ($category_ids) {
-                foreach ($category_ids as $val) {
-                    $destination = DestinationCategory::find()
-                        ->where(['category_id' => $val->id])
-                        ->all();
-                    foreach ($destination as $item)
-                        array_push($res, $item->destination_id);
-                }
-                $res = array_unique($res);
-
-                $map = array();
-                foreach ($res as $item)
-                    array_push($map, $item);
-
-                return json_encode($map);
+            foreach ($category_ids as $val) {
+                $destination = DestinationCategory::find()
+                    ->where(['category_id' => $val->id])
+                    ->all();
+                foreach ($destination as $item)
+                    array_push($res, $item->destination_id);
             }
+            $res = array_unique($res);
+
+            $map = array();
+            foreach ($res as $item)
+                array_push($map, $item);
+
+            return json_encode($map);
         } else return 0;
     }
 }

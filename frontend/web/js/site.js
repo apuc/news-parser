@@ -197,9 +197,9 @@ $(document).on("change", "#categories", function () {
             if(res) {
                 let value = JSON.parse(res);
                 let select2 = $('#destinations_ids');
-                select2.val([]);
-                select2.val(value);
-                select2.trigger('change');
+                select2.val(null).trigger('change');
+                select2.val(value).trigger('change');
+                console.log(value);
             }
         },
         error: function () {
