@@ -144,6 +144,11 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
+    public function actionSettings()
+    {
+        return $this->render('settings');
+    }
+
     /**
      * Signs user up.
      *

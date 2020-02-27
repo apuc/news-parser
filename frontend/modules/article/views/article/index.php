@@ -1,9 +1,11 @@
 <?php
 
+use common\classes\Debug;
 use common\models\ArticleCategory;
 use common\models\Category;
 use frontend\modules\article\models\Article;
 use kartik\select2\Select2;
+use PhpQuery\PhpQuery;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b40b771a5efad7653614f79803276c77",
+    "content-hash": "de7b99ff66ce0cf8f6d8ca6d676b0572",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -54,7 +54,7 @@
             "version": "v3.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twbs/bootstrap.git",
+                "url": "git@github.com:twbs/bootstrap.git",
                 "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
             },
             "dist": {
@@ -135,7 +135,7 @@
             "version": "v1.3.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/bestiejs/punycode.js.git",
+                "url": "git@github.com:bestiejs/punycode.js.git",
                 "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3"
             },
             "dist": {
@@ -752,6 +752,39 @@
                 "yii"
             ],
             "time": "2018-10-01T17:00:54+00:00"
+        },
+        {
+            "name": "phpquery/phpquery",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elboza/PhpQuery.git",
+                "reference": "9556e6d903b89796491caee53baac426c9850159"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elboza/PhpQuery/zipball/9556e6d903b89796491caee53baac426c9850159",
+                "reference": "9556e6d903b89796491caee53baac426c9850159",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpQuery\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Beerware"
+            ],
+            "authors": [
+                {
+                    "name": "Fernando Iazeolla",
+                    "email": "fernando.iazeolla@gmail.com"
+                }
+            ],
+            "description": "jquery for php",
+            "time": "2019-08-08T19:13:26+00:00"
         },
         {
             "name": "rmrevin/yii2-fontawesome",

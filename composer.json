@@ -24,7 +24,8 @@
         "kartik-v/yii2-widget-select2": "@dev",
         "ext-http": "*",
         "true/punycode": "~2.0",
-        "mihaildev/yii2-elfinder": "*"
+        "mihaildev/yii2-elfinder": "*",
+        "phpquery/phpquery": "^0.0.2"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -206,3 +206,55 @@ $(document).on("change", "#categories", function () {
         }
     });
 });
+
+$(document).on("click", "#SettingsAjaxButton", function () {
+    let arr = [];
+
+    let theme = {};
+    theme.key = 'theme';
+    theme.value = $('#settingsform-theme').val();
+    arr[0] = theme;
+
+    let title = {};
+    title.key = 'title';
+    title.value = document.getElementById('settingsform-title').getAttribute("value");
+    arr[1] = title;
+
+    let keywords = {};
+    keywords.key = 'keywords';
+    keywords.value = document.getElementById('settingsform-keywords').getAttribute("value");
+    arr[2] = keywords;
+
+    let description = {};
+    description.key = 'description';
+    description.value = document.getElementById('settingsform-description').getAttribute("value");
+    arr[3] = description;
+
+    let h1 = {};
+    h1.key = 'h1';
+    h1.value = document.getElementById('settingsform-h1').getAttribute("value");
+    arr[4] = h1;
+
+    let data = {arr};
+    data = JSON.stringify(data);
+    console.log(data);
+
+    $.ajax({
+        url: 'http://localhost:8000/set-options',
+        type: 'POST',
+        data: {
+            data: data,
+        },
+        dataType: "json",
+        success: function (res) {
+            //location.reload();
+            //window.alert('success');
+            console.log(res);
+        },
+        error: function (res) {
+            //location.reload();
+            //window.alert('error');
+            console.log(res);
+        }
+    });
+});

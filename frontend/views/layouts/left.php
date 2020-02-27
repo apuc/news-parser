@@ -66,12 +66,12 @@ use yii\helpers\Html;
                         'url' => ['/image/image'],
                         'active' => \Yii::$app->controller->id == 'image',
                     ],
-//                    [
-//                        'label' => 'Шаблоны',
-//                        'icon' => 'file-o',
-//                        'url' => ['/template/template'],
-//                        'active' => \Yii::$app->controller->id == 'template',
-//                    ],
+                    [
+                        'label' => 'Шаблоны',
+                        'icon' => 'file-o',
+                        'url' => ['/template/template'],
+                        'active' => \Yii::$app->controller->id == 'template',
+                    ],
 //                    [
 //                        'label' => 'Просмотры',
 //                        'icon' => 'eye',
@@ -83,6 +83,12 @@ use yii\helpers\Html;
                         'icon' => 'user',
                         'url' => ['/user/user'],
                         'active' => \Yii::$app->controller->id == 'user',
+                    ],
+                    [
+                        'label' => 'Настройки',
+                        'icon' => 'cog',
+                        'url' => ['/site/settings'],
+                        'active' => \Yii::$app->controller->id == 'site',
                     ],
                 ],
             ]
