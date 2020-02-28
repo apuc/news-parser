@@ -123,3 +123,7 @@ a.desc:after {
     height: 20px;
     overflow: hidden;
 }
+
+.custom-field {
+    width: 50%;
+}

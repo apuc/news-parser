@@ -23,6 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
     // echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
     // echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
 
+    $t = new \common\classes\TextHandler('This is a plain text. So, count words! This is easy.');
+    $t->handle();
+
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,

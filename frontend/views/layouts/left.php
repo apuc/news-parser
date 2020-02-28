@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 
+/**
+ *  @var $directoryAsset
+*/
 ?>
 <aside class="main-sidebar">
 
