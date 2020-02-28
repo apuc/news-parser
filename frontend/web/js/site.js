@@ -237,24 +237,17 @@ $(document).on("click", "#SettingsAjaxButton", function () {
 
     let data = {arr};
     data = JSON.stringify(data);
-    console.log(data);
 
     $.ajax({
         url: 'http://localhost:8000/set-options',
         type: 'POST',
-        data: {
-            data: data,
+        data: data,
+
+        success: function () {
+            location.reload();
         },
-        dataType: "json",
-        success: function (res) {
-            //location.reload();
-            //window.alert('success');
-            console.log(res);
-        },
-        error: function (res) {
-            //location.reload();
-            //window.alert('error');
-            console.log(res);
+        error: function () {
+            location.reload();
         }
     });
 });
