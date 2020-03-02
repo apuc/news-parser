@@ -1,5 +1,7 @@
 <?php
 
+use common\classes\Debug;
+use common\classes\TextHandler;
 use frontend\modules\article\models\Article;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -42,9 +44,19 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
     <?php
+    $t = new TextHandler($model->text);
+    $t->handle();
+    $colors = $t->getColors();
+    $amount = $t->getAmount();
+
+    echo 'Значение цветов:<br>';
+    for($i = 0; $i < count($amount); $i++) {
+        echo '<span style="background-color: rgb('. $colors[$i] .', 196, 0)">Частота: ' . $amount[$i] . '</span><br>';
+    }
+
     echo '<h3>Предпросмотр:</h3>';
     echo '<pre style="background: lightgray; border: 1px solid lightgray; padding: 2px">';
-    echo $model->text;
+    echo $t->getColoredText();
     echo '</pre>';
     ?>
 

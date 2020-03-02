@@ -14,6 +14,7 @@ class WordInfo
     {
         self::setWord($word);
         self::setCount($count);
+
     }
 
     public function setWord($word)
@@ -24,6 +25,10 @@ class WordInfo
     {
         $this->count = $count;
     }
+    public function setColor($color)
+    {
+        $this->color = $color;
+    }
 
     public function getWord()
     {
@@ -33,5 +38,10 @@ class WordInfo
     public function getCount()
     {
         return $this->count;
+    }
+
+    public function getColor()
+    {
+        return $this->color;
     }
 }
