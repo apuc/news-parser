@@ -89,6 +89,7 @@ class TextHandler
     public function handle()
     {
         $text = strip_tags(self::getSourceText());
+        $text = str_replace('&nbsp;', ' ', $text);
         $text = strtolower($text);
         self::setText($text);
 

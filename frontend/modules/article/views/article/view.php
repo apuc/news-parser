@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
         echo '<span style="background-color: rgb('. $colors[$i] .', 196, 0)">Частота: ' . $amount[$i] . '</span><br>';
     }
 
-    echo '<h3>Предпросмотр:</h3>';
+    echo '<h3>Анализ слов:</h3>';
     echo '<pre style="background: lightgray; border: 1px solid lightgray; padding: 2px">';
     echo $t->getColoredText();
     echo '</pre>';
