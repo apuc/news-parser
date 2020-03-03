@@ -127,3 +127,7 @@ a.desc:after {
 .custom-field {
     width: 50%;
 }
+
+.custom-table {
+    height: 50px;
+}

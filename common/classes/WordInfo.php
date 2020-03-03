@@ -14,7 +14,6 @@ class WordInfo
     {
         self::setWord($word);
         self::setCount($count);
-
     }
 
     public function setWord($word)
