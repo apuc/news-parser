@@ -6,7 +6,7 @@ namespace frontend\modules\template\controllers;
 
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
-use yii\rest\Controller;
+use yii\web\Controller;
 
 class ApiController extends Controller
 {
