@@ -33,7 +33,7 @@ class ApiController extends Controller
         $behaviors['corsFilter'] = [
             'class' => \yii\filters\Cors::className(),
             'cors' => [
-                'Origin' => ['*'],
+                'Origin' => ['http://localhost:8000'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
             ],
 
