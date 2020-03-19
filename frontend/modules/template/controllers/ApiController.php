@@ -45,16 +45,6 @@ class ApiController extends Controller
             'class' =>  HttpBearerAuth::className(),
         ];
 
-        $behaviors['access'] = [
-            'class' => AccessControl::className(),
-            'rules' => [
-                [
-                    'allow' => true,
-                    'roles' => ['@'],
-                ],
-            ],
-        ];
-
         return $behaviors;
     }
 
