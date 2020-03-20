@@ -203,6 +203,6 @@ class ApiController extends Controller
     {
         $templates = Template::find()->all();
 
-        return json_encode($templates);
+        return 1;
     }
 }
