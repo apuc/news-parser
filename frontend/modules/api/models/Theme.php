@@ -1,5 +1,6 @@
 <?php
 
+namespace frontend\modules\api\models;
 
 class Theme
 {
