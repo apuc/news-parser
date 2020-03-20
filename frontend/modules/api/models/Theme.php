@@ -8,15 +8,15 @@ class Theme
     //public $id;
     public $theme;
     public $description;
-    public $img;
+   // public $img;
     public $version;
 
-    public function __construct($theme, $description, $img, $version)
+    public function __construct($theme, $description, $version)
     {
         //$this->id = $id;
         $this->theme = $theme;
         $this->description = $description;
-        $this->img = $img;
+       // $this->img = $img;
         $this->version = $version;
     }
 }

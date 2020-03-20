@@ -206,7 +206,7 @@ class ApiController extends Controller
 
         $model = array();
         foreach ($templates as $value)
-            array_push($model, new Theme($value->name, $value->description, '<img src="http://localhost:8000/workspace/modules/themes/themes/' . $value->name . '/preview.jpg" class="img" />', $value->version));
+            array_push($model, new Theme($value->name, $value->description, $value->version));
 
         return json_encode($model);
     }
