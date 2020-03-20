@@ -146,7 +146,10 @@ class SiteController extends Controller
 
     public function actionSettings()
     {
-        return $this->render('settings');
+        $settings = file_get_contents('http://localhost:8000/get-options');
+        $settings = json_decode($settings);
+
+        return $this->render('settings', ['settings' => $settings]);
     }
 
     /**

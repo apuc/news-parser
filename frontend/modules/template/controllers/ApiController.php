@@ -47,12 +47,4 @@ class ApiController extends Controller
 
         return $behaviors;
     }
-
-
-    public function actionDownload()
-    {
-        //header("Access-Control-Allow-Origin: *");
-
-        return 'it works!';
-    }
 }

@@ -6,10 +6,11 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-    $this->title = 'Настройки';
+/**
+ * @var $settings
+ */
 
-    $settings = file_get_contents('http://localhost:8000/get-options');
-    $settings = json_decode($settings);
+    $this->title = 'Настройки';
 
     $form = ActiveForm::begin();
 

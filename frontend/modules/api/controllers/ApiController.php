@@ -7,6 +7,7 @@ use common\models\ArticleCategory;
 use common\models\Destination;
 use common\models\DestinationCategory;
 use common\models\Source;
+use common\models\Template;
 use common\models\TitleQueue;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -196,5 +197,12 @@ class ApiController extends Controller
 
             return json_encode($map);
         } else return 0;
+    }
+
+    public function actionTemplates()
+    {
+        $templates = Template::find()->all();
+
+        return json_encode($templates);
     }
 }
