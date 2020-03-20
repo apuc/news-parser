@@ -205,8 +205,11 @@ class ApiController extends Controller
         $templates = Template::find()->all();
 
         $model = array();
-        foreach ($templates as $value)
-            array_push($model, new Theme($value->id, $value->name, $value->description, '<img src="http://localhost:8000/workspace/modules/themes/themes/' . $value->name . '/preview.jpg" class="img" />', $value->version));
+        foreach ($templates as $value) {
+            $img = '<img src="http://localhost:8000/workspace/modules/themes/themes/' . $value->name . '/preview.jpg" class="img" />';
+            array_push($model, new Theme($value->id, $value->name, $value->description, $img, $value->version, 'не скачано'));
+
+        }
 
         return json_encode($model);
     }
