@@ -1,5 +1,7 @@
 <?php
 
+use common\models\Template;
+use frontend\modules\api\models\Theme;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -16,7 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Template', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php
+    
+    ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

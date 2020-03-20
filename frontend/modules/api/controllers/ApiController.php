@@ -9,6 +9,7 @@ use common\models\DestinationCategory;
 use common\models\Source;
 use common\models\Template;
 use common\models\TitleQueue;
+use frontend\modules\api\models\Theme;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -203,6 +204,10 @@ class ApiController extends Controller
     {
         $templates = Template::find()->all();
 
-        return 1;
+        $model = array();
+        foreach ($templates as $value)
+            array_push($model, new Theme($value->id, $value->name, $value->description, '', $value->version));
+
+        return json_encode($model);
     }
 }
