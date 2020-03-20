@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php
-    
+
     ?>
 
     <?= GridView::widget([
