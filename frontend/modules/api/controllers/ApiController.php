@@ -203,12 +203,16 @@ class ApiController extends Controller
     public function actionTemplates()
     {
         $templates = Template::find()->all();
+        $uri = sprintf(
+            "%s://%s",
+            isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http',
+            $_SERVER['SERVER_NAME']
+        );
 
         $model = array();
         foreach ($templates as $value) {
-            $img = '<img src="http://localhost:8000/workspace/modules/themes/themes/' . $value->name . '/preview.jpg" class="img" />';
+            $img = '<img src="'. $uri .'/workspace/modules/themes/themes/' . $value->name . '/preview.jpg" class="img" />';
             array_push($model, new Theme($value->id, $value->name, $value->description, $img, $value->version, 'не скачано'));
-
         }
 
         return json_encode($model);
