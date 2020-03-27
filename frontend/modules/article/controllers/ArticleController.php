@@ -3,6 +3,10 @@
 namespace frontend\modules\article\controllers;
 
 
+use common\classes\Debug;
+use common\models\ArticleCategory;
+use common\models\Category;
+use common\models\Destination;
 use frontend\modules\article\models\ReadForm;
 use Yii;
 use common\models\Article;
@@ -80,6 +84,33 @@ class ArticleController extends Controller
         $model = new \frontend\modules\article\models\Article();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            foreach ($model->destination as $id) {
+                $categories = array();
+
+                $article_category = ArticleCategory::find()->where(['article_id' => $model->id])->all();
+                foreach ($article_category as $value)
+                {
+                    $category = Category::findOne($value->category_id);
+                    array_push($categories, $category->name);
+                }
+
+                $data = new \common\classes\Article($model->name, $model->text, $model->language_id, $categories, 'news.jpg');
+
+                $post = json_encode($data);
+
+                $destination = Destination::findOne($id);
+
+                $ch = curl_init($destination->domain.'/get-article');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+
+                $response = curl_exec($ch);
+
+               file_put_contents('test.txt', $response);
+
+                curl_close($ch);
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

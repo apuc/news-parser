@@ -25,7 +25,8 @@
         "ext-http": "*",
         "true/punycode": "~2.0",
         "mihaildev/yii2-elfinder": "*",
-        "phpquery/phpquery": "^0.0.2"
+        "phpquery/phpquery": "^0.0.2",
+        "ext-curl": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

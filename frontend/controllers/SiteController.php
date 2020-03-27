@@ -146,7 +146,16 @@ class SiteController extends Controller
 
     public function actionSettings()
     {
-        $settings = file_get_contents('http://localhost:8000/get-options');
+        $url= 'https://placement-site.craft-group.xyz/get-options';
+
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+
+        $settings = file_get_contents($url, false, stream_context_create($arrContextOptions));
         $settings = json_decode($settings);
 
         return $this->render('settings', ['settings' => $settings]);

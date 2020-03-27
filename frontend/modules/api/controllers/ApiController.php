@@ -200,6 +200,19 @@ class ApiController extends Controller
         } else return 0;
     }
 
+    public function actionArticles()
+    {
+        $articles = array();
+        if (Yii::$app->request->isAjax) {
+            $ids = json_decode($_POST['ids']);
+            foreach ($ids as $id) {
+                $article = Article::findOne($id);
+                array_push($articles, $article);
+            }
+        }
+       //return articles array
+    }
+
     public function actionTemplates()
     {
         $templates = Template::find()->all();

@@ -110,7 +110,7 @@ class TextHandler
     protected function setColors()
     {
         $x = 0;
-        if(self::getUniqueWords() > 1) {
+        if(self::getUniqueWords() > 2) {
             $amount_per_color = ceil(self::getNumberOfQuantityGroups() / 255);
             $step_count_unique = ceil(self::getNumberOfQuantityGroups() / $amount_per_color);
             $step = ceil(255 / ($step_count_unique - 1));
@@ -133,6 +133,7 @@ class TextHandler
             }
             self::setWordsColors($x);
         }
+        else self::setWordsColors($x);
     }
 
     /** public methods */
@@ -217,10 +218,12 @@ class TextHandler
     public function showText()
     {
         echo '<h3>Текст:</h3>';
-        echo 'Значение цветов: ';
-        for($i = 0; $i < count(self::getAmount()); $i++)
-            echo '<span style="background-color: rgb('. self::getColor($i) .', 196, 0)">Частота: ' . self::getOneAmount($i) . ' </span>';
-        echo '<br><br>';
+        if(self::getUniqueWords() > 2) {
+            echo 'Значение цветов: ';
+            for($i = 0; $i < count(self::getAmount()); $i++)
+                echo '<span style="background-color: rgb('. self::getColor($i) .', 196, 0)">Частота: ' . self::getOneAmount($i) . ' </span>';
+            echo '<br><br>';
+        }
 
         echo '<pre style="background: lightgray; border: 1px solid lightgray; padding: 2px">';
         echo self::getColoredText();

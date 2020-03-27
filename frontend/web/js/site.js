@@ -251,3 +251,21 @@ $(document).on("click", "#SettingsAjaxButton", function () {
         }
     });
 });
+
+$('.send-articles').on('click', function () {
+    //let name = document.querySelector(".read").getAttribute("id");
+
+    $.ajax({
+        url: '/api/api/read',
+        type: 'POST',
+        data: {
+            filename: name
+        },
+        success: function () {
+            window.alert('Статьи успешно считаны!');
+        },
+        error: function () {
+            window.alert('Error!');
+        }
+    });
+});

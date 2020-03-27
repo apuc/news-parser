@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     echo Html::a('Добавить статью вручную', ['create'], ['class' => 'btn btn-success']).'&nbsp';
     echo Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']);
+    echo Html::button('Разместить сатьи на сатах размещения', ['class' => 'btn btn-success send-articles']);
     // echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
     // echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
 
