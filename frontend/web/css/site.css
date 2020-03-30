@@ -131,3 +131,7 @@ a.desc:after {
 .custom-table {
     height: 50px;
 }
+
+.custom-margin-top {
+    margin-top: 5px;
+}

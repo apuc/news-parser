@@ -239,7 +239,7 @@ $(document).on("click", "#SettingsAjaxButton", function () {
     data = JSON.stringify(data);
 
     $.ajax({
-        url: 'http://localhost:8000/set-options',
+        url: 'https://placement-site.craft-group.xyz/set-options',
         type: 'POST',
         data: data,
 
@@ -253,19 +253,18 @@ $(document).on("click", "#SettingsAjaxButton", function () {
 });
 
 $('.send-articles').on('click', function () {
-    //let name = document.querySelector(".read").getAttribute("id");
+    let keys = $('#grid_articles').yiiGridView('getSelectedRows');
 
     $.ajax({
-        url: '/api/api/read',
+        url: '/article/article/send',
         type: 'POST',
         data: {
-            filename: name
+            keys: keys
         },
         success: function () {
-            window.alert('Статьи успешно считаны!');
+            location.reload();
         },
         error: function () {
-            window.alert('Error!');
         }
     });
 });

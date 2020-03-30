@@ -84,51 +84,14 @@ class ArticleController extends Controller
         $model = new \frontend\modules\article\models\Article();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->sendingData($model, $this->dataToSend($model), '/store-article');
 
-            foreach ($model->destination as $id) {
-                $categories = array();
-
-                $article_category = ArticleCategory::find()->where(['article_id' => $model->id])->all();
-                foreach ($article_category as $value)
-                {
-                    $category = Category::findOne($value->category_id);
-                    array_push($categories, $category->name);
-                }
-
-                $data = new \common\classes\Article($model->name, $model->text, $model->language_id, $categories, 'news.jpg');
-
-                $post = json_encode($data);
-
-                $destination = Destination::findOne($id);
-
-                $ch = curl_init($destination->domain.'/get-article');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-
-                $response = curl_exec($ch);
-
-               file_put_contents('test.txt', $response);
-
-                curl_close($ch);
-            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
         ]);
-    }
-
-    public function actionRead()
-    {
-        $model = new ReadForm();
-
-        if (Yii::$app->request->isPost) {
-            $model->csv = UploadedFile::getInstances($model, 'csv');
-            $model->upload();
-            return $this->render('read', ['model' => $model]);
-        }
-        return $this->render('read', ['model' => $model]);
     }
 
     /**
@@ -143,6 +106,8 @@ class ArticleController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->sendingData($model, $this->dataToSend($model), '/update-article');
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -181,5 +146,63 @@ class ArticleController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionRead()
+    {
+        $model = new ReadForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->csv = UploadedFile::getInstances($model, 'csv');
+            $model->upload();
+            return $this->render('read', ['model' => $model]);
+        }
+        return $this->render('read', ['model' => $model]);
+    }
+
+    public function actionSend()
+    {
+        $articles = array();
+        $categories = array();
+        foreach ($_POST['keys'] as $key) {
+            $article = Article::findOne($key);
+            $article_category = ArticleCategory::find()->where(['article_id' => $article->id])->all();
+
+            foreach ($article_category as $value) {
+                $category = Category::findOne($value->category_id);
+                array_push($categories, $category->name);
+            }
+
+            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories, 'news.jpg');
+            array_push($articles, $data);
+        }
+    }
+
+    public function dataToSend($model)
+    {
+        $categories = array();
+
+        $article_category = ArticleCategory::find()->where(['article_id' => $model->id])->all();
+        foreach ($article_category as $value) {
+            $category = Category::findOne($value->category_id);
+            array_push($categories, $category->name);
+        }
+
+        $data = new \common\classes\Article($model->id, $model->name, $model->text, $model->language_id, $categories, 'news.jpg');
+
+        return json_encode($data);
+    }
+
+    public function sendingData($model, $post, $action)
+    {
+        foreach ($model->destination as $id) {
+            $destination = Destination::findOne($id);
+
+            $ch = curl_init($destination->domain . $action);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_exec($ch);
+            curl_close($ch);
+        }
     }
 }

@@ -113,25 +113,27 @@ class TextHandler
         if(self::getUniqueWords() > 2) {
             $amount_per_color = ceil(self::getNumberOfQuantityGroups() / 255);
             $step_count_unique = ceil(self::getNumberOfQuantityGroups() / $amount_per_color);
-            $step = ceil(255 / ($step_count_unique - 1));
-            $i = 0; $j = 0;
-            $last = 1;
-            foreach (self::getWords() as $word) {
-                $current = $word->getCount();
-                if($current > $last) {
-                    $j++;
-                    $last = $current;
+            if($step_count_unique > 2) {
+                $step = ceil(255 / ($step_count_unique - 1));
+                $i = 0; $j = 0;
+                $last = 1;
+                foreach (self::getWords() as $word) {
+                    $current = $word->getCount();
+                    if($current > $last) {
+                        $j++;
+                        $last = $current;
+                    }
+                    if($j >= $amount_per_color) {
+                        self::setWordsColors($x);
+                        $i++; $j = 0;
+                    }
+                    $x = 255 - $i * $step;
+                    if($x < 0) $x = 0;
+                    $word->setColor($x);
+                    self::setColoredText(preg_replace('/\b'.$word->getWord().'\b/iu', '<span style="background-color: rgb('. $word->getColor() .', 196, 0)">'.$word->getWord().'</span>', self::getColoredText()));
                 }
-                if($j >= $amount_per_color) {
-                    self::setWordsColors($x);
-                    $i++; $j = 0;
-                }
-                $x = 255 - $i * $step;
-                if($x < 0) $x = 0;
-                $word->setColor($x);
-                self::setColoredText(preg_replace('/\b'.$word->getWord().'\b/iu', '<span style="background-color: rgb('. $word->getColor() .', 196, 0)">'.$word->getWord().'</span>', self::getColoredText()));
+                self::setWordsColors($x);
             }
-            self::setWordsColors($x);
         }
         else self::setWordsColors($x);
     }
@@ -217,8 +219,9 @@ class TextHandler
 
     public function showText()
     {
+        $step_count_unique = ceil(self::getNumberOfQuantityGroups() / ceil(self::getNumberOfQuantityGroups() / 255));
         echo '<h3>Текст:</h3>';
-        if(self::getUniqueWords() > 2) {
+        if(self::getUniqueWords() > 2 && $step_count_unique > 2) {
             echo 'Значение цветов: ';
             for($i = 0; $i < count(self::getAmount()); $i++)
                 echo '<span style="background-color: rgb('. self::getColor($i) .', 196, 0)">Частота: ' . self::getOneAmount($i) . ' </span>';

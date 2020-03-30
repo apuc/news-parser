@@ -19,14 +19,15 @@ $this->title = 'Статьи';
 $this->params['breadcrumbs'][] = $this->title;
 
     echo Html::a('Добавить статью вручную', ['create'], ['class' => 'btn btn-success']).'&nbsp';
-    echo Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']);
-    echo Html::button('Разместить сатьи на сатах размещения', ['class' => 'btn btn-success send-articles']);
+    echo Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']).'<br>';
+    // echo Html::button('Разместить статьи на сайтах размещения', ['class' => 'btn btn-success custom-margin-top send-articles']);
     // echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
     // echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'id' => 'grid_articles',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'yii\grid\CheckboxColumn'],
