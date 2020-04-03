@@ -204,10 +204,10 @@ class ArticleController extends Controller
             $ch = curl_init($destination->domain . $action);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-            curl_exec($ch);
+            $res = curl_exec($ch);
             curl_close($ch);
 
-            if(curl_exec($ch) === false)
+            if($res === false)
             {
                 echo 'Ошибка curl: ' . curl_error($ch); die();
             }
