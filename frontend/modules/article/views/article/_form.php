@@ -25,6 +25,16 @@ use yii\widgets\Pjax;
 
     echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 
+    $lang = \common\models\Language::findOne($model->language_id);
+    if($lang)
+        $model->language_id = $lang->id;
+    else
+        $model->language_id = 1;
+    echo '<div class="custom-field">'.$form->field($model, 'language_id')->dropDownList(
+            ArrayHelper::map(\common\models\Language::find()->all(), 'id', 'language'),
+            ['prompt' => '...']
+        ).'</div>';
+
     $values = ArrayHelper::map(ArticleCategory::find()->where(['article_id' => $model->id])->all(), 'category_id', 'category_id');
     $model->category = $values;
     echo $form->field($model, 'category')->widget(Select2::class, [

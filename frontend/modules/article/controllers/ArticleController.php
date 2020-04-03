@@ -7,6 +7,7 @@ use common\classes\Debug;
 use common\models\ArticleCategory;
 use common\models\Category;
 use common\models\Destination;
+use common\models\Language;
 use frontend\modules\article\models\ReadForm;
 use Yii;
 use common\models\Article;
@@ -182,13 +183,15 @@ class ArticleController extends Controller
     {
         $categories = array();
 
+        $language = Language::findOne($model->language_id);
+
         $article_category = ArticleCategory::find()->where(['article_id' => $model->id])->all();
         foreach ($article_category as $value) {
             $category = Category::findOne($value->category_id);
             array_push($categories, $category->name);
         }
 
-        $data = new \common\classes\Article($model->id, $model->name, $model->text, $model->language_id, $categories, 'news.jpg');
+        $data = new \common\classes\Article($model->id, $model->name, $model->text, $language->language, $categories, 'news.jpg');
 
         return json_encode($data);
     }

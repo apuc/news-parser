@@ -69,12 +69,12 @@ use yii\helpers\Html;
                         'url' => ['/image/image'],
                         'active' => \Yii::$app->controller->id == 'image',
                     ],
-                    [
-                        'label' => 'Шаблоны',
-                        'icon' => 'file-o',
-                        'url' => ['/template/template'],
-                        'active' => \Yii::$app->controller->id == 'template',
-                    ],
+//                    [
+//                        'label' => 'Шаблоны',
+//                        'icon' => 'file-o',
+//                        'url' => ['/template/template'],
+//                        'active' => \Yii::$app->controller->id == 'template',
+//                    ],
 //                    [
 //                        'label' => 'Просмотры',
 //                        'icon' => 'eye',

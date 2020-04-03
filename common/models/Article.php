@@ -155,8 +155,8 @@ class Article extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-        $language = Language::findOne(['language' => 'Русский']);
-        $this->language_id = $language->id;
+        //$language = Language::findOne(['language' => 'Русский']);
+        //$this->language_id = $language->id;
         $this->source_type = 'Добавлено вручную';
         $this->article_source = Yii::$app->user->identity->id;
 

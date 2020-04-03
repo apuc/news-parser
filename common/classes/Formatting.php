@@ -9,15 +9,16 @@ class Formatting
     public static function formattingData($domains)
     {
         $domains = str_replace(array("\r\n", "\r", "\n"), ",", $domains);
-        $domains = self::cutUrl($domains);
-        $domains = self::cutDomain($domains);
         $domains = explode(",", $domains);
 
         $formatting = array();
         foreach ($domains as $domain) {
-            $trim = trim($domain);
-            if ($trim)
-                array_push($formatting, $trim);
+            $protocol = self::getProtocol($domain);
+            $domain = self::cutUrl($domain);
+            $domain = self::cutDomain($domain);
+            $domain = trim($domain);
+            if ($domain)
+                array_push($formatting, $protocol . '://' . $domain);
         }
         return $formatting;
     }
@@ -30,6 +31,11 @@ class Formatting
     public static function cutDomain($domain)
     {
         return (strripos($domain, '/')) ? stristr($domain, '/', true) : $domain;
+    }
+
+    public static function getProtocol($domain)
+    {
+        return str_replace(":", "", (strripos($domain, '/')) ? stristr($domain, '/', true) : $domain);
     }
 
     public static function formData($domains, $all_sites, $user_sites)
