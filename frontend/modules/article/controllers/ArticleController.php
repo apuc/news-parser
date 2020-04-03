@@ -206,6 +206,15 @@ class ArticleController extends Controller
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
             curl_exec($ch);
             curl_close($ch);
+
+            if(curl_exec($ch) === false)
+            {
+                echo 'Ошибка curl: ' . curl_error($ch); die();
+            }
+            else
+            {
+                echo 'Операция завершена без каких-либо ошибок';
+            }
         }
     }
 }
