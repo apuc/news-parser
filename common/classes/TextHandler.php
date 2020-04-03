@@ -219,17 +219,23 @@ class TextHandler
 
     public function showText()
     {
-        $step_count_unique = ceil(self::getNumberOfQuantityGroups() / ceil(self::getNumberOfQuantityGroups() / 255));
-        echo '<h3>Текст:</h3>';
-        if(self::getUniqueWords() > 2 && $step_count_unique > 2) {
-            echo 'Значение цветов: ';
-            for($i = 0; $i < count(self::getAmount()); $i++)
-                echo '<span style="background-color: rgb('. self::getColor($i) .', 196, 0)">Частота: ' . self::getOneAmount($i) . ' </span>';
-            echo '<br><br>';
-        }
+        try {
+            $step_count_unique = ceil(self::getNumberOfQuantityGroups() / ceil(self::getNumberOfQuantityGroups() / 255));
+            echo '<h3>Текст:</h3>';
+            if(self::getUniqueWords() > 2 && $step_count_unique > 2) {
+                echo 'Значение цветов: ';
+                for($i = 0; $i < count(self::getAmount()); $i++)
+                    echo '<span style="background-color: rgb('. self::getColor($i) .', 196, 0)">Частота: ' . self::getOneAmount($i) . ' </span>';
+                echo '<br><br>';
+            }
 
-        echo '<pre style="background: lightgray; border: 1px solid lightgray; padding: 2px">';
-        echo self::getColoredText();
-        echo '</pre>';
+            echo '<pre style="background: lightgray; border: 1px solid lightgray; padding: 2px">';
+            echo self::getColoredText();
+            echo '</pre>';
+        } catch (\Exception $e) {
+            echo '<pre style="background: lightgray; border: 1px solid lightgray; padding: 2px">';
+            echo self::getText();
+            echo '</pre>';
+        }
     }
 }

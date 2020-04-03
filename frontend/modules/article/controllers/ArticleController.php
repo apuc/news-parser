@@ -207,14 +207,14 @@ class ArticleController extends Controller
             $res = curl_exec($ch);
             curl_close($ch);
 
-            if($res === false)
-            {
-                echo 'Ошибка curl: ' . curl_error($ch); die();
-            }
-            else
-            {
-                echo 'Операция завершена без каких-либо ошибок';
-            }
+//            if($res === false)
+//            {
+//                echo 'Ошибка curl: ' . curl_error($ch); die();
+//            }
+//            else
+//            {
+//                echo 'Операция завершена без каких-либо ошибок';
+//            }
         }
     }
 }
