@@ -44,7 +44,9 @@ class ArticleSearch extends Article
     {
         $query = Article::find()
             ->leftJoin('article_category', 'article.id = article_category.article_id')
+            ->leftJoin('destination_article', 'article.id = destination_article.article_id')
             ->leftJoin('category', 'article_category.category_id = category.id')
+            ->leftJoin('destination', 'destination_article.article_id = destination.id')
             ->groupBy('article.id');
 
         // add conditions that should always apply here

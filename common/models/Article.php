@@ -153,6 +153,19 @@ class Article extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function getDestination($data)
+    {
+        $result = '';
+        if($data->articleCategories) {
+            foreach ($data->destinationArticles as $value) {
+                $destination = Destination::findOne($value->destination_id);
+                $result .= $destination->domain . ', ';
+            }
+        }
+        $result = substr($result, 0, strlen($result)-2);
+        return $result;
+    }
+
     public function beforeSave($insert)
     {
         //$language = Language::findOne(['language' => 'Русский']);

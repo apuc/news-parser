@@ -47,6 +47,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     . '" class="category" title="Категории"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>&nbsp'
                     . Article::getCategory($data); },
             ],
+            [
+                'format' => 'raw',
+                'header' => 'Сайты размещения',
+                //'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
+                'value' => function ($data) { return '<a type="button" data-toggle="modal" data-target="#modalDestination" data-id="' . $data->id
+                    . '" class="destination" title="Сайты размещения"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>&nbsp'
+                    . Article::getDestination($data); },
+            ],
             'language.language',
         ],
     ]);
@@ -69,6 +77,31 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
                 <div class="form-group">
                     <?= Html::button('Сохранить', ['class' => 'btn btn-success', 'id' => 'modalCategoryButton', 'data-dismiss' => "modal"]) ?>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Отмена</button>
+                </div>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDestination" tabindex="-1" role="dialog" aria-labelledby="modalDestinationLabel" aria-hidden="true" data-site-id="">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <?php
+                $form = ActiveForm::begin();
+
+                $model = new \common\models\DestinationArticle();
+
+                echo $form->field($model, 'destination_id')->widget(Select2::class, [
+                    'data' => ArrayHelper::map(\common\models\Destination::find()->all(), 'id', 'domain'),
+                    'options' => ['placeholder' => '...', 'class' => 'form-control', 'id' => 'destination_ids', 'multiple' => true],
+                    'pluginOptions' => ['allowClear' => true],
+                ])->label('Сайты размещения');
+                ?>
+                <div class="form-group">
+                    <?= Html::button('Сохранить', ['class' => 'btn btn-success', 'id' => 'modalDestinationButton', 'data-dismiss' => "modal"]) ?>
                     <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Отмена</button>
                 </div>
                 <?php ActiveForm::end(); ?>

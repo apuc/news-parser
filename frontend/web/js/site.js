@@ -1,5 +1,6 @@
 "use strict";
 
+// returns type of article (unnecessary now)
 $(document).ready(function() {
     $('#source_type').change(function(){
         let source_type = $('#source_type').val();
@@ -37,40 +38,7 @@ $(document).ready(function() {
     });
 });
 
-$('.title_source').on('click', function () {
-    let keys = $('#grid').yiiGridView('getSelectedRows');
-    $.ajax({
-        url: '/api/api/titlesource',
-        type: 'POST',
-        data: {
-            keys: keys
-        },
-        success: function () {
-            window.alert('Сайты добавлены в очередь на получение заголовка.');
-        },
-        error: function () {
-            window.alert('Error!');
-        }
-    });
-});
-
-$('.title_destination').on('click', function () {
-    let keys = $('#grid').yiiGridView('getSelectedRows');
-    $.ajax({
-        url: '/api/api/titledestination',
-        type: 'POST',
-        data: {
-            keys: keys
-        },
-        success: function () {
-            window.alert('Сайты добавлены в очередь на получение заголовка.');
-        },
-        error: function () {
-            window.alert('Error!');
-        }
-    });
-});
-
+//reads articles from file
 $('.read').on('click', function () {
     let name = document.querySelector(".read").getAttribute("id");
 
@@ -89,124 +57,7 @@ $('.read').on('click', function () {
     });
 });
 
-$('.category').on('click', function () {
-    let value = [];
-    let article_id = $(this).data("id");
-    let modal = $("#modalCategory");
-    let select2 = $('#category_ids');
-    select2.val(value);
-    select2.trigger('change');
-    modal.attr("data-article-id", article_id);
-
-    $.ajax({
-        url: '/api/api/selected',
-        type: 'POST',
-        data: {
-            id: article_id,
-        },
-        success: function (res) {
-            let value = JSON.parse(res);
-            console.log(value);
-
-            select2.val(value);
-            select2.trigger('change');
-        },
-        error: function () { }
-    });
-});
-
-$(document).on("click", "#modalCategoryButton", function () {
-    let article_id = document.getElementById('modalCategory').getAttribute("data-article-id");
-    let category_ids = $('#category_ids').select2('data');
-    category_ids = JSON.stringify(category_ids);
-
-    $.ajax({
-        url: '/api/api/category',
-        type: 'POST',
-        data: {
-            category_ids: category_ids,
-            article_id: article_id
-        },
-        success: function () {
-            location.reload();
-        },
-        error: function () {
-            location.reload();
-        }
-    });
-});
-
-$('.dcategory').on('click', function () {
-    let value = [];
-    let destination_id = $(this).data("id");
-    let modal = $("#modalDCategory");
-    let select2 = $('#dcategory_ids');
-    select2.val(value);
-    select2.trigger('change');
-    modal.attr("data-destination-id", destination_id);
-
-    $.ajax({
-        url: '/api/api/dselected',
-        type: 'POST',
-        data: {
-            id: destination_id,
-        },
-        success: function (res) {
-            let value = JSON.parse(res);
-            console.log(value);
-
-            select2.val(value);
-            select2.trigger('change');
-        },
-        error: function () { }
-    });
-});
-
-$(document).on("click", "#modalDCategoryButton", function () {
-    let destination_id = document.getElementById('modalDCategory').getAttribute("data-destination-id");
-    let category_ids = $('#dcategory_ids').select2('data');
-    category_ids = JSON.stringify(category_ids);
-
-    $.ajax({
-        url: '/api/api/dcategory',
-        type: 'POST',
-        data: {
-            category_ids: category_ids,
-            destination_id: destination_id
-        },
-        success: function () {
-            location.reload();
-        },
-        error: function () {
-            location.reload();
-        }
-    });
-});
-
-$(document).on("change", "#categories", function () {
-    let category_ids = $('#categories').select2('data');
-    category_ids = JSON.stringify(category_ids);
-
-    $.ajax({
-        url: '/api/api/destinations',
-        type: 'POST',
-        data: {
-            category_ids: category_ids,
-        },
-        success: function (res) {
-            if(res) {
-                let value = JSON.parse(res);
-                let select2 = $('#destinations_ids');
-                select2.val(null).trigger('change');
-                select2.val(value).trigger('change');
-                console.log(value);
-            }
-        },
-        error: function () {
-        }
-    });
-});
-
+// set options on destination site
 $(document).on("click", "#SettingsAjaxButton", function () {
     let arr = [];
 
@@ -252,6 +103,32 @@ $(document).on("click", "#SettingsAjaxButton", function () {
     });
 });
 
+// auto select destinations when create or update article
+$(document).on("change", "#categories", function () {
+    let category_ids = $('#categories').select2('data');
+    category_ids = JSON.stringify(category_ids);
+
+    $.ajax({
+        url: '/api/api/destinations',
+        type: 'POST',
+        data: {
+            category_ids: category_ids,
+        },
+        success: function (res) {
+            if(res) {
+                let value = JSON.parse(res);
+                let select2 = $('#destinations_ids');
+                select2.val(null).trigger('change');
+                select2.val(value).trigger('change');
+                console.log(value);
+            }
+        },
+        error: function () {
+        }
+    });
+});
+
+// sends articles to destination site
 $('.send-articles').on('click', function () {
     let keys = $('#grid_articles').yiiGridView('getSelectedRows');
 
@@ -265,6 +142,185 @@ $('.send-articles').on('click', function () {
             location.reload();
         },
         error: function () {
+        }
+    });
+});
+
+// add source sites into queue for parsing titles
+$('.title_source').on('click', function () {
+    let keys = $('#grid').yiiGridView('getSelectedRows');
+    $.ajax({
+        url: '/api/api/titlesource',
+        type: 'POST',
+        data: {
+            keys: keys
+        },
+        success: function () {
+            window.alert('Сайты добавлены в очередь на получение заголовка.');
+        },
+        error: function () {
+            window.alert('Error!');
+        }
+    });
+});
+// add destination sites into queue for parsing titles
+$('.title_destination').on('click', function () {
+    let keys = $('#grid').yiiGridView('getSelectedRows');
+    $.ajax({
+        url: '/api/api/titledestination',
+        type: 'POST',
+        data: {
+            keys: keys
+        },
+        success: function () {
+            window.alert('Сайты добавлены в очередь на получение заголовка.');
+        },
+        error: function () {
+            window.alert('Error!');
+        }
+    });
+});
+
+// selected categories for articles
+$('.category').on('click', function () {
+    let value = [];
+    let article_id = $(this).data("id");
+    let modal = $("#modalCategory");
+    let select2 = $('#category_ids');
+    select2.val(value);
+    select2.trigger('change');
+    modal.attr("data-article-id", article_id);
+
+    $.ajax({
+        url: '/api/api/selected',
+        type: 'POST',
+        data: {
+            id: article_id,
+        },
+        success: function (res) {
+            let value = JSON.parse(res);
+            console.log(value);
+
+            select2.val(value);
+            select2.trigger('change');
+        },
+        error: function () { }
+    });
+});
+// select categories for articles
+$(document).on("click", "#modalCategoryButton", function () {
+    let article_id = document.getElementById('modalCategory').getAttribute("data-article-id");
+    let category_ids = $('#category_ids').select2('data');
+    category_ids = JSON.stringify(category_ids);
+
+    $.ajax({
+        url: '/api/api/category',
+        type: 'POST',
+        data: {
+            category_ids: category_ids,
+            article_id: article_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function () {
+            location.reload();
+        }
+    });
+});
+
+// selected destinations for articles
+$('.destination').on('click', function () {
+    let value = [];
+    let article_id = $(this).data("id");
+    let modal = $("#modalDestination");
+    let select2 = $('#destination_ids');
+    select2.val(value);
+    select2.trigger('change');
+    modal.attr("data-article-id", article_id);
+
+    $.ajax({
+        url: '/api/api/selecteddestination',
+        type: 'POST',
+        data: {
+            id: article_id,
+        },
+        success: function (res) {
+            let value = JSON.parse(res);
+            console.log(value);
+
+            select2.val(value);
+            select2.trigger('change');
+        },
+        error: function () { }
+    });
+});
+// select destinations for articles
+$(document).on("click", "#modalDestinationButton", function () {
+    let article_id = document.getElementById('modalDestination').getAttribute("data-article-id");
+    let destination_ids = $('#destination_ids').select2('data');
+    destination_ids = JSON.stringify(destination_ids);
+
+    $.ajax({
+        url: '/api/api/destination',
+        type: 'POST',
+        data: {
+            destination_ids: destination_ids,
+            article_id: article_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function () {
+            location.reload();
+        }
+    });
+});
+
+// selected categories for destinations
+$('.dcategory').on('click', function () {
+    let value = [];
+    let destination_id = $(this).data("id");
+    let modal = $("#modalDCategory");
+    let select2 = $('#dcategory_ids');
+    select2.val(value);
+    select2.trigger('change');
+    modal.attr("data-destination-id", destination_id);
+
+    $.ajax({
+        url: '/api/api/dselected',
+        type: 'POST',
+        data: {
+            id: destination_id,
+        },
+        success: function (res) {
+            let value = JSON.parse(res);
+            console.log(value);
+
+            select2.val(value);
+            select2.trigger('change');
+        },
+        error: function () { }
+    });
+});
+// select categories for destinations
+$(document).on("click", "#modalDCategoryButton", function () {
+    let destination_id = document.getElementById('modalDCategory').getAttribute("data-destination-id");
+    let category_ids = $('#dcategory_ids').select2('data');
+    category_ids = JSON.stringify(category_ids);
+
+    $.ajax({
+        url: '/api/api/dcategory',
+        type: 'POST',
+        data: {
+            category_ids: category_ids,
+            destination_id: destination_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function () {
+            location.reload();
         }
     });
 });
