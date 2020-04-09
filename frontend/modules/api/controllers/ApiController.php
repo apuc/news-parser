@@ -21,8 +21,8 @@ class ApiController extends Controller
     // returns type of article (unnecessary now)
     public function actionType()
     {
-        if (Yii::$app->request->isAjax) {
-            $result = array();
+        $result = array();
+        if (Yii::$app->request->isAjax)
             switch ($_POST['value']) {
                 case 'Получено с сайта':
                     $result = ArrayHelper::map(Source::find()->all(), 'id', 'domain');
@@ -40,8 +40,7 @@ class ApiController extends Controller
                     break;
             }
 
-            return json_encode($result);
-        }
+        return json_encode($result);
     }
     // returns existing templates (unnecessary now)
     public function actionTemplates()
