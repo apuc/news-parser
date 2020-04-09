@@ -159,8 +159,9 @@ $('#modalSelectDestinationsButton').on('click', function () {
             articles_ids: articles_ids,
             destinations_ids: destinations_ids
         },
-        success: function () {
-            location.reload();
+        success: function (res) {
+            // location.reload();
+            console.log(res);
         },
         error: function (res) {
             console.log(res);

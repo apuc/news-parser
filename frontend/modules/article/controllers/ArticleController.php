@@ -166,7 +166,7 @@ class ArticleController extends Controller
     {
         if (Yii::$app->request->isAjax) {
             $destinations_ids = json_decode($_POST['destinations_ids']);
-            $articles_ids = $_POST['article_ids'];
+            $articles_ids = $_POST['articles_ids'];
 
             foreach ($articles_ids as $id) {
                 $article = Article::findOne($id);
