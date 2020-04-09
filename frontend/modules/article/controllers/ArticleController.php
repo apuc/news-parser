@@ -7,6 +7,7 @@ use common\classes\Debug;
 use common\models\ArticleCategory;
 use common\models\Category;
 use common\models\Destination;
+use common\models\DestinationArticle;
 use common\models\Language;
 use frontend\modules\article\models\ReadForm;
 use Yii;
@@ -161,6 +162,28 @@ class ArticleController extends Controller
         return $this->render('read', ['model' => $model]);
     }
 
+    public function actionShowdestinations()
+    {
+        if (Yii::$app->request->isAjax) {
+            $destinations_ids = json_decode($_POST['destinations_ids']);
+            $articles_ids = $_POST['article_ids'];
+
+            foreach ($articles_ids as $id) {
+                $article = Article::findOne($id);
+                $article = $this->dataToSend($article);
+
+                foreach ($destinations_ids as $destinations) {
+                    $destination = Destination::findOne($destinations->id);
+                    $ch = curl_init($destination->domain . '/store-article');
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
+                    curl_exec($ch);
+                    curl_close($ch);
+                }
+            }
+        }
+    }
+
     public function actionSend()
     {
         $articles = array();
@@ -204,17 +227,8 @@ class ArticleController extends Controller
             $ch = curl_init($destination->domain . $action);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-            $res = curl_exec($ch);
+            curl_exec($ch);
             curl_close($ch);
-
-//            if($res === false)
-//            {
-//                echo 'Ошибка curl: ' . curl_error($ch); die();
-//            }
-//            else
-//            {
-//                echo 'Операция завершена без каких-либо ошибок';
-//            }
         }
     }
 }

@@ -131,17 +131,39 @@ $(document).on("change", "#categories", function () {
 // sends articles to destination site
 $('.send-articles').on('click', function () {
     let keys = $('#grid_articles').yiiGridView('getSelectedRows');
+    console.log(keys);
 
     $.ajax({
-        url: '/article/article/send',
+        url: '/article/article/showdestinations',
         type: 'POST',
         data: {
             keys: keys
         },
         success: function () {
-            location.reload();
+            //location.reload();
         },
         error: function () {
+        }
+    });
+});
+
+$('#modalSelectDestinationsButton').on('click', function () {
+    let articles_ids = $('#grid_articles').yiiGridView('getSelectedRows');
+    let destinations_ids = $('#destinations_idss').select2('data');
+    destinations_ids = JSON.stringify(destinations_ids);
+
+    $.ajax({
+        url: '/article/article/showdestinations',
+        type: 'POST',
+        data: {
+            articles_ids: articles_ids,
+            destinations_ids: destinations_ids
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function (res) {
+            console.log(res);
         }
     });
 });

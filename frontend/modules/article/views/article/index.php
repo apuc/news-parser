@@ -19,8 +19,12 @@ $this->title = 'Статьи';
 $this->params['breadcrumbs'][] = $this->title;
 
     echo Html::a('Добавить статью вручную', ['create'], ['class' => 'btn btn-success']).'&nbsp';
-    echo Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']).'<br>';
-    // echo Html::button('Разместить статьи на сайтах размещения', ['class' => 'btn btn-success custom-margin-top send-articles']);
+    echo Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']).'&nbsp';
+    echo Html::a('Отправить статьи', ['#'], ['class' => 'btn btn-success', 'type' => 'button',
+        'data-toggle' => 'modal',  'data-target' => '#modalSelectDestinations']) . '<br>';
+//    echo Html::button('Разместить статьи на сайтах размещения', ['class' => 'btn btn-success custom-margin-top send-articles']);
+//    echo '<a type="button" data-toggle="modal" data-target="#modalSelectDestinations" data-id="' . $data->id
+//                    . '" class="" title="Категории">Check</a>';
     // echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
     // echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
 
@@ -109,3 +113,29 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalSelectDestinations" tabindex="-1" role="dialog" aria-labelledby="modalSelectDestinationsLabel" aria-hidden="true" data-site-id="">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <?php
+                $form = ActiveForm::begin();
+
+                $model = new \common\classes\Destinations();
+
+                echo $form->field($model, 'destinations_ids')->widget(Select2::class, [
+                    'data' => ArrayHelper::map(\common\models\Destination::find()->all(), 'id', 'domain'),
+                    'options' => ['placeholder' => '...', 'class' => 'form-control', 'id' => 'destinations_idss', 'multiple' => true],
+                    'pluginOptions' => ['allowClear' => true],
+                ])->label('Сайты размещения');
+                ?>
+                <div class="form-group">
+                    <?= Html::button('Сохранить', ['class' => 'btn btn-success', 'id' => 'modalSelectDestinationsButton', 'data-dismiss' => "modal"]) ?>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Отмена</button>
+                </div>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+    </div>
+</div>
+
