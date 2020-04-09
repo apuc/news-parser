@@ -160,7 +160,7 @@ $('#modalSelectDestinationsButton').on('click', function () {
             destinations_ids: destinations_ids
         },
         success: function (res) {
-            // location.reload();
+            location.reload();
             console.log(res);
         },
         error: function (res) {
