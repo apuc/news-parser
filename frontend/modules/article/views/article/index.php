@@ -130,7 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ])->label('Сайты размещения');
                 ?>
                 <div class="form-group">
-                    <?= Html::button('Сохранить', ['class' => 'btn btn-success', 'id' => 'modalSelectDestinationsButton', 'data-dismiss' => "modal"]) ?>
+                    <?= Html::button('Отправить', ['class' => 'btn btn-success', 'id' => 'modalSelectDestinationsButton', 'data-dismiss' => "modal"]) ?>
                     <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Отмена</button>
                 </div>
                 <?php ActiveForm::end(); ?>
