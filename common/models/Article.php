@@ -15,6 +15,10 @@ use yii\helpers\ArrayHelper;
  * @property string|null $source_type
  * @property string|null $text
  * @property int|null $language_id
+ * @property string|null $title
+ * @property string|null $description
+ * @property string|null $keywords
+ * @property string|null $url
  *
  * @property Language $language
  * @property ArticleCategory[] $articleCategories
@@ -39,7 +43,7 @@ class Article extends \yii\db\ActiveRecord
 //        $destination = ArrayHelper::getColumn(
 //            DestinationCategory::find()
 //                ->where(['article_id' => \Yii::$app->request->get('id')])
-//                ->innerJoin('article_category', 'destination_category.category_id = article_category.category_id')
+//                //->innerJoin('article_category', 'destination_category.category_id = article_category.category_id')
 //                ->all(),
 //            'destination_id'
 //        );
@@ -69,7 +73,7 @@ class Article extends \yii\db\ActiveRecord
         return [
             [['text'], 'string'],
             [['language_id'], 'integer'],
-            [['name', 'article_source', 'source_type'], 'string', 'max' => 255],
+            [['name', 'article_source', 'source_type', 'title', 'description', 'keywords', 'url'], 'string', 'max' => 255],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['language_id' => 'id']],
             [['category', 'destination'], 'safe']
         ];
@@ -87,6 +91,10 @@ class Article extends \yii\db\ActiveRecord
             'source_type' => 'Тип источника',
             'text' => 'Статья',
             'language_id' => 'Язык',
+            'title' => 'Title',
+            'description' => 'Description',
+            'keywords' => 'Keywords',
+            'url' => 'URL'
         ];
     }
 

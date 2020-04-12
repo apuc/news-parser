@@ -39,6 +39,15 @@ YiiAsset::register($this);
                 'attribute' => 'Катеория',
                 'value' => function ($data) { return Article::getCategory($data); },
             ],
+            [
+                'format' => 'raw',
+                'attribute' => 'Сайты&nbsp;размещения',
+                'value' => function ($data) { return Article::getDestination($data); },
+            ],
+            'title',
+            'description',
+            'keywords',
+            'url',
             'text:ntext',
         ],
     ]) ?>

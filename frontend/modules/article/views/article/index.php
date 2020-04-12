@@ -22,9 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     echo Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']).'&nbsp';
     echo Html::a('Отправить статьи', ['#'], ['class' => 'btn btn-success', 'type' => 'button',
         'data-toggle' => 'modal',  'data-target' => '#modalSelectDestinations']) . '<br>';
-//    echo Html::button('Разместить статьи на сайтах размещения', ['class' => 'btn btn-success custom-margin-top send-articles']);
-//    echo '<a type="button" data-toggle="modal" data-target="#modalSelectDestinations" data-id="' . $data->id
-//                    . '" class="" title="Категории">Check</a>';
+
     // echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
     // echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
 
@@ -60,6 +58,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     . Article::getDestination($data); },
             ],
             'language.language',
+            'title',
+            'description',
+            'keywords',
+            'url'
         ],
     ]);
     ?>
