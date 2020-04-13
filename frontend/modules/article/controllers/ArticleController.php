@@ -197,7 +197,8 @@ class ArticleController extends Controller
                 array_push($categories, $category->name);
             }
 
-            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories, 'news.jpg');
+            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories,
+                'news.jpg', $article->title, $article->description, $article->keywords, $article->url);
             array_push($articles, $data);
         }
     }
@@ -214,7 +215,8 @@ class ArticleController extends Controller
             array_push($categories, $category->name);
         }
 
-        $data = new \common\classes\Article($model->id, $model->name, $model->text, $language->language, $categories, 'news.jpg');
+        $data = new \common\classes\Article($model->id, $model->name, $model->text, $language->language, $categories,
+            'news.jpg', $model->title, $model->description, $model->keywords, $model->url);
 
         return json_encode($data);
     }
