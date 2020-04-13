@@ -39,23 +39,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'header' => 'Статья',
                 'filter' => Html::activeTextInput($searchModel, 'text', ['class' => 'form-control']),
-                'value' => function ($data) { return '<div class="fixed-height">'.$data->text.'</div>'; }
+                'value' => function ($data) { return '<div class="fixed-height fixed-width" title="' . $data->text . '">'.$data->text.'</div>'; }
             ],
             [
                 'format' => 'raw',
                 'header' => 'Катеория',
                 'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
-                'value' => function ($data) { return '<a type="button" data-toggle="modal" data-target="#modalCategory" data-id="' . $data->id
+                'value' => function ($data) {
+                    $str = Article::getCategory($data);
+                    return '<a type="button" data-toggle="modal" data-target="#modalCategory" data-id="' . $data->id
                     . '" class="category" title="Категории"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>&nbsp'
-                    . Article::getCategory($data); },
+                    . '<div class="fixed-width" title="' . $str . '">' . $str . '</div>'; },
             ],
             [
                 'format' => 'raw',
                 'header' => 'Сайты размещения',
                 //'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
-                'value' => function ($data) { return '<a type="button" data-toggle="modal" data-target="#modalDestination" data-id="' . $data->id
+                'value' => function ($data) {
+                    $str = Article::getDestination($data);
+                    return '<a type="button" data-toggle="modal" data-target="#modalDestination" data-id="' . $data->id
                     . '" class="destination" title="Сайты размещения"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>&nbsp'
-                    . Article::getDestination($data); },
+                    . '<div class="fixed-width" title="' . $str . '">' . $str . '</div>'; },
             ],
             'language.language',
             'title',
