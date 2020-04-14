@@ -35,22 +35,34 @@ use yii\helpers\Html;
                         'active' => \Yii::$app->controller->id == 'article',
                     ],
                     [
-                        'label' => 'Сайты',
-                        'icon' => 'list-alt',
-                        'items' => [
-                            ['label' => 'Сайты источники', 'icon' => 'list-alt', 'url' => ['/source/source'], 'active' => \Yii::$app->controller->id == 'source'],
-                            ['label' => 'Сайты размещения', 'icon' => 'list-alt', 'url' => ['/destination/destination'], 'active' => \Yii::$app->controller->id == 'destination'],
-                        ]
+                        'label' => 'Сайты источники',
+                        'icon' => 'file',
+                        'url' => ['/source/source'],
+                        'active' => \Yii::$app->controller->id == 'source',
                     ],
                     [
-                        'label' => 'Очередь',
-                        'icon' => 'hourglass',
-                        'active' => \Yii::$app->controller->id == 'titlequeue',
-                        'items' => [
-                            ['label' => 'Сайты источники', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/sourcequeue'],],
-                            ['label' => 'Сайты размещения', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/destinationqueue'],],
-                        ]
+                        'label' => 'Сайты размещения',
+                        'icon' => 'list-alt',
+                        'url' => ['/destination/destination'],
+                        'active' => \Yii::$app->controller->id == 'destination',
                     ],
+//                    [
+//                        'label' => 'Сайты',
+//                        'icon' => 'list-alt',
+//                        'items' => [
+//                            ['label' => 'Сайты источники', 'icon' => 'list-alt', 'url' => ['/source/source'], 'active' => \Yii::$app->controller->id == 'source'],
+//                            ['label' => 'Сайты размещения', 'icon' => 'list-alt', 'url' => ['/destination/destination'], 'active' => \Yii::$app->controller->id == 'destination'],
+//                        ]
+//                    ],
+//                    [
+//                        'label' => 'Очередь',
+//                        'icon' => 'hourglass',
+//                        'active' => \Yii::$app->controller->id == 'titlequeue',
+//                        'items' => [
+//                            ['label' => 'Сайты источники', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/sourcequeue'],],
+//                            ['label' => 'Сайты размещения', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/destinationqueue'],],
+//                        ]
+//                    ],
                     [
                         'label' => 'Категории',
                         'icon' => 'tags',
@@ -63,12 +75,12 @@ use yii\helpers\Html;
                         'url' => ['/language/language'],
                         'active' => \Yii::$app->controller->id == 'language',
                     ],
-                    [
-                        'label' => 'Картинки',
-                        'icon' => 'image',
-                        'url' => ['/image/image'],
-                        'active' => \Yii::$app->controller->id == 'image',
-                    ],
+//                    [
+//                        'label' => 'Картинки',
+//                        'icon' => 'image',
+//                        'url' => ['/image/image'],
+//                        'active' => \Yii::$app->controller->id == 'image',
+//                    ],
 //                    [
 //                        'label' => 'Шаблоны',
 //                        'icon' => 'file-o',
@@ -87,12 +99,12 @@ use yii\helpers\Html;
                         'url' => ['/user/user'],
                         'active' => \Yii::$app->controller->id == 'user',
                     ],
-                    [
-                        'label' => 'Настройки',
-                        'icon' => 'cog',
-                        'url' => ['/site/settings'],
-                        'active' => \Yii::$app->controller->id == 'site',
-                    ],
+//                    [
+//                        'label' => 'Настройки',
+//                        'icon' => 'cog',
+//                        'url' => ['/site/settings'],
+//                        'active' => \Yii::$app->controller->id == 'site',
+//                    ],
                 ],
             ]
         ) ?>

@@ -3,6 +3,7 @@
 namespace frontend\modules\destination\controllers;
 
 
+use common\classes\Debug;
 use frontend\modules\destination\models\AddForm;
 use Yii;
 use common\models\Destination;
@@ -47,6 +48,13 @@ class DestinationController extends Controller
      */
     public function actionIndex()
     {
+        $content = file_get_contents('https://rep.craft-group.xyz/handler.php');
+        $data = json_decode($content);
+        $themes = array();
+        foreach ($data as $item)
+            if($item->type == 'theme')
+                array_push($themes, $item);
+
         $searchModel = new DestinationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query
@@ -56,6 +64,7 @@ class DestinationController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'themes' => $themes
         ]);
     }
 
@@ -116,6 +125,8 @@ class DestinationController extends Controller
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -153,5 +164,78 @@ class DestinationController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGetTitle()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+
+        return $destination->title;
+    }
+
+    public function actionGetTheme()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+
+        return $destination->theme;
+    }
+
+    public function actionGetKeywords()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+
+        return $destination->keywords;
+    }
+
+    public function actionGetDescription()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+
+        return $destination->description;
+    }
+
+    public function actionSetTitle()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+        $destination->title = $_POST['data'];
+        $destination->save();
+
+        $this->sendingData($destination->domain, '/set-title', $destination->title);
+    }
+
+    public function actionSetKeywords()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+        $destination->keywords = $_POST['data'];
+        $destination->save();
+
+        $this->sendingData($destination->domain, '/set-keywords', $destination->keywords);
+    }
+
+    public function actionSetDescription()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+        $destination->description = $_POST['data'];
+        $destination->save();
+
+        $this->sendingData($destination->domain, '/set-description', $destination->description);
+    }
+
+    public function actionSetTheme()
+    {
+        $destination = Destination::findOne($_POST['site_id']);
+        $destination->theme = $_POST['data'];
+        $destination->save();
+
+        $this->sendingData($destination->domain, '/set-theme', $destination->theme);
+    }
+
+    public function sendingData($domain, $action, $data)
+    {
+        $ch = curl_init($domain . $action);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_exec($ch);
+        curl_close($ch);
     }
 }

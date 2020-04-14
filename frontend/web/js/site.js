@@ -347,3 +347,167 @@ $(document).on("click", "#modalDCategoryButton", function () {
         }
     });
 });
+
+//get title
+$('.modal-title').on('click', function () {
+    let site_id = $(this).data("id");
+    $("#modalTitle").attr("data-site-id", site_id);
+
+    $.ajax({
+        url: '/destination/destination/get-title',
+        type: 'POST',
+        data: {
+            site_id: site_id,
+        },
+        success: function (res) {
+            document.getElementById("title").value = res;
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//set title
+$('#modalTitleButton').on('click', function () {
+    let data = document.getElementById('title').value;
+    let site_id = document.getElementById('modalTitle').getAttribute("data-site-id");
+
+    $.ajax({
+        url: '/destination/destination/set-title',
+        type: 'POST',
+        data: {
+            data: data,
+            site_id: site_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//get keywords
+$('.modal-keywords').on('click', function () {
+    let site_id = $(this).data("id");
+    $("#modalKeywords").attr("data-site-id", site_id);
+
+    $.ajax({
+        url: '/destination/destination/get-keywords',
+        type: 'POST',
+        data: {
+            site_id: site_id,
+        },
+        success: function (res) {
+            document.getElementById("keywords").value = res;
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//set keywords
+$('#modalKeywordsButton').on('click', function () {
+    let data = document.getElementById('keywords').value;
+    let site_id = document.getElementById('modalKeywords').getAttribute("data-site-id");
+
+    $.ajax({
+        url: '/destination/destination/set-keywords',
+        type: 'POST',
+        data: {
+            data: data,
+            site_id: site_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//get description
+$('.modal-description').on('click', function () {
+    let site_id = $(this).data("id");
+    $("#modalDescription").attr("data-site-id", site_id);
+
+    $.ajax({
+        url: '/destination/destination/get-description',
+        type: 'POST',
+        data: {
+            site_id: site_id,
+        },
+        success: function (res) {
+            document.getElementById("description").value = res;
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//set description
+$('#modalDescriptionButton').on('click', function () {
+    let data = document.getElementById('description').value;
+    let site_id = document.getElementById('modalDescription').getAttribute("data-site-id");
+
+    $.ajax({
+        url: '/destination/destination/set-description',
+        type: 'POST',
+        data: {
+            data: data,
+            site_id: site_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//get theme
+$('.modal-theme').on('click', function () {
+    let site_id = $(this).data("id");
+    $("#modalTheme").attr("data-site-id", site_id);
+
+    $.ajax({
+        url: '/destination/destination/get-theme',
+        type: 'POST',
+        data: {
+            site_id: site_id,
+        },
+        success: function (res) {
+            document.getElementById("theme").value = res;
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//set theme
+$('#modalThemeButton').on('click', function () {
+    let data = document.getElementById('theme').value;
+    let site_id = document.getElementById('modalTheme').getAttribute("data-site-id");
+
+    $.ajax({
+        url: '/destination/destination/set-theme',
+        type: 'POST',
+        data: {
+            data: data,
+            site_id: site_id
+        },
+        success: function () {
+            location.reload();
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});

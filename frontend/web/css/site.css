@@ -140,3 +140,10 @@ a.desc:after {
     width: 150px;
     overflow: hidden;
 }
+
+.custom-cell {
+    word-wrap: break-word;
+    white-space: nowrap;
+    height: 24px;
+    overflow-y: auto;
+}

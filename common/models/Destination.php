@@ -13,6 +13,8 @@ use yii\helpers\ArrayHelper;
  * @property string|null $domain
  * @property string|null $title
  * @property string|null $description
+ * @property string|null $theme
+ * @property string|null $keywords
  * @property int|null $status
  *
  * @property DestinationArticle[] $destinationArticles
@@ -51,7 +53,7 @@ class Destination extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'integer'],
-            [['domain', 'title', 'description'], 'string', 'max' => 255],
+            [['domain', 'title', 'description', 'theme', 'keywords'], 'string', 'max' => 255],
             [['category'], 'safe']
         ];
     }
@@ -64,9 +66,11 @@ class Destination extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'domain' => 'Домен',
-            'title' => 'Тайтл',
-            'description' => 'Описание',
+            'title' => 'Title',
+            'description' => 'Description',
             'status' => 'Status',
+            'theme' => 'Тема',
+            'keywords' => 'Keywords'
         ];
     }
 
