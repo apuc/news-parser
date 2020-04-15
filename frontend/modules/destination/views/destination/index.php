@@ -30,15 +30,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'id' => 'grid',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'yii\grid\ActionColumn'],
             //['class' => 'yii\grid\CheckboxColumn'],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{delete}',
-//                'buttons' => [
-//                    'delete' => function ($data) {
-//                        return Html::a("<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>", ['/domain/site/customdelete', 'id' => $data]);},
-//                ],
-            ],
             [
                 'format' => 'raw',
                 'header' => 'Домен',

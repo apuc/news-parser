@@ -4,6 +4,7 @@ namespace frontend\modules\destination\controllers;
 
 
 use common\classes\Debug;
+use common\models\DestinationCategory;
 use frontend\modules\destination\models\AddForm;
 use Yii;
 use common\models\Destination;
@@ -111,6 +112,37 @@ class DestinationController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $post = Yii::$app->request->post('Destination');
+
+            $category_ids = $post['category'];
+            $selected_categories = DestinationCategory::find()->where(['destination_id' => $id])->all();
+
+            $new = array();
+            $old = array();
+
+            if($category_ids)
+                foreach ($category_ids as $val)
+                    array_push($new, $val);
+
+            if($selected_categories)
+                foreach ($selected_categories as $selected_category)
+                    array_push($old, $selected_category->category_id);
+
+            $add = array_diff($new, $old);
+            $del = array_diff($old, $new);
+
+            if($add)
+                foreach ($add as $item) {
+                    $article_category  = new DestinationCategory();
+                    $article_category->destination_id = $id;
+                    $article_category->category_id = $item;
+                    $article_category->save();
+                }
+
+            if($del)
+                foreach ($del as $item)
+                    DestinationCategory::deleteAll(['destination_id' => $id, 'category_id' => $item]);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -197,7 +229,8 @@ class DestinationController extends Controller
     public function actionSetTitle()
     {
         $destination = Destination::findOne($_POST['site_id']);
-        $destination->title = $_POST['data'];
+        $destination->title = Yii::$app->request->post('data');
+
         $destination->save();
 
         $this->sendingData($destination->domain, '/set-title', $destination->title);
@@ -206,7 +239,7 @@ class DestinationController extends Controller
     public function actionSetKeywords()
     {
         $destination = Destination::findOne($_POST['site_id']);
-        $destination->keywords = $_POST['data'];
+        $destination->keywords = Yii::$app->request->post('data');
         $destination->save();
 
         $this->sendingData($destination->domain, '/set-keywords', $destination->keywords);
@@ -215,7 +248,7 @@ class DestinationController extends Controller
     public function actionSetDescription()
     {
         $destination = Destination::findOne($_POST['site_id']);
-        $destination->description = $_POST['data'];
+        $destination->description = Yii::$app->request->post('data');
         $destination->save();
 
         $this->sendingData($destination->domain, '/set-description', $destination->description);
@@ -224,7 +257,7 @@ class DestinationController extends Controller
     public function actionSetTheme()
     {
         $destination = Destination::findOne($_POST['site_id']);
-        $destination->theme = $_POST['data'];
+        $destination->theme = Yii::$app->request->post('data');
         $destination->save();
 
         $this->sendingData($destination->domain, '/set-theme', $destination->theme);
