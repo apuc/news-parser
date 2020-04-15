@@ -4,6 +4,7 @@ namespace frontend\modules\destination\controllers;
 
 
 use common\classes\Debug;
+use common\classes\Settings;
 use common\models\DestinationCategory;
 use frontend\modules\destination\models\AddForm;
 use Yii;
@@ -142,6 +143,9 @@ class DestinationController extends Controller
             if($del)
                 foreach ($del as $item)
                     DestinationCategory::deleteAll(['destination_id' => $id, 'category_id' => $item]);
+
+            $this->sendingData($model->domain, '/set-settings',
+                json_encode(new Settings($model['title'], $model['keywords'], $model['description'], $model['theme'])));
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

@@ -29,12 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'domain',
-            'title',
             [
                 'format' => 'raw',
                 'attribute' => 'Катеория',
                 'value' => function ($data) { return Destination::getCategory($data); },
             ],
+            'theme',
+            'title',
+            'keywords',
+            'description'
         ],
     ]) ?>
 
