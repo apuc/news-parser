@@ -26,7 +26,8 @@
         "true/punycode": "~2.0",
         "mihaildev/yii2-elfinder": "*",
         "phpquery/phpquery": "^0.0.2",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "stichoza/google-translate-php": "^4.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -5,7 +5,6 @@ use common\models\ArticleCategory;
 use common\models\Category;
 use frontend\modules\article\models\Article;
 use kartik\select2\Select2;
-use PhpQuery\PhpQuery;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -24,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'data-toggle' => 'modal',  'data-target' => '#modalSelectDestinations']) . '<br>';
 
     // echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
-    // echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
+    echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
