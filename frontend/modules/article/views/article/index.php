@@ -1,6 +1,5 @@
 <?php
 
-use common\classes\Debug;
 use common\models\ArticleCategory;
 use common\models\Category;
 use frontend\modules\article\models\Article;
@@ -20,10 +19,9 @@ $this->params['breadcrumbs'][] = $this->title;
     echo Html::a('Добавить статью вручную', ['create'], ['class' => 'btn btn-success']).'&nbsp';
     echo Html::a('Загрузить статьи из файла', ['read'], ['class' => 'btn btn-success']).'&nbsp';
     echo Html::a('Отправить статьи', ['#'], ['class' => 'btn btn-success', 'type' => 'button',
-        'data-toggle' => 'modal',  'data-target' => '#modalSelectDestinations']) . '<br>';
-
-    // echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
-    echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
+        'data-toggle' => 'modal',  'data-target' => '#modalSelectDestinations']).'&nbsp';
+//  echo Html::button('Перевести статьи', ['class' => 'btn btn-success translate']);
+//  echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -46,9 +44,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
                 'value' => function ($data) {
                     $str = Article::getCategory($data);
-                    return '<a type="button" data-toggle="modal" data-target="#modalCategory" data-id="' . $data->id
+                    return '<div class="fixed-width" title="' . $str . '"><a type="button" data-toggle="modal" data-target="#modalCategory" data-id="' . $data->id
                     . '" class="category" title="Категории"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>&nbsp'
-                    . '<div class="fixed-width" title="' . $str . '">' . $str . '</div>'; },
+                    . $str . '</div>'; },
             ],
             [
                 'format' => 'raw',
@@ -56,9 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 //'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
                 'value' => function ($data) {
                     $str = Article::getDestination($data);
-                    return '<a type="button" data-toggle="modal" data-target="#modalDestination" data-id="' . $data->id
+                    return '<div class="fixed-width" title="' . $str . '"><a type="button" data-toggle="modal" data-target="#modalDestination" data-id="' . $data->id
                     . '" class="destination" title="Сайты размещения"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>&nbsp'
-                    . '<div class="fixed-width" title="' . $str . '">' . $str . '</div>'; },
+                    . $str . '</div>'; },
             ],
             'language.language',
             'title',

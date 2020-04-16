@@ -37,27 +37,7 @@ $(document).ready(function() {
         });
     });
 });
-
-//reads articles from file
-$('.read').on('click', function () {
-    let name = document.querySelector(".read").getAttribute("id");
-
-    $.ajax({
-        url: '/api/api/read',
-        type: 'POST',
-        data: {
-            filename: name
-        },
-        success: function () {
-            window.alert('Статьи успешно считаны!');
-        },
-        error: function () {
-            window.alert('Error!');
-        }
-    });
-});
-
-// set options on destination site
+// set options on destination site (unnecessary now)
 $(document).on("click", "#SettingsAjaxButton", function () {
     let arr = [];
 
@@ -102,6 +82,43 @@ $(document).on("click", "#SettingsAjaxButton", function () {
         }
     });
 });
+// sends articles to destination site (unnecessary now)
+$('.send-articles').on('click', function () {
+    let keys = $('#grid_articles').yiiGridView('getSelectedRows');
+    console.log(keys);
+
+    $.ajax({
+        url: '/article/article/show-destinations',
+        type: 'POST',
+        data: {
+            keys: keys
+        },
+        success: function () {
+            //location.reload();
+        },
+        error: function () {
+        }
+    });
+});
+
+//reads articles from file
+$('.read').on('click', function () {
+    let name = document.querySelector(".read").getAttribute("id");
+
+    $.ajax({
+        url: '/api/api/read',
+        type: 'POST',
+        data: {
+            filename: name
+        },
+        success: function () {
+            window.alert('Статьи успешно считаны!');
+        },
+        error: function () {
+            window.alert('Error!');
+        }
+    });
+});
 
 // auto select destinations when create or update article
 $(document).on("change", "#categories", function () {
@@ -120,48 +137,29 @@ $(document).on("change", "#categories", function () {
                 let select2 = $('#destinations_ids');
                 select2.val(null).trigger('change');
                 select2.val(value).trigger('change');
-                console.log(value);
             }
         },
-        error: function () {
+        error: function (res) {
+            console.log(res);
         }
     });
 });
 
 // sends articles to destination site
-$('.send-articles').on('click', function () {
-    let keys = $('#grid_articles').yiiGridView('getSelectedRows');
-    console.log(keys);
-
-    $.ajax({
-        url: '/article/article/showdestinations',
-        type: 'POST',
-        data: {
-            keys: keys
-        },
-        success: function () {
-            //location.reload();
-        },
-        error: function () {
-        }
-    });
-});
-
 $('#modalSelectDestinationsButton').on('click', function () {
     let articles_ids = $('#grid_articles').yiiGridView('getSelectedRows');
     let destinations_ids = $('#destinations_idss').select2('data');
     destinations_ids = JSON.stringify(destinations_ids);
 
     $.ajax({
-        url: '/article/article/showdestinations',
+        url: '/article/article/show-destinations',
         type: 'POST',
         data: {
             articles_ids: articles_ids,
             destinations_ids: destinations_ids
         },
-        success: function (res) {
+        success: function () {
             location.reload();
-            console.log(res);
         },
         error: function (res) {
             console.log(res);
@@ -186,6 +184,7 @@ $('.title_source').on('click', function () {
         }
     });
 });
+
 // add destination sites into queue for parsing titles
 $('.title_destination').on('click', function () {
     let keys = $('#grid').yiiGridView('getSelectedRows');
@@ -505,6 +504,26 @@ $('#modalThemeButton').on('click', function () {
         },
         success: function () {
             location.reload();
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+});
+
+//reads articles from file
+$('.translate-one').on('click', function () {
+    let id = document.querySelector(".translate-one").getAttribute("id");
+
+    $.ajax({
+        url: '/article/article/translate-one',
+        type: 'POST',
+        data: {
+            id: id
+        },
+        success: function (res) {
+            window.location = 'http://news_parser.loc/article/article/view?id=' + res;
+            //console.log(res);
         },
         error: function (res) {
             console.log(res);

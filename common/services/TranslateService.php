@@ -2,7 +2,8 @@
 
 namespace common\services;
 
-use Stichoza\GoogleTranslate\GoogleTranslate;
+
+use common\classes\GoogleTranslate;
 
 class TranslateService
 {
@@ -10,28 +11,37 @@ class TranslateService
     protected $target;
     protected $text;
     protected $translate;
+    protected $tr;
 
-    public function __construct($source, $target, $text)
+    public function __construct($type)
+    {
+        if($type == 'google') {
+            $this->tr = new GoogleTranslate('en', 'ru');
+            $this->tr->setUrlParamsClient('gtx');
+        }
+    }
+
+    public function setLocales($source, $target)
     {
         $this->source = $source;
         $this->target = $target;
-        $this->text = $text;
 
-        $tr = new GoogleTranslate();
-        $tr->setSource($this->source);
-        $tr->setTarget($this->target);
-
-        $this->translate = $tr->translate($this->text);
+        $this->tr->setSource($this->source);
+        $this->tr->setTarget($this->target);
     }
 
     public function setSource($source)
     {
         $this->source = $source;
+
+        $this->tr->setSource($this->source);
     }
 
     public function setTarget($target)
     {
         $this->target = $target;
+
+        $this->tr->setTarget($this->target);
     }
 
     public function setSText($text)
@@ -64,11 +74,11 @@ class TranslateService
         return $this->translate;
     }
 
-    public function translate($source = '', $target = '', $text = '')
+    public function translate($type, $text = '')
     {
-        $tr = new GoogleTranslate();
-        ($source) ? $tr->setSource($source) : $tr->setSource($this->source);
-        ($target) ? $tr->setTarget($target) : $tr->setTarget($this->target);
-        ($text) ? $this->translate = $tr->translate($text) : $this->translate = $tr->translate($this->text);
+        if($type == 'google')
+            ($text) ? $this->translate = $this->tr->translate($text) : $this->translate = $this->tr->translate($this->text);
+
+        return $this->translate;
     }
 }

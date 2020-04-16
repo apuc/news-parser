@@ -25,6 +25,7 @@ YiiAsset::register($this);
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::button('Перевести', ['class' => 'btn btn-success translate-one', 'id' => $model->id]) ?>
     </p>
 
     <?= DetailView::widget([
@@ -53,8 +54,8 @@ YiiAsset::register($this);
     ]) ?>
 
     <?php
-    $t = new TextHandler($model->text);
-    $t->showInfo();
-    $t->showText();
+    //$t = new TextHandler($model->text);
+    //$t->showInfo();
+    //$t->showText();
     ?>
 </div>

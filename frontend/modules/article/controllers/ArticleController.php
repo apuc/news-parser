@@ -3,12 +3,13 @@
 namespace frontend\modules\article\controllers;
 
 use common\classes\Debug;
+use common\classes\GoogleTranslate;
 use common\models\ArticleCategory;
 use common\models\Category;
 use common\models\Destination;
 use common\models\Language;
 use common\services\TranslateService;
-use frontend\modules\article\models\ReadForm;
+use frontend\modules\article\models\ReadForm;;
 use Yii;
 use common\models\Article;
 use frontend\modules\article\models\ArticleSearch;
@@ -161,7 +162,7 @@ class ArticleController extends Controller
         return $this->render('read', ['model' => $model]);
     }
 
-    public function actionShowdestinations()
+    public function actionShowDestinations()
     {
         if (Yii::$app->request->isAjax) {
             $destinations_ids = json_decode($_POST['destinations_ids']);
@@ -231,5 +232,44 @@ class ArticleController extends Controller
             curl_exec($ch);
             curl_close($ch);
         }
+    }
+
+    public function actionTranslateOne()
+    {
+        if (Yii::$app->request->isAjax) {
+            $id = Yii::$app->request->post('id');
+            $data = Article::findOne($id);
+            $translate_service = new TranslateService('google');
+            $translate_service->setLocales('en','ru');
+            $target_language = Language::findOne(['language' => 'Русский']);
+
+            $existed = Article::findOne(['article_source' => $id, 'language_id' => $target_language->id, 'source_type' => 'Перевод']);
+
+            if(!$existed)
+                return $this->setTranslate(new Article(), $translate_service, $data, $target_language);
+            else
+                return $this->setTranslate($existed, $translate_service, $data, $target_language);
+        } else return -1;
+    }
+
+    public function actionTranslateMany()
+    {
+
+    }
+
+    public function setTranslate($model, $translate_service, $data, $target_language)
+    {
+        $model->name = $translate_service->translate('google', $data->name);
+        $model->article_source = $data->id.'';
+        $model->source_type = "Перевод";
+        $model->text = $translate_service->translate('google', $data->text);
+        $model->language_id = $target_language->id;
+        $model->title = $translate_service->translate('google', ($data->title) ? $data->title : 'empty');
+        $model->keywords = $translate_service->translate('google', ($data->keywords) ? $data->keywords : 'empty');
+        $model->description = $translate_service->translate('google', ($data->description) ? $data->description : 'empty');
+        $model->url = $data->url;
+        $model->save();
+
+        return $model->id;
     }
 }
