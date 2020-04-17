@@ -14,10 +14,15 @@ class m200206_124700_create_article_table extends Migration
     {
         $this->createTable('{{%article}}', [
             'id' => $this->primaryKey(),
+            'source_id' => $this->integer(),
+            'source_type' => $this->integer(),
+            'parent_id' => $this->integer(),
             'name' => $this->string(),
-            'article_source' => $this->string(),
-            'source_type' => $this->string(),
-            'text' => $this->text()
+            'text' => $this->text(),
+            'title' => $this->string(),
+            'description' => $this->string(),
+            'keywords' => $this->string(),
+            'url' => $this->string()
         ]);
 
         $this->addColumn('{{%article}}', 'language_id', $this->integer());

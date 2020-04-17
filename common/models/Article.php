@@ -2,17 +2,19 @@
 
 namespace common\models;
 
-use common\classes\Debug;
 use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "article".
  *
  * @property int $id
+ * @property int|null $source_id
+ * @property int|null $source_type
+ * @property int|null $parent_id
  * @property string|null $name
- * @property string|null $article_source
- * @property string|null $source_type
  * @property string|null $text
  * @property int|null $language_id
  * @property string|null $title
@@ -22,11 +24,10 @@ use yii\helpers\ArrayHelper;
  *
  * @property Language $language
  * @property ArticleCategory[] $articleCategories
- * @property ArticleUser[] $articleUsers
  * @property DestinationArticle[] $destinationArticles
  * @property View[] $views
  */
-class Article extends \yii\db\ActiveRecord
+class Article extends ActiveRecord
 {
     public $category;
     public $destination;
@@ -40,21 +41,8 @@ class Article extends \yii\db\ActiveRecord
             'category_id'
         );
 
-//        $destination = ArrayHelper::getColumn(
-//            DestinationCategory::find()
-//                ->where(['article_id' => \Yii::$app->request->get('id')])
-//                //->innerJoin('article_category', 'destination_category.category_id = article_category.category_id')
-//                ->all(),
-//            'destination_id'
-//        );
-
-        if (!empty($category)) {
+        if (!empty($category))
             $this->category = $category;
-        }
-
-//        if (!empty($destination)) {
-//            $this->destination = $destination;
-//        }
     }
 
     /**
@@ -72,8 +60,8 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['text'], 'string'],
-            [['language_id'], 'integer'],
-            [['name', 'article_source', 'source_type', 'title', 'description', 'keywords', 'url'], 'string', 'max' => 255],
+            [['language_id', 'source_id', 'source_type', 'parent_id'], 'integer'],
+            [['name', 'title', 'description', 'keywords', 'url'], 'string', 'max' => 255],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['language_id' => 'id']],
             [['category', 'destination'], 'safe']
         ];
@@ -86,9 +74,10 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Заголовок',
-            'article_source' => 'Источник статьи',
+            'source_id' => 'Источник статьи',
             'source_type' => 'Тип источника',
+            'parent_id' => 'Оригинал статьи',
+            'name' => 'Заголовок',
             'text' => 'Статья',
             'language_id' => 'Язык',
             'title' => 'Title',
@@ -101,7 +90,7 @@ class Article extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Language]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getLanguage()
     {
@@ -111,7 +100,7 @@ class Article extends \yii\db\ActiveRecord
     /**
      * Gets query for [[ArticleCategories]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getArticleCategories()
     {
@@ -119,19 +108,9 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[ArticleUsers]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getArticleUsers()
-    {
-        return $this->hasMany(ArticleUser::className(), ['article_id' => 'id']);
-    }
-
-    /**
      * Gets query for [[DestinationArticles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getDestinationArticles()
     {
@@ -141,7 +120,7 @@ class Article extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Views]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getViews()
     {
@@ -176,8 +155,12 @@ class Article extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-        ($this->source_type) ? $this->source_type : $this->source_type = 'Добавлено вручную';
-        ($this->article_source) ? $this->article_source : $this->article_source = Yii::$app->user->identity->id;
+        ($this->source_type) ? $this->source_type : $this->source_type = 1;
+        ($this->source_id) ? $this->source_id : $this->source_id = Yii::$app->user->identity->id;
+        ($this->parent_id) ? $this->parent_id : $this->parent_id = 0;
+//        ($this->title) ? $this->title : $this->title = 'not set';
+//        ($this->keywords) ? $this->keywords : $this->keywords = 'not set';
+//        ($this->description) ? $this->description : $this->description = 'not set';
 
         return parent::beforeSave($insert);
     }
@@ -187,13 +170,13 @@ class Article extends \yii\db\ActiveRecord
         $post = \Yii::$app->request->post('Article');
         $category_ids = $post['category'];
         $selected_categories = ArticleCategory::find()->where(['article_id' => $this->id])->all();
-        $new = array();
-        $old = array();
 
+        $new = array();
         if($category_ids)
             foreach ($category_ids as $val)
                 array_push($new, $val);
 
+        $old = array();
         if($selected_categories)
             foreach ($selected_categories as $selected_category)
                 array_push($old, $selected_category->category_id);
@@ -215,32 +198,31 @@ class Article extends \yii\db\ActiveRecord
 
         $destination_ids = $post['destination'];
         $existing_destinations = DestinationArticle::find()->where(['article_id' => $this->id])->all();
-        $new_d = array();
-        $old_d = array();
 
+        $new = array();
         if($destination_ids)
             foreach ($destination_ids as $val)
-                array_push($new_d, $val);
+                array_push($new, $val);
 
+        $old = array();
         if($existing_destinations)
             foreach ($existing_destinations as $existing_destination)
-                array_push($old_d, $existing_destination->destination_id);
+                array_push($old, $existing_destination->destination_id);
 
-        $add_d = array_diff($new_d, $old_d);
-        $del_d = array_diff($old_d, $new_d);
+        $add = array_diff($new, $old);
+        $del = array_diff($old, $new);
 
-        if($add_d)
-            foreach ($add_d as $item) {
+        if($add)
+            foreach ($add as $item) {
                 $destination_article  = new DestinationArticle();
                 $destination_article->article_id = $this->id;
                 $destination_article->destination_id = $item;
                 $destination_article->save();
             }
 
-        if($del_d)
-            foreach ($del_d as $item)
+        if($del)
+            foreach ($del as $item)
                 DestinationArticle::deleteAll(['article_id' => $this->id, 'destination_id' => $item]);
-
 
         parent::afterSave($insert, $changedAttributes); // TODO: Change the autogenerated stub
     }

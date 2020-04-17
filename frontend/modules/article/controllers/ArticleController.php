@@ -9,7 +9,10 @@ use common\models\Category;
 use common\models\Destination;
 use common\models\Language;
 use common\services\TranslateService;
-use frontend\modules\article\models\ReadForm;;
+use frontend\modules\article\models\ReadForm;
+
+;
+
 use Yii;
 use common\models\Article;
 use frontend\modules\article\models\ArticleSearch;
@@ -86,7 +89,8 @@ class ArticleController extends Controller
         $model = new \frontend\modules\article\models\Article();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $this->sendingData($model, $this->dataToSend($model), '/store-article');
+            if (isset($model->desctination))
+                $this->sendingData($model, $this->dataToSend($model), '/store-article');
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -108,7 +112,8 @@ class ArticleController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $this->sendingData($model, $this->dataToSend($model), '/update-article');
+            if (isset($model->desctination))
+                $this->sendingData($model, $this->dataToSend($model), '/update-article');
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -234,39 +239,71 @@ class ArticleController extends Controller
         }
     }
 
-    public function actionTranslateOne()
+    public function actionTranslate()
     {
         if (Yii::$app->request->isAjax) {
-            $id = Yii::$app->request->post('id');
-            $data = Article::findOne($id);
-            $translate_service = new TranslateService('google');
-            $translate_service->setLocales('en','ru');
-            $target_language = Language::findOne(['language' => 'Русский']);
+            $article_id = Yii::$app->request->post('article_id');
+            $article_ids = Yii::$app->request->post('article_ids');
+            $language_ids = json_decode(Yii::$app->request->post('language_ids'));
 
-            $existed = Article::findOne(['article_source' => $id, 'language_id' => $target_language->id, 'source_type' => 'Перевод']);
-
-            if(!$existed)
-                return $this->setTranslate(new Article(), $translate_service, $data, $target_language);
+            if (!empty($article_id))
+                $this->makeTranslate($article_id, $language_ids);
             else
-                return $this->setTranslate($existed, $translate_service, $data, $target_language);
-        } else return -1;
+                foreach ($article_ids as $id)
+                    $this->makeTranslate($id, $language_ids);
+
+            return 1;
+        } else
+            return -1;
     }
 
-    public function actionTranslateMany()
+    public function makeTranslate($article_id, $language_ids)
     {
+        $article = Article::findOne($article_id);
+        $parent = Article::findOne($article->parent_id);
+        $source_language = Language::findOne($article->language_id);
 
+        foreach ($language_ids as $language) {
+            $target_language = Language::findOne($language->id);
+            try {
+                if ($parent->language_id == $target_language->id)
+                    $allow = false;
+                else $allow = true;
+            } catch (\Exception $e) {
+                $allow = true;
+            }
+
+            if ($allow) {
+                $count = 0; $res = null;
+                while ($count <= 10 && !$res) {
+                    $count++;
+                    $translate_service = new TranslateService('google');
+
+                    $translate_service->setLocales($source_language->iso_639_1, $target_language->iso_639_1);
+
+                    $existed = Article::findOne(['source_id' => $article_id, 'language_id' => $target_language->id,
+                        'source_type' => 3]);
+
+                    if (!$existed)
+                        $res = $this->setTranslate(new Article(), $translate_service, $article, $target_language);
+                    else
+                       $res = $this->setTranslate($existed, $translate_service, $article, $target_language);
+                }
+            }
+        }
     }
 
     public function setTranslate($model, $translate_service, $data, $target_language)
     {
+        $model->source_id = $data->id;
+        $model->source_type = 3;
+        $model->parent_id = ($data->source_type == 3) ? $data->parent_id : $data->id;
         $model->name = $translate_service->translate('google', $data->name);
-        $model->article_source = $data->id.'';
-        $model->source_type = "Перевод";
         $model->text = $translate_service->translate('google', $data->text);
         $model->language_id = $target_language->id;
-        $model->title = $translate_service->translate('google', ($data->title) ? $data->title : 'empty');
-        $model->keywords = $translate_service->translate('google', ($data->keywords) ? $data->keywords : 'empty');
-        $model->description = $translate_service->translate('google', ($data->description) ? $data->description : 'empty');
+        $model->title = $translate_service->translate('google', (!empty($data->title)) ? $data->title : 'not set');
+        $model->keywords = $translate_service->translate('google', (!empty($data->keywords)) ? $data->keywords : 'not set');
+        $model->description = $translate_service->translate('google', (!empty($data->description)) ? $data->description : 'not set');
         $model->url = $data->url;
         $model->save();
 

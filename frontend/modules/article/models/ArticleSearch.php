@@ -19,8 +19,8 @@ class ArticleSearch extends Article
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'article_source', 'source_type', 'text', 'category'], 'safe'],
+            [['id', 'source_id', 'source_type', 'parent_id'], 'integer'],
+            [['name', 'text', 'category', 'title', 'keywords', 'description', 'url'], 'safe'],
         ];
     }
 
@@ -74,7 +74,7 @@ class ArticleSearch extends Article
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'source_id', $this->article_source])
+            ->andFilterWhere(['like', 'source_id', $this->source_id])
             ->andFilterWhere(['like', 'source_type', $this->source_type])
             ->andFilterWhere(['like', 'text', $this->text])
             ->andFilterWhere(['like', 'category.name', $this->category]);

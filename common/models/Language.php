@@ -2,17 +2,20 @@
 
 namespace common\models;
 
-use Yii;
+
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "language".
  *
  * @property int $id
  * @property string|null $language
+ * @property string|null $iso_639_1
  *
  * @property Article[] $articles
  */
-class Language extends \yii\db\ActiveRecord
+class Language extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -28,7 +31,7 @@ class Language extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['language'], 'string', 'max' => 255],
+            [['language', 'iso_639_1'], 'string', 'max' => 255],
         ];
     }
 
@@ -40,13 +43,14 @@ class Language extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'language' => 'Язык',
+            'iso_639_1' => 'ISO 639-1'
         ];
     }
 
     /**
      * Gets query for [[Articles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getArticles()
     {

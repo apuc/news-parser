@@ -22,11 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            //'id',
-            'language',
-
             ['class' => 'yii\grid\ActionColumn'],
+
+            'language',
+            'iso_639_1'
         ],
     ]); ?>
 

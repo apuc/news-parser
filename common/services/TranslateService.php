@@ -4,6 +4,7 @@ namespace common\services;
 
 
 use common\classes\GoogleTranslate;
+use common\classes\ProxyListArray;
 
 class TranslateService
 {
@@ -16,7 +17,12 @@ class TranslateService
     public function __construct($type)
     {
         if($type == 'google') {
-            $this->tr = new GoogleTranslate('en', 'ru');
+            $this->tr = new GoogleTranslate('en', 'ru', [
+                'proxy' => [
+                    'http'  => ProxyListArray::getRandom(),
+                    'https' => ProxyListArray::getRandom()
+                ],
+            ]);
             $this->tr->setUrlParamsClient('gtx');
         }
     }
