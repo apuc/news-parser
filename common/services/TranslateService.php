@@ -4,7 +4,7 @@ namespace common\services;
 
 
 use common\classes\GoogleTranslate;
-use common\classes\ProxyListArray;
+use common\classes\ProxyListArray;;
 
 class TranslateService
 {
@@ -17,7 +17,7 @@ class TranslateService
     public function __construct($type)
     {
         if($type == 'google') {
-            $this->tr = new GoogleTranslate('en', 'ru', [
+            $this->tr = new GoogleTranslate('', '', [
                 'proxy' => [
                     'http'  => ProxyListArray::getRandom(),
                     'https' => ProxyListArray::getRandom()
@@ -26,6 +26,7 @@ class TranslateService
             $this->tr->setUrlParamsClient('gtx');
         }
     }
+
 
     public function setLocales($source, $target)
     {
@@ -83,7 +84,11 @@ class TranslateService
     public function translate($type, $text = '')
     {
         if($type == 'google')
-            ($text) ? $this->translate = $this->tr->translate($text) : $this->translate = $this->tr->translate($this->text);
+            try {
+                ($text) ? $this->translate = $this->tr->translate($text) : $this->translate = $this->tr->translate($this->text);
+            } catch (\ErrorException $e) {
+                echo $e . "\n";
+            }
 
         return $this->translate;
     }

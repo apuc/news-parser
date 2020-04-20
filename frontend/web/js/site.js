@@ -102,6 +102,24 @@
             }
         });
     });
+    //translates one article (unnecessary now)
+    $('.translate-one').on('click', function () {
+        let id = document.querySelector(".translate-one").getAttribute("id");
+
+        $.ajax({
+            url: '/article/article/translate-one',
+            type: 'POST',
+            data: {
+                id: id
+            },
+            success: function (res) {
+                window.location = 'http://news_parser.loc/article/article/view?id=' + res;
+            },
+            error: function (res) {
+                console.log(res);
+            }
+        });
+    });
 
 //endregion
 
@@ -138,6 +156,36 @@
             },
             error: function () {
                 window.alert('Error!');
+            }
+        });
+    });
+    //add articles into translate queue
+    $('#modalSelectLanguagesButton').on('click', function () {
+        let article_id;
+        let article_ids;
+
+        try {
+            article_ids = $('#grid_articles').yiiGridView('getSelectedRows');
+        } catch (e) {
+            article_id = document.querySelector(".id").getAttribute("id");
+        }
+
+        let language_ids = $('#language_ids').select2('data');
+        language_ids = JSON.stringify(language_ids);
+
+        $.ajax({
+            url: '/article/article/translate-queue',
+            type: 'POST',
+            data: {
+                article_id: article_id,
+                article_ids: article_ids,
+                language_ids: language_ids
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function (res) {
+                console.log(res);
             }
         });
     });
@@ -513,56 +561,6 @@
             },
             success: function () {
                 location.reload();
-            },
-            error: function (res) {
-                console.log(res);
-            }
-        });
-    });
-
-    //translates one article
-    $('.translate-one').on('click', function () {
-        let id = document.querySelector(".translate-one").getAttribute("id");
-
-        $.ajax({
-            url: '/article/article/translate-one',
-            type: 'POST',
-            data: {
-                id: id
-            },
-            success: function (res) {
-                window.location = 'http://news_parser.loc/article/article/view?id=' + res;
-            },
-            error: function (res) {
-                console.log(res);
-            }
-        });
-    });
-
-    //translates many articles
-    $('#modalSelectLanguagesButton').on('click', function () {
-        let article_id;
-        let article_ids;
-
-        try {
-            article_ids = $('#grid_articles').yiiGridView('getSelectedRows');
-        } catch (e) {
-            article_id = document.querySelector(".id").getAttribute("id");
-        }
-
-        let language_ids = $('#language_ids').select2('data');
-        language_ids = JSON.stringify(language_ids);
-
-        $.ajax({
-            url: '/article/article/translate',
-            type: 'POST',
-            data: {
-                article_id: article_id,
-                article_ids: article_ids,
-                language_ids: language_ids
-            },
-            success: function () {
-                window.location = 'http://news_parser.loc';
             },
             error: function (res) {
                 console.log(res);

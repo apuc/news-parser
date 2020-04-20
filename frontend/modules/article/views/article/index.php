@@ -22,8 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     echo Html::a('Отправить', ['#'], ['class' => 'btn btn-success', 'type' => 'button',
         'data-toggle' => 'modal',  'data-target' => '#modalSelectDestinations']).'&nbsp';
     echo Html::a('Перевести', ['#'], ['class' => 'btn btn-success', 'type' => 'button',
-            'data-toggle' => 'modal',  'data-target' => '#modalSelectLanguages']).'&nbsp';
-//  echo Html::button('Спарсить сатьи', ['class' => 'btn btn-success parse']);
+        'data-toggle' => 'modal',  'data-target' => '#modalSelectLanguages']).'&nbsp';
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,

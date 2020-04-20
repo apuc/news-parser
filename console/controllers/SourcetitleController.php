@@ -11,16 +11,14 @@ class SourcetitleController extends Controller
     public function actionRun()
     {
         $title = TitleQueue::find()->where(['not', ['source_id' => null]])->limit(1)->all();
-        if ($title) {
+        if ($title)
             foreach ($title as $value) {
                 TitleQueue::deleteAll(['id' => $value->id]);
                 $site = Source::findOne($value->source_id);
                 $site->title = AuditService::getTitle($site->domain);
                 $site->save();
-                echo $site->title;
-                print_r($site->errors);
             }
-        }
+
         return 0;
     }
 }
