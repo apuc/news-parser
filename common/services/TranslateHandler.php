@@ -50,9 +50,12 @@ class TranslateHandler
 
                     $name =  $translate_service->translate($this->type, $article->name);
                     if($name) {
-                        $title = $translate_service->translate($this->type, (!empty($article->title)) ? $article->title : 'not set');
-                        $keywords = $translate_service->translate($this->type, (!empty($article->keywords)) ? $article->keywords : 'not set');
-                        $description = $translate_service->translate($this->type, (!empty($article->description)) ? $article->description : 'not set');
+                        $title = $translate_service->translate($this->type,
+                            (!empty($article->title)) ? $article->title : 'not set');
+                        $keywords = $translate_service->translate($this->type,
+                            (!empty($article->keywords)) ? $article->keywords : 'not set');
+                        $description = $translate_service->translate($this->type,
+                            (!empty($article->description)) ? $article->description : 'not set');
                         $text = $translate_service->translate($this->type, $article->text);
                     }
                 } catch (\Exception $e) {

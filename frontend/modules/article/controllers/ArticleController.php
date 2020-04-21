@@ -3,10 +3,12 @@
 namespace frontend\modules\article\controllers;
 
 
+use common\classes\Debug;
 use common\models\Article;
 use common\models\ArticleCategory;
 use common\models\Category;
 use common\models\Destination;
+use common\models\DestinationArticle;
 use common\models\Language;
 use common\models\TranslateQueue;
 use common\services\TranslateHandler;
@@ -86,6 +88,8 @@ class ArticleController extends Controller
         $model = new \frontend\modules\article\models\Article();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->relatedData($model->id);
+
             if (isset($model->desctination))
                 $this->sendingData($model, $this->dataToSend($model), '/store-article');
 
@@ -109,6 +113,8 @@ class ArticleController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->relatedData($id);
+
             if (isset($model->desctination))
                 $this->sendingData($model, $this->dataToSend($model), '/update-article');
 
@@ -152,6 +158,67 @@ class ArticleController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    public function relatedData($id)
+    {
+        $post = \Yii::$app->request->post('Article');
+        $category_ids = $post['category'];
+        $selected_categories = ArticleCategory::find()->where(['article_id' => $this->id])->all();
+
+        $new = array();
+        if($category_ids)
+            foreach ($category_ids as $val)
+                array_push($new, $val);
+
+        $old = array();
+        if($selected_categories)
+            foreach ($selected_categories as $selected_category)
+                array_push($old, $selected_category->category_id);
+
+        $add = array_diff($new, $old);
+        $del = array_diff($old, $new);
+
+        if($add)
+            foreach ($add as $item) {
+                $article_category  = new ArticleCategory();
+                $article_category->article_id = $id;
+                $article_category->category_id = $item;
+                $article_category->save();
+            }
+
+        if($del)
+            foreach ($del as $item)
+                ArticleCategory::deleteAll(['article_id' => $this->id, 'category_id' => $item]);
+
+        $destination_ids = $post['destination'];
+        $existing_destinations = DestinationArticle::find()->where(['article_id' => $this->id])->all();
+
+        $new = array();
+        if($destination_ids)
+            foreach ($destination_ids as $val)
+                array_push($new, $val);
+
+        $old = array();
+        if($existing_destinations)
+            foreach ($existing_destinations as $existing_destination)
+                array_push($old, $existing_destination->destination_id);
+
+        $add = array_diff($new, $old);
+        $del = array_diff($old, $new);
+
+        if($add)
+            foreach ($add as $item) {
+                $destination_article  = new DestinationArticle();
+                $destination_article->article_id = $id;
+                $destination_article->destination_id = $item;
+                $destination_article->save();
+            }
+
+        if($del)
+            foreach ($del as $item)
+                DestinationArticle::deleteAll(['article_id' => $this->id, 'destination_id' => $item]);
+
+    }
+
     public function actionRead()
     {
         $model = new ReadForm();
@@ -176,6 +243,7 @@ class ArticleController extends Controller
 
                 foreach ($destinations_ids as $destinations) {
                     $destination = Destination::findOne($destinations->id);
+
                     $ch = curl_init($destination->domain . '/store-article');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
@@ -186,24 +254,24 @@ class ArticleController extends Controller
         }
     }
 
-    public function actionSend()
-    {
-        $articles = array();
-        $categories = array();
-        foreach ($_POST['keys'] as $key) {
-            $article = Article::findOne($key);
-            $article_category = ArticleCategory::find()->where(['article_id' => $article->id])->all();
-
-            foreach ($article_category as $value) {
-                $category = Category::findOne($value->category_id);
-                array_push($categories, $category->name);
-            }
-
-            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories,
-                'news.jpg', $article->title, $article->description, $article->keywords, $article->url);
-            array_push($articles, $data);
-        }
-    }
+//    public function actionSend()
+//    {
+//        $articles = array();
+//        $categories = array();
+//        foreach ($_POST['keys'] as $key) {
+//            $article = Article::findOne($key);
+//            $article_category = ArticleCategory::find()->where(['article_id' => $article->id])->all();
+//
+//            foreach ($article_category as $value) {
+//                $category = Category::findOne($value->category_id);
+//                array_push($categories, $category->name);
+//            }
+//
+//            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories,
+//                'news.jpg', $article->title, $article->description, $article->keywords, $article->url);
+//            array_push($articles, $data);
+//        }
+//    }
 
     public function dataToSend($model)
     {
@@ -243,8 +311,6 @@ class ArticleController extends Controller
             $article_ids = Yii::$app->request->post('article_ids');
             $language_ids = json_decode(Yii::$app->request->post('language_ids'));
 
-            //$tr = new TranslateHandler('google');
-
             if (!empty($article_id))
                 foreach ($language_ids as $language)
                     $this->setTranslateQueue($article_id, $language->id);
@@ -252,10 +318,6 @@ class ArticleController extends Controller
                 foreach ($article_ids as $id)
                     foreach ($language_ids as $language)
                         $this->setTranslateQueue($id, $language->id);
-
-            //$tr->makeTranslate($article_id, $language_ids);
-            //$tr->makeTranslate($id, $language_ids);
-
             return 1;
         } else
             return -1;

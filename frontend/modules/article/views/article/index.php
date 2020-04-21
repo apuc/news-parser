@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'format' => 'raw',
                 'header' => 'Катеория',
-                'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
+                //'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
                 'value' => function ($data) {
                     $str = Article::getCategory($data);
                     return '<div class="fixed-width" title="' . $str . '">'
