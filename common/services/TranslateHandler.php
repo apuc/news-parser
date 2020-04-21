@@ -32,6 +32,7 @@ class TranslateHandler
             else $allow = true;
         } catch (\Exception $e) {
             $allow = true;
+            echo $e . "\n";
         }
 
         if ($allow) {

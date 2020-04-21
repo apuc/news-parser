@@ -14,6 +14,7 @@ class TranslateController extends Controller
     {
         $tq = TranslateQueue::find()->limit(1)->all();
         if($tq) {
+            echo 'begin' . "\n";
             foreach ($tq as $item) {
                 TranslateQueue::deleteAll(['id' => $item->id]);
                 $tr = new TranslateHandler('google');
