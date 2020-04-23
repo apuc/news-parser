@@ -17,6 +17,7 @@ use yii\widgets\ActiveForm;
 $this->title = 'Статьи';
 $this->params['breadcrumbs'][] = $this->title;
 
+
     echo Html::a('Добавить', ['create'], ['class' => 'btn btn-success']).'&nbsp';
     echo Html::a('Загрузить из файла', ['read'], ['class' => 'btn btn-success']).'&nbsp';
     echo Html::a('Отправить', ['#'], ['class' => 'btn btn-success', 'type' => 'button',

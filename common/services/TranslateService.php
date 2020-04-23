@@ -14,7 +14,7 @@ class TranslateService
     protected $translate;
     protected $tr;
 
-    public function __construct($type)
+    public function __construct($type, $i)
     {
         if($type == 'google') {
             $this->tr = new GoogleTranslate('', '', [
@@ -26,7 +26,6 @@ class TranslateService
             $this->tr->setUrlParamsClient('gtx');
         }
     }
-
 
     public function setLocales($source, $target)
     {

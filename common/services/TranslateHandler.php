@@ -6,6 +6,7 @@ namespace common\services;
 
 use common\models\Article;
 use common\models\Language;
+use DateTime;
 
 class TranslateHandler
 {
@@ -41,11 +42,11 @@ class TranslateHandler
             $count = 0; $name = null; $text = null; $title = null; $keywords = null; $description = null;
 
             while (!$name) {
-                echo 'Step: ' . $count++ . "\n";
                 try {
                     echo 'we\'re in try' . "\n";
-
-                    $translate_service = new TranslateService($this->type);
+                    $translate_service = new TranslateService($this->type, rand(0,9));
+                    echo 'Step: ' . $count++ . "\n";
+                    //if($count > 9) $count = 0;
 
                     $translate_service->setLocales($source_language->iso_639_1, $target_language->iso_639_1);
 

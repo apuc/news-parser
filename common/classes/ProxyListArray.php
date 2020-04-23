@@ -1,8 +1,9 @@
 <?php
 
-
 namespace common\classes;
 
+use DateTime;
+use Yii;
 
 class ProxyListArray
 {
@@ -22,5 +23,27 @@ class ProxyListArray
     public static function getRandom()
     {
         return static::$proxyList[rand(0,count(static::$proxyList)-1)];
+    }
+
+    public static function dateTime($delay = 0)
+    {
+        $date = new DateTime();
+        date_add($date, date_interval_create_from_date_string($delay . ' minutes'));
+
+        return $date->getTimestamp();
+    }
+
+    public static function proxy($i)
+    {
+        $current_time = self::dateTime();
+        $available_time = file_get_contents(Yii::getAlias('@frontend/web/') . 'time.txt');
+
+        if($current_time > $available_time) {
+            file_put_contents(Yii::getAlias('@frontend/web/') . 'proxy.txt', file_get_contents('https://proxybroker.craft-group.xyz/'));
+            file_put_contents(Yii::getAlias('@frontend/web/') . 'time.txt', self::dateTime(60));
+        }
+        $proxy = json_decode(file_get_contents(Yii::getAlias('@frontend/web/') . 'proxy.txt'));
+
+        return 'socks4://'.$proxy[$i]->host.':'.$proxy[$i]->port;
     }
 }
