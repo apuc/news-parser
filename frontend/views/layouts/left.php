@@ -54,15 +54,15 @@ use yii\helpers\Html;
 //                            ['label' => 'Сайты размещения', 'icon' => 'list-alt', 'url' => ['/destination/destination'], 'active' => \Yii::$app->controller->id == 'destination'],
 //                        ]
 //                    ],
-//                    [
-//                        'label' => 'Очередь',
-//                        'icon' => 'hourglass',
-//                        'active' => \Yii::$app->controller->id == 'titlequeue',
-//                        'items' => [
-//                            ['label' => 'Сайты источники', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/sourcequeue'],],
-//                            ['label' => 'Сайты размещения', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/destinationqueue'],],
-//                        ]
-//                    ],
+                    [
+                        'label' => 'Очередь',
+                        'icon' => 'hourglass',
+                        'active' => \Yii::$app->controller->id == 'translatequeue',
+                        'items' => [
+                            ['label' => 'Перевод', 'icon' => 'hourglass', 'url' => ['/translatequeue/translatequeue/'],],
+                            ['label' => 'Заголовки', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/sourcequeue'],],
+                        ]
+                    ],
                     [
                         'label' => 'Категории',
                         'icon' => 'tags',

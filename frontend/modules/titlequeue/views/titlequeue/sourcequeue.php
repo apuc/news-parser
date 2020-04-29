@@ -6,7 +6,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Очерердь сайтов источников';
+$this->title = 'Очерердь на получение заголовков для сайтов источников';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="title-queue-index">

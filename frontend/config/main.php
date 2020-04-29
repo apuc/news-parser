@@ -83,5 +83,8 @@ return [
         'titlequeue' => [
             'class' => 'frontend\modules\titlequeue\Titlequeue',
         ],
+        'translatequeue' => [
+            'class' => 'frontend\modules\translatequeue\TranslateQueue',
+        ],
     ],
 ];
