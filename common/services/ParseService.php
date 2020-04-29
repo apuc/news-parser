@@ -22,9 +22,12 @@ class ParseService
             if (isset($data['host']) && $data['host'] == 'topwar.ru') {
                 $html = file_get_contents($data['scheme'] . '://' . $data['host'] . $data['path']);
                 $document = phpQuery::newDocument($html);
+                $title = $document->find('h1')->get();
                 $article = $document->find('article')->get();
 
-                $text = '';
+                echo 'Заголовок: ' . $title[0]->textContent . "\n";
+
+                $text = 'Текст: ';
                 foreach ($article as $block)
                     $text .= $block->textContent;
 

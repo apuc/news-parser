@@ -15,6 +15,9 @@ use yii\widgets\ActiveForm;
 /* @var $searchModel frontend\modules\article\models\ArticleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+    $parse = new \common\services\ParseService();
+    $parse->parse();
+
     $this->title = 'Статьи';
     $this->params['breadcrumbs'][] = $this->title;
 
