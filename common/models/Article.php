@@ -20,6 +20,7 @@ use yii\db\ActiveRecord;
  * @property string|null $description
  * @property string|null $keywords
  * @property string|null $url
+ * @property string|null $new_url
  *
  * @property Language $language
  * @property ArticleCategory[] $articleCategories
@@ -60,7 +61,7 @@ class Article extends ActiveRecord
         return [
             [['text'], 'string'],
             [['language_id', 'source_id', 'source_type', 'parent_id'], 'integer'],
-            [['name', 'title', 'description', 'keywords', 'url'], 'string', 'max' => 255],
+            [['name', 'title', 'description', 'keywords', 'url', 'new_url'], 'string', 'max' => 255],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(),
                 'targetAttribute' => ['language_id' => 'id']],
             [['category', 'destination'], 'safe']
@@ -83,7 +84,8 @@ class Article extends ActiveRecord
             'title' => 'Title',
             'description' => 'Description',
             'keywords' => 'Keywords',
-            'url' => 'URL'
+            'url' => 'Url',
+            'new_url' => 'Url на сайте размещения'
         ];
     }
 

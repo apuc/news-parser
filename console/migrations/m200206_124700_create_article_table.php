@@ -18,7 +18,7 @@ class m200206_124700_create_article_table extends Migration
             'source_type' => $this->integer(),
             'parent_id' => $this->integer(),
             'name' => $this->string(),
-            'text' => $this->text(),
+            'text' => $this->getDb()->getSchema()->createColumnSchemaBuilder('longtext'),
             'title' => $this->string(),
             'description' => $this->string(),
             'keywords' => $this->string(),
