@@ -11,16 +11,16 @@ class Formatting
         $domains = str_replace(array("\r\n", "\r", "\n"), ",", $domains);
         $domains = explode(",", $domains);
 
-        $formatting = array();
-        foreach ($domains as $domain) {
-            $protocol = self::getProtocol($domain);
-            $domain = self::cutUrl($domain);
-            $domain = self::cutDomain($domain);
-            $domain = trim($domain);
-            if ($domain)
-                array_push($formatting, $protocol . '://' . $domain);
-        }
-        return $formatting;
+//        $formatting = array();
+//        foreach ($domains as $domain) {
+//            $protocol = self::getProtocol($domain);
+//            $domain = self::cutUrl($domain);
+//            $domain = self::cutDomain($domain);
+//            $domain = trim($domain);
+//            if ($domain)
+//                array_push($formatting, $protocol . '://' . $domain);
+//        }
+        return $domains;
     }
 
     public static function cutUrl($domain)

@@ -12,6 +12,6 @@ class ParseController extends Controller
     public function actionParse()
     {
         $parse = new ParseService();
-        $parse->parse();
+        $parse->parse_handler();
     }
 }

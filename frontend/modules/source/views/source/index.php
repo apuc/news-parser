@@ -2,6 +2,7 @@
 
 use common\models\ArticleCategory;
 use common\models\Category;
+use common\models\Source;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -19,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     echo Html::a('Добавить', ['add'], ['class' => 'btn btn-success']).'&nbsp';
 
-//    echo Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']);
+    echo Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']);
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -27,18 +28,27 @@ $this->params['breadcrumbs'][] = $this->title;
         'id' => 'grid',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-//            ['class' => 'yii\grid\CheckboxColumn'],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{delete}',
-//                'buttons' => [
-//                    'delete' => function ($data) {
-//                        return Html::a("<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>", ['/domain/site/customdelete', 'id' => $data]);},
-//                ],
-            ],
+            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\CheckboxColumn'],
+
             'domain',
-//            'title',
-//            'description',
+            [
+                'format' => 'raw',
+                'header' => 'Родитель',
+                'value' => function ($data) {
+                    $src = Source::findOne($data->parent_id);
+                    if($src)
+                        return $src->domain;
+                    else
+                        return '';
+                },
+            ],
+            'title',
+            'links_rule',
+            'title_rule',
+            'article_rule',
+            'start_parse',
+            'end_parse',
         ],
     ]);
     ?>

@@ -2,6 +2,7 @@
 
 use common\classes\TextHandler;
 use common\models\Language;
+use common\models\Source;
 use frontend\modules\article\models\Article;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
@@ -45,17 +46,38 @@ YiiAsset::register($this);
         'model' => $model,
         'attributes' => [
             'name',
-            'source_id',
-            'parent_id',
             [
                 'format' => 'raw',
-                'attribute' => 'Тип источника',
+                'attribute' => 'Тип&nbsp;источника',
                 'value' => function ($data) {
                     if($data->source_type == 1) return 'Добавлено вручную';
                     elseif($data->source_type == 2) return 'Считано из файла';
                     elseif($data->source_type == 3) return 'Перевод';
                     elseif($data->source_type == 4) return 'Считано с сайта';
                     else return '';
+                },
+            ],
+            [
+                'format' => 'raw',
+                'attribute' => 'Источник',
+                'value' => function ($data) {
+                    if($data->source_type == 4) {
+                        $source = Source::findOne($data->source_id);
+
+                        return $source->domain;
+                    }
+                    else
+                        return $data->source_id;
+                },
+            ],
+            [
+                'format' => 'raw',
+                'attribute' => 'Оригинал&nbsp;статьи',
+                'value' => function ($data) {
+                    if($data->parent_id == 0)
+                        return 'Это оригинал';
+                    else
+                        return $data->parent_id;
                 },
             ],
             'language.language',

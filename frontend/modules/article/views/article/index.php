@@ -1,7 +1,9 @@
 <?php
 
+use common\classes\Destinations;
 use common\models\ArticleCategory;
 use common\models\Category;
+use common\models\DestinationArticle;
 use common\models\Language;
 use frontend\modules\article\models\Article;
 use kartik\select2\Select2;
@@ -28,6 +30,10 @@ use yii\widgets\ActiveForm;
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'tableOptions' => [
+            'id' => 'main-table',
+            'class' => 'table table-striped table-bordered',
+        ],
         'id' => 'grid_articles',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
@@ -45,7 +51,6 @@ use yii\widgets\ActiveForm;
             [
                 'format' => 'raw',
                 'header' => 'Катеория',
-                //'filter' => Html::activeTextInput($searchModel, 'category', ['class' => 'form-control']),
                 'value' => function ($data) {
                     $str = Article::getCategory($data);
                     return '<div class="fixed-width" title="' . $str . '">'
@@ -113,7 +118,7 @@ use yii\widgets\ActiveForm;
                     <?php
                     $form = ActiveForm::begin();
 
-                    $model = new \common\models\DestinationArticle();
+                    $model = new DestinationArticle();
 
                     echo $form->field($model, 'destination_id')->widget(Select2::class, [
                         'data' => ArrayHelper::map(\common\models\Destination::find()->all(), 'id', 'domain'),
@@ -141,7 +146,7 @@ use yii\widgets\ActiveForm;
                     <?php
                     $form = ActiveForm::begin();
 
-                    $model = new \common\classes\Destinations();
+                    $model = new Destinations();
 
                     echo $form->field($model, 'destinations_ids')->widget(Select2::class, [
                         'data' => ArrayHelper::map(\common\models\Destination::find()->all(), 'id', 'domain'),

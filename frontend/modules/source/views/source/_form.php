@@ -1,5 +1,7 @@
 <?php
 
+use common\models\Source;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -16,11 +18,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+    <?php
+    echo $form->field($model, 'parent_id')->dropDownList(
+        ArrayHelper::map(Source::find()->where(['parent_id' => null])->all(), 'id', 'domain'),
+        ['prompt' => '...']);
+    ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'links_rule')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'links')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title_rule')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'article_rule')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'start_parse')->textInput(['maxlength' => true]) ?>
 

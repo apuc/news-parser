@@ -165,4 +165,16 @@ class Article extends ActiveRecord
 
         return parent::beforeSave($insert);
     }
+
+    public function save_parse($title, $text, $url, $source_id)
+    {
+        $this->name = $title;
+        $this->text = $text;
+        $this->source_type = 4;
+        $this->source_id = $source_id;
+        $this->url = $url;
+        $this->title = $title;
+
+        $this->save();
+    }
 }

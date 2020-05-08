@@ -15,6 +15,10 @@ use Yii;
  * @property string|null $start_parse
  * @property string|null $end_parse
  * @property int|null $status
+ * @property int|null $parent_id
+ * @property string|null $links_rule
+ * @property string|null $title_rule
+ * @property string|null $article_rule
  *
  * @property SourceCategory[] $sourceCategories
  * @property SourceUser[] $sourceUsers
@@ -35,8 +39,9 @@ class Source extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status'], 'integer'],
-            [['domain', 'title', 'description', 'links', 'start_parse', 'end_parse'], 'string', 'max' => 255],
+            [['status', 'parent_id'], 'integer'],
+            [['domain', 'title', 'description', 'links', 'start_parse', 'end_parse', 'links_rule', 'title_rule',
+                'article_rule'], 'string', 'max' => 255],
         ];
     }
 
@@ -49,11 +54,15 @@ class Source extends \yii\db\ActiveRecord
             'id' => 'ID',
             'domain' => 'Домен',
             'title' => 'Тайтл',
-            'description' => 'Описание',
-            'links' => 'Links',
-            'start_parse' => 'Start Parse',
-            'end_parse' => 'End Parse',
-            'status' => 'Status',
+            'description' => 'Описание', // unnecessary
+            'links' => 'Links', // unnecessary
+            'status' => 'Статус',
+            'parent_id' => 'Главный домен',
+            'links_rule' => 'Правило парсинга ссылок на статьи',
+            'title_rule' => 'Правило парсинга заголовка',
+            'article_rule' => 'Правило парсинга статьи',
+            'start_parse' => 'Стартовая точка парсинга',
+            'end_parse' => 'Конечная точка парсинга',
         ];
     }
 
