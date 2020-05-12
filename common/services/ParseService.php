@@ -10,14 +10,14 @@ use phpQuery;
 
 class ParseService
 {
-    public function parse_handler()
+    public function parse_handler($id)
     {
-        $sources = Source::find()->all();
-        if($sources)
-            foreach ($sources as $source)
+        $source = Source::findOne($id);
+        if($source)
+            //foreach ($sources as $source)
                 if($source->parent_id) {
                     $parent = Source::findOne($source->parent_id);
-                    
+
                     $this->parse($source->domain,
                         Formatting::cutDomain(Formatting::cutUrl($source->domain)),
                         $parent->links_rule, $parent->title_rule, $parent->article_rule, $source->id);

@@ -20,7 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     echo Html::a('Добавить', ['add'], ['class' => 'btn btn-success']).'&nbsp';
 
-    echo Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']);
+    echo Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']).'&nbsp';
+
+    echo Html::button('Спарсить', ['class' => 'btn btn-success parse']);
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -47,8 +49,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'links_rule',
             'title_rule',
             'article_rule',
-            'start_parse',
-            'end_parse',
+            //'start_parse',
+            //'end_parse',
         ],
     ]);
     ?>

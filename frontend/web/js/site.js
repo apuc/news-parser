@@ -189,6 +189,23 @@
             }
         });
     });
+    // add source sites into queue for parsing titles
+    $('.parse').on('click', function () {
+        let keys = $('#grid').yiiGridView('getSelectedRows');
+        $.ajax({
+            url: '/api/api/parse',
+            type: 'POST',
+            data: {
+                keys: keys
+            },
+            success: function () {
+                window.alert('Ссылки добавлены в очередь на парсинг.');
+            },
+            error: function () {
+                window.alert('Error!');
+            }
+        });
+    });
 
 //endregion
 

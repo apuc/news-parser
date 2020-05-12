@@ -80,11 +80,8 @@ return [
         'api' => [
             'class' => 'frontend\modules\api\Api',
         ],
-        'titlequeue' => [
-            'class' => 'frontend\modules\titlequeue\Titlequeue',
-        ],
-        'translatequeue' => [
-            'class' => 'frontend\modules\translatequeue\TranslateQueue',
+        'queue' => [
+            'class' => 'frontend\modules\queue\Queue',
         ],
     ],
 ];

@@ -33,8 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'links_rule',
             'title_rule',
             'article_rule',
-            'start_parse',
-            'end_parse',
+            //'start_parse',
+            //'end_parse',
         ],
     ]) ?>
 

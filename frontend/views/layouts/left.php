@@ -57,10 +57,11 @@ use yii\helpers\Html;
                     [
                         'label' => 'Очередь',
                         'icon' => 'hourglass',
-                        'active' => \Yii::$app->controller->id == 'translatequeue',
+                        'active' => \Yii::$app->controller->id == 'queue',
                         'items' => [
-                            ['label' => 'Перевод', 'icon' => 'hourglass', 'url' => ['/translatequeue/translatequeue/'],],
-                            ['label' => 'Заголовки', 'icon' => 'hourglass', 'url' => ['/titlequeue/titlequeue/sourcequeue'],],
+                            ['label' => 'Парсинг', 'icon' => 'hourglass', 'url' => ['/queue/parsequeue/'],],
+                            ['label' => 'Перевод', 'icon' => 'hourglass', 'url' => ['/queue/translatequeue/'],],
+                            ['label' => 'Заголовки', 'icon' => 'hourglass', 'url' => ['/queue/titlequeue/sourcequeue'],],
                         ]
                     ],
                     [

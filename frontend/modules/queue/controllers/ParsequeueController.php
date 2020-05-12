@@ -1,18 +1,18 @@
 <?php
 
-namespace frontend\modules\translatequeue\controllers;
+namespace frontend\modules\queue\controllers;
 
 use Yii;
-use common\models\TranslateQueue;
-use frontend\modules\translatequeue\models\TranslatequeueSearch;
+use common\models\ParseQueue;
+use frontend\modules\queue\models\ParsequeueSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TranslatequeueController implements the CRUD actions for TranslateQueue model.
+ * ParsequeueController implements the CRUD actions for ParseQueue model.
  */
-class TranslatequeueController extends Controller
+class ParsequeueController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -30,12 +30,12 @@ class TranslatequeueController extends Controller
     }
 
     /**
-     * Lists all TranslateQueue models.
+     * Lists all ParseQueue models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new TranslatequeueSearch();
+        $searchModel = new ParsequeueSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +45,7 @@ class TranslatequeueController extends Controller
     }
 
     /**
-     * Displays a single TranslateQueue model.
+     * Displays a single ParseQueue model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -58,13 +58,13 @@ class TranslatequeueController extends Controller
     }
 
     /**
-     * Creates a new TranslateQueue model.
+     * Creates a new ParseQueue model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new TranslateQueue();
+        $model = new ParseQueue();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -76,7 +76,7 @@ class TranslatequeueController extends Controller
     }
 
     /**
-     * Updates an existing TranslateQueue model.
+     * Updates an existing ParseQueue model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -96,7 +96,7 @@ class TranslatequeueController extends Controller
     }
 
     /**
-     * Deletes an existing TranslateQueue model.
+     * Deletes an existing ParseQueue model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -110,15 +110,15 @@ class TranslatequeueController extends Controller
     }
 
     /**
-     * Finds the TranslateQueue model based on its primary key value.
+     * Finds the ParseQueue model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return TranslateQueue the loaded model
+     * @return ParseQueue the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = TranslateQueue::findOne($id)) !== null) {
+        if (($model = ParseQueue::findOne($id)) !== null) {
             return $model;
         }
 

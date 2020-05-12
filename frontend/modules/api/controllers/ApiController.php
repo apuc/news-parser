@@ -7,6 +7,7 @@ use common\models\ArticleCategory;
 use common\models\Destination;
 use common\models\DestinationArticle;
 use common\models\DestinationCategory;
+use common\models\ParseQueue;
 use common\models\Source;
 use common\models\Template;
 use common\models\TitleQueue;
@@ -274,6 +275,19 @@ class ApiController extends Controller
             if ($del)
                 foreach ($del as $item)
                     DestinationCategory::deleteAll(['destination_id' => $_POST['destination_id'], 'category_id' => $item]);
+        }
+    }
+
+    public function actionParse()
+    {
+        if (Yii::$app->request->isAjax) {
+            $keys = $_POST['keys'];
+            if ($keys)
+                foreach ($keys as $key) {
+                    $parse = new ParseQueue();
+                    $parse->source_id = $key;
+                    $parse->save();
+                }
         }
     }
 }
