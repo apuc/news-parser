@@ -85,4 +85,18 @@ class Source extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SourceUser::className(), ['source_id' => 'id']);
     }
+
+    public static function getCategory($data)
+    {
+        $result = '';
+        if($data->sourceCategories)
+            foreach ($data->sourceCategories as $value) {
+                $category = Category::findOne($value->category_id);
+                $result .= $category->name . ', ';
+            }
+
+        $result = substr($result, 0, strlen($result)-2);
+
+        return $result;
+    }
 }

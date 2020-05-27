@@ -32,7 +32,9 @@ class TranslateService
         $this->source = $source;
         $this->target = $target;
 
-        $this->tr->setSource($this->source);
+        if($this->source)
+            $this->tr->setSource($this->source);
+        else $this->tr->setSource();
         $this->tr->setTarget($this->target);
     }
 

@@ -61,11 +61,8 @@ YiiAsset::register($this);
                 'format' => 'raw',
                 'attribute' => 'Источник',
                 'value' => function ($data) {
-                    if($data->source_type == 4) {
-                        $source = Source::findOne($data->source_id);
-
-                        return $source->domain;
-                    }
+                    if($data->source_type == 4)
+                        return Source::findOne($data->source_id)->domain;
                     else
                         return $data->source_id;
                 },

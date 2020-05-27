@@ -1,128 +1,5 @@
 "use strict";
 
-//region Unnecessary
-
-    // returns type of article (unnecessary now)
-    $(document).ready(function() {
-        $('#source_type').change(function(){
-            let source_type = $('#source_type').val();
-            let article_source = $("#article_source");
-
-            article_source.empty();
-
-            $.ajax({
-                url: '/api/api/type',
-                type: 'POST',
-                data: {
-                    value: source_type,
-                },
-                success: function (res) {
-                    let value = JSON.parse(res);
-
-                    if(source_type === 'Получено с сайта' || source_type === 'Автоматический перевод') {
-                        let option = $("<option />");
-                        option.html('...');
-                        option.val();
-                        article_source.append(option);
-                    }
-
-                    for(let key in value) {
-                        let option = $("<option />");
-                        option.html(value[key]);
-                        option.val(key);
-                        article_source.append(option);
-                    }
-                },
-                error: function (res) {
-                    console.log(res);
-                }
-            });
-        });
-    });
-    // set options on destination site (unnecessary now)
-    $(document).on("click", "#SettingsAjaxButton", function () {
-        let arr = [];
-
-        let theme = {};
-        theme.key = 'theme';
-        theme.value = $('#settingsform-theme').val();
-        arr[0] = theme;
-
-        let title = {};
-        title.key = 'title';
-        title.value = document.getElementById('settingsform-title').getAttribute("value");
-        arr[1] = title;
-
-        let keywords = {};
-        keywords.key = 'keywords';
-        keywords.value = document.getElementById('settingsform-keywords').getAttribute("value");
-        arr[2] = keywords;
-
-        let description = {};
-        description.key = 'description';
-        description.value = document.getElementById('settingsform-description').getAttribute("value");
-        arr[3] = description;
-
-        let h1 = {};
-        h1.key = 'h1';
-        h1.value = document.getElementById('settingsform-h1').getAttribute("value");
-        arr[4] = h1;
-
-        let data = {arr};
-        data = JSON.stringify(data);
-
-        $.ajax({
-            url: 'https://placement-site.craft-group.xyz/set-options',
-            type: 'POST',
-            data: data,
-
-            success: function () {
-                location.reload();
-            },
-            error: function () {
-                location.reload();
-            }
-        });
-    });
-    // sends articles to destination site (unnecessary now)
-    $('.send-articles').on('click', function () {
-        let keys = $('#grid_articles').yiiGridView('getSelectedRows');
-        console.log(keys);
-
-        $.ajax({
-            url: '/article/article/show-destinations',
-            type: 'POST',
-            data: {
-                keys: keys
-            },
-            success: function () {
-                //location.reload();
-            },
-            error: function () {
-            }
-        });
-    });
-    //translates one article (unnecessary now)
-    $('.translate-one').on('click', function () {
-        let id = document.querySelector(".translate-one").getAttribute("id");
-
-        $.ajax({
-            url: '/article/article/translate-one',
-            type: 'POST',
-            data: {
-                id: id
-            },
-            success: function (res) {
-                window.location = 'http://news_parser.loc/article/article/view?id=' + res;
-            },
-            error: function (res) {
-                console.log(res);
-            }
-        });
-    });
-
-//endregion
-
 //region Queue
 
     // add source sites into queue for parsing titles
@@ -209,7 +86,59 @@
 
 //endregion
 
-//region Placement sites settings
+//region Source
+
+    // selected categories for articles
+    $('.category_source').on('click', function () {
+        let value = [];
+        let article_id = $(this).data("id");
+        let modal = $("#modalSourceCategory");
+        let select2 = $('#category_source_ids');
+        select2.val(value);
+        select2.trigger('change');
+        modal.attr("data-source-id", article_id);
+
+        $.ajax({
+            url: '/api/api/selected-source-categories',
+            type: 'POST',
+            data: {
+                id: article_id,
+            },
+            success: function (res) {
+                let value = JSON.parse(res);
+                console.log(value);
+
+                select2.val(value);
+                select2.trigger('change');
+            },
+            error: function () { }
+        });
+    });
+    // select categories for articles
+    $(document).on("click", "#modalSourceCategoryButton", function () {
+        let article_id = document.getElementById('modalSourceCategory').getAttribute("data-source-id");
+        let category_ids = $('#category_source_ids').select2('data');
+        category_ids = JSON.stringify(category_ids);
+
+        $.ajax({
+            url: '/api/api/source-category',
+            type: 'POST',
+            data: {
+                category_ids: category_ids,
+                article_id: article_id
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                location.reload();
+            }
+        });
+    });
+
+//endregion
+
+//region Destination
 
     // selected categories for destinations
     $('.dcategory').on('click', function () {

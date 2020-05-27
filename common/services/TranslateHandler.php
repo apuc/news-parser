@@ -4,9 +4,10 @@
 namespace common\services;
 
 
+use common\classes\Debug;
 use common\models\Article;
 use common\models\Language;
-use DateTime;
+
 
 class TranslateHandler
 {
@@ -21,24 +22,30 @@ class TranslateHandler
     {
         $article = Article::findOne($article_id);
         $parent = Article::findOne($article->parent_id);
-        $source_language = Language::findOne($article->language_id);
-        echo $source_language->language . "\n";
-
         $target_language = Language::findOne($language_id);
-        echo $target_language->language . "\n";
 
-        try {
-            if ($parent->language_id == $target_language->id)
+        $allow = true;
+
+        if(!$parent)
+            if(!$article->language_id)
+                $language = '';
+            else {
+                $source_language = Language::findOne($article->language_id);
+                $language = $source_language->iso_639_1;
+            }
+        else {
+            if(!$parent->language_id)
+                $language = '';
+            else {
+                $parent_language = Language::findOne($parent->language_id);
+                $language = $parent_language->iso_639_1;
+            }
+
+            if ($language == $target_language->iso_639_1)
                 $allow = false;
-            else $allow = true;
-        } catch (\Exception $e) {
-            $allow = true;
-            echo $e . "\n";
         }
 
         if ($allow) {
-            echo 'allowed' . "\n";
-
             $count = 0; $name = null; $text = null; $title = null; $keywords = null; $description = null;
 
             while (!$name) {
@@ -46,18 +53,17 @@ class TranslateHandler
                     echo 'we\'re in try' . "\n";
                     $translate_service = new TranslateService($this->type, rand(0,9));
                     echo 'Step: ' . $count++ . "\n";
-                    //if($count > 9) $count = 0;
 
-                    $translate_service->setLocales($source_language->iso_639_1, $target_language->iso_639_1);
+                    $translate_service->setLocales($language, $target_language->iso_639_1);
 
                     $name =  $translate_service->translate($this->type, $article->name);
                     if($name) {
                         $title = $translate_service->translate($this->type,
-                            (!empty($article->title)) ? $article->title : 'not set');
+                            (!empty($article->title)) ? $article->title : $article->name);
                         $keywords = $translate_service->translate($this->type,
-                            (!empty($article->keywords)) ? $article->keywords : 'not set');
+                            (!empty($article->keywords)) ? $article->keywords : 'null');
                         $description = $translate_service->translate($this->type,
-                            (!empty($article->description)) ? $article->description : 'not set');
+                            (!empty($article->description)) ? $article->description : 'null');
                         $text = $translate_service->translate($this->type, $article->text);
                     }
                 } catch (\Exception $e) {

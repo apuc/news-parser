@@ -1,10 +1,12 @@
 <?php
 
+use bluezed\floatThead\FloatThead;
 use common\classes\Destinations;
 use common\models\ArticleCategory;
 use common\models\Category;
 use common\models\DestinationArticle;
 use common\models\Language;
+use common\models\Source;
 use frontend\modules\article\models\Article;
 use kartik\select2\Select2;
 
@@ -31,15 +33,22 @@ use yii\widgets\ActiveForm;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'tableOptions' => [
-            'id' => 'main-table',
-            'class' => 'table table-striped table-bordered',
+            'id' => 'article-table',
+            'class' => 'table table-striped table-bordered custom-table',
         ],
         'id' => 'grid_articles',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'yii\grid\CheckboxColumn'],
             ['class' => 'yii\grid\ActionColumn'],
-            'name',
+            [
+                'format' => 'raw',
+                'header' => 'Заголовок',
+                'filter' => Html::activeTextInput($searchModel, 'name', ['class' => 'form-control']),
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->name . '">' . $data->name . '</div>';
+                }
+            ],
             [
                 'format' => 'raw',
                 'header' => 'Статья',
@@ -48,6 +57,7 @@ use yii\widgets\ActiveForm;
                     return '<div class="fixed-height fixed-width" title="' . $data->text . '">' . $data->text . '</div>';
                 }
             ],
+            'language.language',
             [
                 'format' => 'raw',
                 'header' => 'Катеория',
@@ -72,12 +82,56 @@ use yii\widgets\ActiveForm;
                         . '</a>&nbsp' . $str . '</div>';
                 },
             ],
-            'url',
-            'language.language',
-            'title',
-            'description',
-            'keywords',
-            'new_url'
+            [
+                'format' => 'raw',
+                'header' => 'Домен',
+                'value' => function ($data) {
+                    if($data->source_type == 4)
+                        return Source::findOne($data->source_id)->domain;
+                    else
+                        return '';
+                },
+            ],
+            [
+                'format' => 'raw',
+                'header' => 'URL',
+                'filter' => Html::activeTextInput($searchModel, 'url', ['class' => 'form-control']),
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->url . '">' . $data->url . '</div>';
+                }
+            ],
+            [
+                'format' => 'raw',
+                'header' => 'Тайтл',
+                'filter' => Html::activeTextInput($searchModel, 'title', ['class' => 'form-control']),
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->title . '">' . $data->title . '</div>';
+                }
+            ],
+            [
+                'format' => 'raw',
+                'header' => 'Description',
+                'filter' => Html::activeTextInput($searchModel, 'description', ['class' => 'form-control']),
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->description . '">' . $data->description . '</div>';
+                }
+            ],
+            [
+                'format' => 'raw',
+                'header' => 'Keywords',
+                'filter' => Html::activeTextInput($searchModel, 'keywords', ['class' => 'form-control']),
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->keywords . '">' . $data->keywords . '</div>';
+                }
+            ],
+            [
+                'format' => 'raw',
+                'header' => 'Url на сайте размещения',
+                'filter' => Html::activeTextInput($searchModel, 'new_url', ['class' => 'form-control']),
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->new_url . '">' . $data->new_url . '</div>';
+                }
+            ],
         ],
     ]);
     ?>

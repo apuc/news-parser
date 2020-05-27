@@ -9,6 +9,7 @@ use common\models\DestinationArticle;
 use common\models\DestinationCategory;
 use common\models\ParseQueue;
 use common\models\Source;
+use common\models\SourceCategory;
 use common\models\Template;
 use common\models\TitleQueue;
 use frontend\modules\api\models\Theme;
@@ -288,6 +289,51 @@ class ApiController extends Controller
                     $parse->source_id = $key;
                     $parse->save();
                 }
+        }
+    }
+
+    public function actionSelectedSourceCategories()
+    {
+        $themes = array();
+        if (Yii::$app->request->isAjax) {
+            $site = Source::findOne($_POST['id']);
+            if (isset($site->sourceCategories))
+                foreach ($site->sourceCategories as $val)
+                    array_push($themes, $val->category_id);
+        }
+        return json_encode($themes);
+    }
+
+    public function actionSourceCategory()
+    {
+        if (Yii::$app->request->isAjax) {
+            $category_ids = json_decode($_POST['category_ids']);
+            $selected_categories = SourceCategory::find()->where(['source_id' => $_POST['source_id']])->all();
+            $new = array();
+            $old = array();
+
+            if ($category_ids)
+                foreach ($category_ids as $val)
+                    array_push($new, $val->id);
+
+            if ($selected_categories)
+                foreach ($selected_categories as $selected_category)
+                    array_push($old, $selected_category->category_id);
+
+            $add = array_diff($new, $old);
+            $del = array_diff($old, $new);
+
+            if ($add)
+                foreach ($add as $item) {
+                    $article_category = new SourceCategory();
+                    $article_category->source_id = $_POST['source_id'];
+                    $article_category->category_id = $item;
+                    $article_category->save();
+                }
+
+            if ($del)
+                foreach ($del as $item)
+                    SourceCategory::deleteAll(['source_id' => $_POST['source_id'], 'category_id' => $item]);
         }
     }
 }

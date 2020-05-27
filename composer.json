@@ -29,7 +29,8 @@
         "stichoza/google-translate-php": "^4.1",
         "sunra/php-simple-html-dom-parser": "1.5.2",
         "imangazaliev/didom": "dev-master",
-        "electrolinux/phpquery": "dev-master"
+        "electrolinux/phpquery": "dev-master",
+        "bluezed/yii2-float-thead": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

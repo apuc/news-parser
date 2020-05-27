@@ -129,7 +129,8 @@ a.desc:after {
 }
 
 .custom-table {
-    height: 50px;
+    overflow-x: scroll;
+    display: block;
 }
 
 .custom-margin-top {
@@ -146,10 +147,4 @@ a.desc:after {
     white-space: nowrap;
     height: 24px;
     overflow-y: auto;
-}
-
-#main-table {
-    overflow-x: scroll;
-    display: flex;
-    flex-direction: column;
 }
