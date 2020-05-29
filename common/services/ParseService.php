@@ -3,6 +3,7 @@
 namespace common\services;
 
 
+use common\classes\Debug;
 use common\classes\Formatting;
 use common\models\Article;
 use common\models\Source;
@@ -13,18 +14,17 @@ class ParseService
     public function parse_handler($id)
     {
         $source = Source::findOne($id);
-        if($source)
-            //foreach ($sources as $source)
-                if($source->parent_id) {
-                    $parent = Source::findOne($source->parent_id);
+        if ($source)
+            if ($source->parent_id) {
+                $parent = Source::findOne($source->parent_id);
 
-                    $this->parse($source->domain,
-                        Formatting::cutDomain(Formatting::cutUrl($source->domain)),
-                        $parent->links_rule, $parent->title_rule, $parent->article_rule, $source->id);
-                } else
-                    $this->parse($source->domain,
-                        Formatting::cutDomain(Formatting::cutUrl($source->domain)),
-                        $source->links_rule, $source->title_rule, $source->article_rule, $source->id);
+                $this->parse($source->domain,
+                    Formatting::cutDomain(Formatting::cutUrl($source->domain)),
+                    $parent->links_rule, $parent->title_rule, $parent->article_rule, $source->id);
+            } else
+                $this->parse($source->domain,
+                    Formatting::cutDomain(Formatting::cutUrl($source->domain)),
+                    $source->links_rule, $source->title_rule, $source->article_rule, $source->id);
     }
 
     public function getDocument($link)
@@ -62,16 +62,22 @@ class ParseService
     {
         $article_text = $doc->find($rule)->get();
         $text = '';
-        foreach ($article_text as $block)
-            $text .= $block->textContent . ' ';
+        foreach ($article_text as $block) {
+            if(isset($block->textContent)) $_text = $block->textContent;
+            elseif(isset($block->nodeValue)) $_text = $block->nodeValue;
+            else $_text = '';
 
+            $pattern = "/(window(?:.*?)}\);|\(function(.*?)}\);)/ms";
+            $_text = preg_replace($pattern, '', $_text);
+            $_text = str_replace(['$', '});', '(adsbygoogle = window.adsbygoogle || []).push({});'], '', $_text);
+
+            $text .= $_text . ' ';
+        }
         return $text;
     }
 
     public function parse($link, $domain, $links_rule, $title_rule, $article_rule, $source_id)
     {
-        echo $domain . "\n";
-
         $links = $this->getLinks($link, $links_rule);
 
         $urls = $this->getExistedUrls();
@@ -81,26 +87,20 @@ class ParseService
 
             try {
                 if (isset($link_attrs['host']) && !in_array($link_attrs['path'], $urls)) {
-                    print_r($link_attrs);
-
                     $document = $this->getDocument($link_attrs['scheme'] . '://' . $link_attrs['host']
                         . $link_attrs['path']);
 
                     $article = new Article();
                     $article->save_parse($this->getTitle($document, $title_rule),
                         $this->getArticle($document, $article_rule), $link_attrs['path'], $source_id);
-                } elseif (isset($link_attrs['path']) && $link_attrs['path']  && !in_array($link_attrs['path'], $urls)) {
-                    print_r($link_attrs);
-
+                } elseif (isset($link_attrs['path']) && $link_attrs['path'] && !in_array($link_attrs['path'], $urls)) {
                     $document = $this->getDocument('https://' . $domain . $link_attrs['path']);
 
                     $article = new Article();
                     $article->save_parse($this->getTitle($document, $title_rule),
                         $this->getArticle($document, $article_rule), $link_attrs['path'], $source_id);
                 }
-            } catch (\Exception $e) {
-                echo "Something went wrong..\n";
-            }
+            } catch (\Exception $e) { }
         }
     }
 }

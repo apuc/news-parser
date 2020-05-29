@@ -1,12 +1,13 @@
 <?php
 
-use bluezed\floatThead\FloatThead;
+use common\classes\Debug;
 use common\classes\Destinations;
 use common\models\ArticleCategory;
 use common\models\Category;
 use common\models\DestinationArticle;
 use common\models\Language;
 use common\models\Source;
+use common\services\ParseService;
 use frontend\modules\article\models\Article;
 use kartik\select2\Select2;
 
@@ -21,6 +22,9 @@ use yii\widgets\ActiveForm;
 
     $this->title = 'Статьи';
     $this->params['breadcrumbs'][] = $this->title;
+
+$parse = new ParseService();
+$parse->parse_handler(1);
 
     echo Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) . '&nbsp';
     echo Html::a('Загрузить из файла', ['read'], ['class' => 'btn btn-success']) . '&nbsp';

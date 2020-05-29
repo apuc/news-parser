@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\classes\Debug;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -168,13 +169,24 @@ class Article extends ActiveRecord
 
     public function save_parse($title, $text, $url, $source_id)
     {
+        $source = Source::findOne($source_id);
+        $source_categories = SourceCategory::find()->where(['source_id' => $source_id])->all();
+
         $this->name = $title;
         $this->text = $text;
         $this->source_type = 4;
         $this->source_id = $source_id;
         $this->url = $url;
         $this->title = $title;
+        $this->language_id = $source->language_id;
 
         $this->save();
+
+        foreach ($source_categories as $category) {
+            $ac = new ArticleCategory();
+            $ac->article_id = $this->id;
+            $ac->category_id = $category->category_id;
+            $ac->save();
+        }
     }
 }
