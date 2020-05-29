@@ -22,7 +22,6 @@
         "mihaildev/yii2-ckeditor": "*",
         "ext-json": "*",
         "kartik-v/yii2-widget-select2": "@dev",
-        "ext-http": "*",
         "true/punycode": "~2.0",
         "mihaildev/yii2-elfinder": "*",
         "ext-curl": "*",
@@ -30,7 +29,8 @@
         "sunra/php-simple-html-dom-parser": "1.5.2",
         "imangazaliev/didom": "dev-master",
         "electrolinux/phpquery": "dev-master",
-        "bluezed/yii2-float-thead": "*"
+        "bluezed/yii2-float-thead": "*",
+        "ext-http": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

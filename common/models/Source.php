@@ -16,6 +16,7 @@ use Yii;
  * @property string|null $end_parse
  * @property int|null $status
  * @property int|null $parent_id
+ * @property int|null $language_id
  * @property string|null $links_rule
  * @property string|null $title_rule
  * @property string|null $article_rule
@@ -39,7 +40,7 @@ class Source extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status', 'parent_id'], 'integer'],
+            [['status', 'parent_id', 'language_id'], 'integer'],
             [['domain', 'title', 'description', 'links', 'start_parse', 'end_parse', 'links_rule', 'title_rule',
                 'article_rule'], 'string', 'max' => 255],
         ];
@@ -63,6 +64,7 @@ class Source extends \yii\db\ActiveRecord
             'article_rule' => 'Правило парсинга статьи',
             'start_parse' => 'Стартовая точка парсинга',
             'end_parse' => 'Конечная точка парсинга',
+            'language_id' => 'Язык'
         ];
     }
 

@@ -2,7 +2,6 @@
 
 namespace frontend\modules\source\models;
 
-
 use common\classes\Formatting;
 use common\models\SourceUser;
 use Yii;

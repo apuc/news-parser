@@ -2,6 +2,9 @@
 
 namespace frontend\modules\source\controllers;
 
+use common\classes\Debug;
+use common\models\SourceCategory;
+use common\models\TitleQueue;
 use frontend\modules\source\models\AddForm;
 use Yii;
 use common\models\Source;
@@ -152,5 +155,65 @@ class SourceController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    // add source sites into queue for parsing titles
+    public function actionTitleSource()
+    {
+        if (Yii::$app->request->isAjax) {
+            $keys = $_POST['keys'];
+            if ($keys)
+                foreach ($keys as $key) {
+                    $audit = new TitleQueue();
+                    $audit->source_id = $key;
+                    $audit->save();
+                }
+        }
+    }
+
+    // selected categories for sources
+    public function actionSelectedSourceCategories()
+    {
+        $themes = array();
+        if (Yii::$app->request->isAjax) {
+            $site = \common\models\Source::findOne($_POST['id']);
+            if (isset($site->sourceCategories))
+                foreach ($site->sourceCategories as $val)
+                    array_push($themes, $val->category_id);
+        }
+        return json_encode($themes);
+    }
+    // select categories for sources
+    public function actionSourceCategory()
+    {
+        if (Yii::$app->request->isAjax) {
+            $category_ids = json_decode($_POST['category_ids']);
+            $selected_categories = SourceCategory::find()->where(['source_id' => $_POST['source_id']])->all();
+            $new = array();
+            $old = array();
+
+            if ($category_ids)
+                foreach ($category_ids as $val)
+                    array_push($new, $val->id);
+
+            if ($selected_categories)
+                foreach ($selected_categories as $selected_category)
+                    array_push($old, $selected_category->category_id);
+
+            $add = array_diff($new, $old);
+            $del = array_diff($old, $new);
+
+            if ($add)
+                foreach ($add as $item) {
+                    $article_category = new SourceCategory();
+                    $article_category->source_id = $_POST['source_id'];
+                    $article_category->category_id = $item;
+                    $article_category->save();
+                }
+
+            if ($del)
+                foreach ($del as $item)
+                    SourceCategory::deleteAll(['source_id' => $_POST['source_id'], 'category_id' => $item]);
+        }
     }
 }

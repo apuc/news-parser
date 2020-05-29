@@ -6,6 +6,7 @@ namespace frontend\modules\destination\controllers;
 use common\classes\Debug;
 use common\classes\Settings;
 use common\models\DestinationCategory;
+use common\models\TitleQueue;
 use frontend\modules\destination\models\AddForm;
 use Yii;
 use common\models\Destination;
@@ -274,5 +275,67 @@ class DestinationController extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_exec($ch);
         curl_close($ch);
+    }
+
+    // add destination sites into queue for parsing titles
+    public function actionTitleDestination()
+    {
+        if (Yii::$app->request->isAjax) {
+            $keys = $_POST['keys'];
+            if ($keys)
+                foreach ($keys as $key) {
+                    $audit = new TitleQueue();
+                    $audit->destination_id = $key;
+                    $audit->save();
+                }
+        }
+    }
+
+    // selected categories for destinations
+    public function actionSelectedDestinationCategories()
+    {
+        $themes = array();
+        if (Yii::$app->request->isAjax) {
+            $site = Destination::findOne($_POST['id']);
+            if (isset($site->destinationCategories)) {
+                foreach ($site->destinationCategories as $val) {
+                    array_push($themes, $val->category_id);
+                }
+            }
+        }
+        return json_encode($themes);
+    }
+    // select categories for destinations
+    public function actionDestinationCategory()
+    {
+        if (Yii::$app->request->isAjax) {
+            $category_ids = json_decode($_POST['category_ids']);
+            $selected_categories = DestinationCategory::find()->where(['destination_id' => $_POST['destination_id']])->all();
+            $new = array();
+            $old = array();
+
+            if ($category_ids)
+                foreach ($category_ids as $val)
+                    array_push($new, $val->id);
+
+            if ($selected_categories)
+                foreach ($selected_categories as $selected_category)
+                    array_push($old, $selected_category->category_id);
+
+            $add = array_diff($new, $old);
+            $del = array_diff($old, $new);
+
+            if ($add)
+                foreach ($add as $item) {
+                    $article_category = new DestinationCategory();
+                    $article_category->destination_id = $_POST['destination_id'];
+                    $article_category->category_id = $item;
+                    $article_category->save();
+                }
+
+            if ($del)
+                foreach ($del as $item)
+                    DestinationCategory::deleteAll(['destination_id' => $_POST['destination_id'], 'category_id' => $item]);
+        }
     }
 }

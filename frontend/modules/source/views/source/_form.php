@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Language;
 use common\models\Source;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -19,9 +20,14 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
     <?php
-    echo $form->field($model, 'parent_id')->dropDownList(
+    echo '<div class="custom-field">' . $form->field($model, 'parent_id')->dropDownList(
         ArrayHelper::map(Source::find()->where(['parent_id' => null])->all(), 'id', 'domain'),
-        ['prompt' => '...']);
+        ['prompt' => '...']) . '</div>';
+
+    echo '<div class="custom-field">' . $form->field($model, 'language_id')->dropDownList(
+        ArrayHelper::map(Language::find()->all(), 'id', 'language'),
+        ['prompt' => '...']
+        ) . '</div>';
     ?>
 
     <?= $form->field($model, 'links_rule')->textInput(['maxlength' => true]) ?>

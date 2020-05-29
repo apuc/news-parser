@@ -29,6 +29,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'id' => 'grid',
+        'tableOptions' => [
+            'id' => 'source-table',
+            'class' => 'table table-striped table-bordered custom-table',
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'yii\grid\ActionColumn'],
@@ -47,9 +51,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'header' => 'Язык',
                 'value' => function ($data) {
-                    $lang = Language::findOne($data->language_id);
-                    if($lang) return $lang->language;
-                    else return '';
+                    try {
+                        $lang = Language::findOne($data->language_id);
+                        if($lang) return $lang->language;
+                        else return '';
+                    } catch (Exception $e) {
+                        return '';
+                    }
                 },
             ],
             [
@@ -64,7 +72,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         . '</a>&nbsp' . $str . '</div>';
                 },
             ],
-            'title',
+            [
+                'format' => 'raw',
+                'header' => 'Тайтл',
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->title . '">' . $data->title . '</div>';
+                }
+            ],
             'links_rule',
             'title_rule',
             'article_rule',
