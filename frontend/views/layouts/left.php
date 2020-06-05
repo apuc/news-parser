@@ -30,7 +30,7 @@ use yii\helpers\Html;
                 'items' => [
                     [
                         'label' => 'Статьи',
-                        'icon' => 'pencil',
+                        'icon' => 'book',
                         'url' => ['/article/article'],
                         'active' => \Yii::$app->controller->id == 'article',
                     ],
@@ -45,6 +45,12 @@ use yii\helpers\Html;
                         'icon' => 'list-alt',
                         'url' => ['/destination/destination'],
                         'active' => \Yii::$app->controller->id == 'destination',
+                    ],
+                    [
+                        'label' => 'Регулярные выражения',
+                        'icon' => 'cog',
+                        'url' => ['/regex/regex'],
+                        'active' => \Yii::$app->controller->id == 'regex',
                     ],
 //                    [
 //                        'label' => 'Сайты',

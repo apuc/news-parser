@@ -20,6 +20,8 @@ use Yii;
  * @property string|null $links_rule
  * @property string|null $title_rule
  * @property string|null $article_rule
+ * @property int|null $parse_type
+ * @property string|null $regex
  *
  * @property SourceCategory[] $sourceCategories
  * @property SourceUser[] $sourceUsers
@@ -40,9 +42,9 @@ class Source extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status', 'parent_id', 'language_id'], 'integer'],
+            [['status', 'parent_id', 'language_id', 'parse_type'], 'integer'],
             [['domain', 'title', 'description', 'links', 'start_parse', 'end_parse', 'links_rule', 'title_rule',
-                'article_rule'], 'string', 'max' => 255],
+                'article_rule', 'regex'], 'string', 'max' => 255],
         ];
     }
 
@@ -64,7 +66,9 @@ class Source extends \yii\db\ActiveRecord
             'article_rule' => 'Правило парсинга статьи',
             'start_parse' => 'Стартовая точка парсинга',
             'end_parse' => 'Конечная точка парсинга',
-            'language_id' => 'Язык'
+            'language_id' => 'Язык',
+            'parse_type' => 'Тип парсинга',
+            'regex' => 'Регулярное выражение'
         ];
     }
 

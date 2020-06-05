@@ -83,5 +83,8 @@ return [
         'queue' => [
             'class' => 'frontend\modules\queue\Queue',
         ],
+        'regex' => [
+            'class' => 'frontend\modules\regex\Regex',
+        ],
     ],
 ];

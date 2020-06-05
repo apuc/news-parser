@@ -23,9 +23,6 @@ use yii\widgets\ActiveForm;
     $this->title = 'Статьи';
     $this->params['breadcrumbs'][] = $this->title;
 
-$parse = new ParseService();
-$parse->parse_handler(1);
-
     echo Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) . '&nbsp';
     echo Html::a('Загрузить из файла', ['read'], ['class' => 'btn btn-success']) . '&nbsp';
     echo Html::a('Отправить', ['#'], ['class' => 'btn btn-success', 'type' => 'button',
@@ -86,24 +83,35 @@ $parse->parse_handler(1);
                         . '</a>&nbsp' . $str . '</div>';
                 },
             ],
+//            [
+//                'format' => 'raw',
+//                'header' => 'Домен',
+//                'value' => function ($data) {
+//                    if($data->source_type == 4)
+//                        return Source::findOne($data->source_id)->domain;
+//                    else
+//                        return '';
+//                },
+//            ],
             [
                 'format' => 'raw',
-                'header' => 'Домен',
+                'attribute' => 'Источник',
                 'value' => function ($data) {
-                    if($data->source_type == 4)
-                        return Source::findOne($data->source_id)->domain;
-                    else
-                        return '';
+                    if($data->source_type == 4) {
+                        $link = Source::findOne($data->source_id)->domain . substr($data->url, 1);
+                        return '<div class="fixed-width" title="'.$link.'">'.'<a href="'.$link.'" target="blank">'.$link.'</a></div>';
+                    } else
+                        return $data->source_id;
                 },
             ],
-            [
-                'format' => 'raw',
-                'header' => 'URL',
-                'filter' => Html::activeTextInput($searchModel, 'url', ['class' => 'form-control']),
-                'value' => function ($data) {
-                    return '<div class="fixed-height fixed-width" title="' . $data->url . '">' . $data->url . '</div>';
-                }
-            ],
+//            [
+//                'format' => 'raw',
+//                'header' => 'URL',
+//                'filter' => Html::activeTextInput($searchModel, 'url', ['class' => 'form-control']),
+//                'value' => function ($data) {
+//                    return '<div class="fixed-height fixed-width" title="' . $data->url . '">' . $data->url . '</div>';
+//                }
+//            ],
             [
                 'format' => 'raw',
                 'header' => 'Тайтл',

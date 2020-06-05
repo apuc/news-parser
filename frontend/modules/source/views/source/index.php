@@ -37,13 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'yii\grid\ActionColumn'],
             ['class' => 'yii\grid\CheckboxColumn'],
-            'domain',
+            'domain:url',
             [
                 'format' => 'raw',
                 'header' => 'Родитель',
                 'value' => function ($data) {
                     $src = Source::findOne($data->parent_id);
-                    if($src) return $src->domain;
+                    if($src) return '<a href="'.$src->domain.'">'.$src->domain.'</a>';
                     else return '';
                 },
             ],
@@ -82,8 +82,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'links_rule',
             'title_rule',
             'article_rule',
-            'start_parse',
-            'end_parse',
+            'parse_type',
+            'regex'
+//            'start_parse',
+//            'end_parse',
         ],
     ]);
     ?>

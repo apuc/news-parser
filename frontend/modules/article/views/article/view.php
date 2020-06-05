@@ -1,6 +1,5 @@
 <?php
 
-use common\classes\TextHandler;
 use common\models\Language;
 use common\models\Source;
 use frontend\modules\article\models\Article;
@@ -45,6 +44,7 @@ YiiAsset::register($this);
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+                'id',
             'name',
             [
                 'format' => 'raw',
@@ -62,7 +62,8 @@ YiiAsset::register($this);
                 'attribute' => 'Источник',
                 'value' => function ($data) {
                     if($data->source_type == 4)
-                        return Source::findOne($data->source_id)->domain;
+                        return '<a href="'.Source::findOne($data->source_id)->domain . substr($data->url, 1).'" target="blank">'
+                            .Source::findOne($data->source_id)->domain . substr($data->url, 1).'</a>';
                     else
                         return $data->source_id;
                 },
@@ -91,17 +92,16 @@ YiiAsset::register($this);
             'title',
             'description',
             'keywords',
-            'url',
             'text:ntext',
         ],
     ]) ?>
-
-    <?php
-    //$t = new TextHandler($model->text);
-    //$t->showInfo();
-    //$t->showText();
-    ?>
 </div>
+<?php
+
+//$t = new TextHandler($model->text);
+//$t->showInfo();
+//$t->showText();
+?>
 
 <div class="modal fade" id="modalSelectLanguages" tabindex="-1" role="dialog"
      aria-labelledby="modalSelectLanguagesLabel" aria-hidden="true" data-id="">

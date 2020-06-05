@@ -13,6 +13,7 @@ use common\models\DestinationCategory;
 use common\models\Language;
 use common\models\ParseQueue;
 use common\models\TranslateQueue;
+use common\services\ParseService;
 use common\services\TranslateHandler;
 use frontend\modules\article\models\ArticleSearch;
 use frontend\modules\article\models\ReadForm;
