@@ -11,7 +11,6 @@ $this->title = 'Регулярные выражения';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="regex-index">
-
     <p>
         <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
@@ -28,6 +27,4 @@ $this->params['breadcrumbs'][] = $this->title;
             'sample',
         ],
     ]); ?>
-
-
 </div>
