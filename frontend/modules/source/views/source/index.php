@@ -83,9 +83,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'title_rule',
             'article_rule',
             'parse_type',
-            'regex'
-//            'start_parse',
-//            'end_parse',
+            'regex',
+            'start_parse',
+            'end_parse',
         ],
     ]);
     ?>

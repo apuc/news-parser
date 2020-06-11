@@ -41,9 +41,9 @@ use yii\widgets\ActiveForm;
 
     echo $form->field($model, 'regex')->textInput(['maxlength' => true]);
 
-//    echo $form->field($model, 'start_parse')->textInput(['maxlength' => true]);
-//
-//    echo $form->field($model, 'end_parse')->textInput(['maxlength' => true]);
+    echo $form->field($model, 'start_parse')->textInput(['maxlength' => true]);
+
+    echo $form->field($model, 'end_parse')->textInput(['maxlength' => true]);
 
     echo Html::submitButton('Save', ['class' => 'btn btn-success']);
 

@@ -92,25 +92,28 @@ class ParseService
 
     public function getArticle($doc, $rule, $parse_type, $regex)
     {
-        $article_text = $doc->find($rule)->get();
-        $regex = Regex::find()->all();
-        $text = '';
+//        $article_text = $doc->find($rule)->get();
+//        $regex = Regex::find()->all();
+//        $text = '';
+//
+//        foreach ($article_text as $block) {
+//            if ($block->textContent)
+//                $_text = $block->textContent;
+//            elseif ($block->nodeValue)
+//                $_text = $block->nodeValue;
+//            else $_text = '';
+//
+//            foreach ($regex as $item)
+//                $_text = preg_replace($item->regex, '', $_text);
+//
+//            $_text = str_replace(['});'], '', $_text);
+//            stristr($_text, 'Ctrl Enter', true);
+//            $text .= '<p>' . $_text . '</p> ';
+//        }
 
-        foreach ($article_text as $block) {
-            if ($block->textContent)
-                $_text = $block->textContent;
-            elseif ($block->nodeValue)
-                $_text = $block->nodeValue;
-            else $_text = '';
-
-            foreach ($regex as $item)
-                $_text = preg_replace($item->regex, '', $_text);
-
-            $_text = str_replace(['});'], '', $_text);
-            stristr($_text, 'Ctrl Enter', true);
-            $text .= '<p>' . $_text . '</p> ';
-        }
-
-        return $text;
+//        return $text;
+        preg_match('/<article(.*?)<\/article>/ms', $doc, $matches);
+        var_dump($matches);
+        return $matches[0];
     }
 }
