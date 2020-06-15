@@ -3,7 +3,6 @@
 namespace common\services;
 
 
-use common\classes\Debug;
 use common\classes\Formatting;
 use common\models\Article;
 use common\models\Regex;
@@ -16,30 +15,25 @@ class ParseService
     {
         $source = Source::findOne($id);
         if ($source)
-            if ($source->parent_id) {
-                $parent = Source::findOne($source->parent_id);
-
+            if ($source->parent_id)
                 $this->parse($source->domain, Formatting::cutDomain(Formatting::cutUrl($source->domain)),
-                    $parent->links_rule, $parent->title_rule, $parent->article_rule, $source->id, $parent->parse_type,
-                    $parent->regex);
-            } else {
+                    Source::findOne($source->parent_id), $source->id);
+            else
                 $this->parse($source->domain, Formatting::cutDomain(Formatting::cutUrl($source->domain)),
-                    $source->links_rule, $source->title_rule, $source->article_rule, $source->id, $source->parse_type,
-                    $source->regex);
-            }
+                    $source, $source->id);
     }
 
-    public function parse($link, $domain, $links_rule, $title_rule, $article_rule, $source_id, $parse_type, $regex)
+    public function parse($link, $domain, $site, $source_id)
     {
-        $new_urls = $this->getNewUrls($link, $links_rule);
+        $new_urls = $this->getNewUrls($link, $site->links_rule);
 
         foreach ($new_urls as $url) {
             try {
                 $document = $this->getDocument('https://' . $domain . $url);
 
                 $article = new Article();
-                $article->save_parse($this->getTitle($document, $title_rule),
-                    $this->getArticle($document, $article_rule, $parse_type, $regex), $url, $source_id);
+                $article->save_parse($this->getTitle($document, $site->title_rule),
+                    $this->getArticle($document, $site), $url, $source_id);
             } catch (\Exception $e) { }
         }
     }
@@ -90,30 +84,39 @@ class ParseService
         return $title[0]->textContent;
     }
 
-    public function getArticle($doc, $rule, $parse_type, $regex)
+    public function getArticle($doc, $site)
     {
-//        $article_text = $doc->find($rule)->get();
-//        $regex = Regex::find()->all();
-//        $text = '';
-//
-//        foreach ($article_text as $block) {
-//            if ($block->textContent)
-//                $_text = $block->textContent;
-//            elseif ($block->nodeValue)
-//                $_text = $block->nodeValue;
-//            else $_text = '';
-//
-//            foreach ($regex as $item)
-//                $_text = preg_replace($item->regex, '', $_text);
-//
-//            $_text = str_replace(['});'], '', $_text);
-//            stristr($_text, 'Ctrl Enter', true);
-//            $text .= '<p>' . $_text . '</p> ';
-//        }
+        if($site->start_parse && $site->end_parse) {
+            preg_match($this->regex($site), $doc, $matches);
 
-//        return $text;
-        preg_match('/<article(.*?)<\/article>/ms', $doc, $matches);
-        var_dump($matches);
-        return $matches[0];
+            return $matches[0];
+        } elseif($site->article_rule) {
+            $article_text = $doc->find($site->article_rule)->get();
+            $regex = Regex::find()->all();
+            $text = '';
+
+            foreach ($article_text as $block) {
+                if ($block->textContent)
+                    $_text = $block->textContent;
+                elseif ($block->nodeValue)
+                    $_text = $block->nodeValue;
+                else $_text = '';
+
+                foreach ($regex as $item)
+                    $_text = preg_replace($item->regex, '', $_text);
+
+                $_text = str_replace(['});'], '', $_text);
+                stristr($_text, 'Ctrl Enter', true);
+                $text .= '<p>' . $_text . '</p> ';
+            }
+            return $text;
+        } else
+            return '';
+    }
+
+    public function regex($site)
+    {
+        return '/' . str_replace('/', '\/', $site->start_parse) . '(.*?)'
+            . str_replace('/', '\/', $site->end_parse) . '/ms';
     }
 }

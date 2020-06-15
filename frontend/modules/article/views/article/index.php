@@ -52,10 +52,11 @@ use yii\widgets\ActiveForm;
             ],
             [
                 'format' => 'raw',
+               // 'contentOptions' => ['class' => 'fixed-height fixed-width'],
                 'header' => 'Статья',
                 'filter' => Html::activeTextInput($searchModel, 'text', ['class' => 'form-control']),
                 'value' => function ($data) {
-                    return '<div class="fixed-height fixed-width" title="' . $data->text . '">' . $data->text . '</div>';
+                    return '<div class="fixed-height fixed-width" title="' . strip_tags($data->text) . '">' . strip_tags($data->text) . '</div>';
                 }
             ],
             'language.language',

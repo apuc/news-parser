@@ -33,13 +33,13 @@ use yii\widgets\ActiveForm;
     echo $form->field($model, 'title_rule')->textInput(['maxlength' => true]);
 
     echo $form->field($model, 'article_rule')->textInput(['maxlength' => true]);
-
-    $pt[0] = "обычный";
-    $pt[1] = "с регулярными выражениями";
-    echo '<div class="custom-field">' . $form->field($model, 'parse_type')->dropDownList($pt,
-            ['prompt' => '...']) . '</div>';
-
-    echo $form->field($model, 'regex')->textInput(['maxlength' => true]);
+//
+//    $pt[0] = "обычный";
+//    $pt[1] = "с регулярными выражениями";
+//    echo '<div class="custom-field">' . $form->field($model, 'parse_type')->dropDownList($pt,
+//            ['prompt' => '...']) . '</div>';
+//
+//    echo $form->field($model, 'regex')->textInput(['maxlength' => true]);
 
     echo $form->field($model, 'start_parse')->textInput(['maxlength' => true]);
 

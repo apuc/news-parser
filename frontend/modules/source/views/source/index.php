@@ -37,7 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'yii\grid\ActionColumn'],
             ['class' => 'yii\grid\CheckboxColumn'],
-            'domain:url',
+            [
+                'format' => 'raw',
+                'header' => 'Домен',
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->domain . '"><a href="'.$data->domain.'" target="_blank">' . $data->domain . '</a></div>';
+                }
+            ],
             [
                 'format' => 'raw',
                 'header' => 'Родитель',
@@ -79,13 +85,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     return '<div class="fixed-height fixed-width" title="' . $data->title . '">' . $data->title . '</div>';
                 }
             ],
-            'links_rule',
+            [
+                'format' => 'raw',
+                'header' => 'Правило парсинга ссылок на статьи',
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->links_rule . '">' . $data->links_rule . '</div>';
+                }
+            ],
             'title_rule',
-            'article_rule',
-            'parse_type',
-            'regex',
             'start_parse',
             'end_parse',
+            [
+                'format' => 'raw',
+                'header' => 'Правило парсинга статьи',
+                'value' => function ($data) {
+                    return '<div class="fixed-height fixed-width" title="' . $data->article_rule . '">' . $data->article_rule . '</div>';
+                }
+            ],
+            //'parse_type',
+            //'regex',
         ],
     ]);
     ?>

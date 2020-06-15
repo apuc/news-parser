@@ -92,12 +92,12 @@ YiiAsset::register($this);
             'title',
             'description',
             'keywords',
-            'text:ntext',
+//            'text:ntext',
         ],
     ]) ?>
 </div>
 <?php
-
+    echo '<div style="background: white; border: 1px solid white; padding: 2px">' . $model->text . '</div>';
 //$t = new TextHandler($model->text);
 //$t->showInfo();
 //$t->showText();
