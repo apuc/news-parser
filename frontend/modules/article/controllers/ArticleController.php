@@ -183,9 +183,7 @@ class ArticleController extends Controller
         if($add)
             foreach ($add as $item) {
                 $article_category  = new ArticleCategory();
-                $article_category->article_id = $id;
-                $article_category->category_id = $item;
-                $article_category->save();
+                $article_category->_save($id, $item);
             }
 
         if($del)
@@ -210,16 +208,17 @@ class ArticleController extends Controller
 
         if($add)
             foreach ($add as $item) {
-                $destination_article  = new DestinationArticle();
-                $destination_article->article_id = $id;
-                $destination_article->destination_id = $item;
-                $destination_article->save();
+                $article_destination = new DestinationArticle();
+                $article_destination->_save($id, $item, 1);
             }
 
         if($del)
-            foreach ($del as $item)
-                DestinationArticle::deleteAll(['article_id' => $this->id, 'destination_id' => $item]);
-
+            foreach ($del as $item) {
+                $change_status = DestinationArticle::findOne(['article_id' => $this->id, 'destination_id' => $item]);
+                $change_status->status = 0;
+                $change_status->save();
+                // DestinationArticle::deleteAll(['article_id' => $this->id, 'destination_id' => $item]);
+            }
     }
 
     public function actionRead()
@@ -245,6 +244,9 @@ class ArticleController extends Controller
                 $article = $this->dataToSend($article);
 
                 foreach ($destinations_ids as $destinations) {
+                    $destination_article  = new DestinationArticle();
+                    $destination_article->_save($id, $destinations->id, 1);
+
                     $destination = Destination::findOne($destinations->id);
 
                     $ch = curl_init($destination->domain . '/store-article');
@@ -315,23 +317,19 @@ class ArticleController extends Controller
             $language_ids = json_decode(Yii::$app->request->post('language_ids'));
 
             if (!empty($article_id))
-                foreach ($language_ids as $language)
-                    $this->setTranslateQueue($article_id, $language->id);
+                foreach ($language_ids as $language) {
+                    $tq = new TranslateQueue();
+                    $tq->_save($article_id, $language->id);
+                }
             else
                 foreach ($article_ids as $id)
-                    foreach ($language_ids as $language)
-                        $this->setTranslateQueue($id, $language->id);
+                    foreach ($language_ids as $language) {
+                        $tq = new TranslateQueue();
+                        $tq->_save($id, $language->id);
+                    }
             return 1;
         } else
             return -1;
-    }
-
-    public function setTranslateQueue($article_id, $language_id)
-    {
-        $tq = new TranslateQueue();
-        $tq->article_id = $article_id;
-        $tq->language_id = $language_id;
-        $tq->save();
     }
 
     // selected categories for articles
@@ -369,9 +367,7 @@ class ArticleController extends Controller
             if ($add)
                 foreach ($add as $item) {
                     $article_category = new ArticleCategory();
-                    $article_category->article_id = $_POST['article_id'];
-                    $article_category->category_id = $item;
-                    $article_category->save();
+                    $article_category->_save($_POST['article_id'], $item);
                 }
 
             if ($del)
@@ -385,7 +381,7 @@ class ArticleController extends Controller
     {
         $destinations = array();
         if (Yii::$app->request->isAjax) {
-            $site = Article::findOne($_POST['id']);
+            $site = Article::findOne(['id' => $_POST['id'], 'status' => 1]);
             if (isset($site->destinationArticles))
                 foreach ($site->destinationArticles as $val)
                     array_push($destinations, $val->destination_id);
@@ -415,14 +411,16 @@ class ArticleController extends Controller
             if ($add)
                 foreach ($add as $item) {
                     $article_destination = new DestinationArticle();
-                    $article_destination->article_id = $_POST['article_id'];
-                    $article_destination->destination_id = $item;
-                    $article_destination->save();
+                    $article_destination->_save($_POST['article_id'], $item, 1);
                 }
 
             if ($del)
-                foreach ($del as $item)
-                    DestinationArticle::deleteAll(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
+                foreach ($del as $item) {
+                    $change_status = DestinationArticle::findOne(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
+                    $change_status->status = 0;
+                    $change_status->save();
+                    //DestinationArticle::deleteAll(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
+                }
         }
     }
 
@@ -456,7 +454,7 @@ class ArticleController extends Controller
             $filename = $_POST['filename'];
             if (($handle = fopen('articles/' . $filename, 'r')) !== FALSE) {
                 while (($data = fgetcsv($handle, 0, ',', '"')) !== FALSE) {
-                    $article = new \frontend\modules\article\models\Article();
+                    $article = new Article();
                     $article->name = $data[0];
                     $article->text = $data[1];
                     $article->save();

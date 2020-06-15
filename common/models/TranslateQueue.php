@@ -42,4 +42,10 @@ class TranslateQueue extends \yii\db\ActiveRecord
             'language_id' => 'Language ID',
         ];
     }
+
+    public function _save($article_id, $language_id) {
+        $this->article_id = $article_id;
+        $this->language_id = $language_id;
+        $this->save();
+    }
 }

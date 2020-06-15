@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int|null $destination_id
  * @property int|null $article_id
+ * @property int|null $status
  *
  * @property Article $article
  * @property Destination $destination
@@ -30,7 +31,7 @@ class DestinationArticle extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['destination_id', 'article_id'], 'integer'],
+            [['destination_id', 'article_id', 'status'], 'integer'],
             [['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Article::className(), 'targetAttribute' => ['article_id' => 'id']],
             [['destination_id'], 'exist', 'skipOnError' => true, 'targetClass' => Destination::className(), 'targetAttribute' => ['destination_id' => 'id']],
         ];
@@ -66,5 +67,12 @@ class DestinationArticle extends \yii\db\ActiveRecord
     public function getDestination()
     {
         return $this->hasOne(Destination::className(), ['id' => 'destination_id']);
+    }
+
+    public function _save($article_id, $destination_id, $status) {
+        $this->article_id = $article_id;
+        $this->destination_id = $destination_id;
+        $this->status = $status;
+        $this->save();
     }
 }

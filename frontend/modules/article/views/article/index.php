@@ -52,7 +52,6 @@ use yii\widgets\ActiveForm;
             ],
             [
                 'format' => 'raw',
-               // 'contentOptions' => ['class' => 'fixed-height fixed-width'],
                 'header' => 'Статья',
                 'filter' => Html::activeTextInput($searchModel, 'text', ['class' => 'form-control']),
                 'value' => function ($data) {

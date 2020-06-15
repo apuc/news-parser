@@ -67,4 +67,11 @@ class ArticleCategory extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
+
+    public function _save($article_id, $category_id)
+    {
+        $this->article_id = $article_id;
+        $this->category_id = $category_id;
+        $this->save();
+    }
 }
