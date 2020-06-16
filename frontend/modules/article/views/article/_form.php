@@ -62,7 +62,7 @@ use yii\widgets\Pjax;
 
     echo $form->field($model, 'title')->textInput(['maxlength' => true]);
 
-    echo $form->field($model, 'description')->textInput(['maxlength' => true]);
+//    echo $form->field($model, 'description')->textInput(['maxlength' => true]);
 
     echo $form->field($model, 'keywords')->textInput(['maxlength' => true]);
 

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\classes\Debug;
 use Yii;
 
 /**

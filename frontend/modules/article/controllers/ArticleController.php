@@ -421,6 +421,20 @@ class ArticleController extends Controller
                     $change_status->save();
                     //DestinationArticle::deleteAll(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
                 }
+
+            $article = Article::findOne($_POST['article_id']);
+            $article = $this->dataToSend($article);
+
+            $da = DestinationArticle::find()->where(['article_id' => $_POST['article_id'], 'status' => 1])->all();
+            foreach ($da as $item) {
+                $destination = Destination::findOne($item->destination_id);
+
+                $ch = curl_init($destination->domain . '/store-article');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
+                curl_exec($ch);
+                curl_close($ch);
+            }
         }
     }
 

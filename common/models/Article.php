@@ -178,6 +178,7 @@ class Article extends ActiveRecord
         $this->source_id = $source_id;
         $this->url = $url;
         $this->title = $title;
+        $this->description = $this->description($text);
         $this->language_id = $source->language_id;
 
         $this->save();
@@ -188,5 +189,16 @@ class Article extends ActiveRecord
             $ac->category_id = $category->category_id;
             $ac->save();
         }
+    }
+
+    public function description($text)
+    {
+        $regex = Regex::find()->all();
+        foreach ($regex as $item)
+            $text = preg_replace($item->regex, '', $text);
+        $text = str_replace(['});', "\n"], '', $text);
+        $text = substr(strip_tags($text), 0, 220) . ' ...';
+
+        return $text;
     }
 }

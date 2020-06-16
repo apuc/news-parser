@@ -2,6 +2,7 @@
 
 use common\models\ArticleCategory;
 use common\models\Category;
+use common\models\DestinationArticle;
 use common\models\Language;
 use common\models\Source;
 use kartik\select2\Select2;
@@ -19,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="source-index">
     <?php
+
     echo Html::a('Добавить', ['add'], ['class' => 'btn btn-success']).'&nbsp';
 
     echo Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']).'&nbsp';
@@ -40,6 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'format' => 'raw',
                 'header' => 'Домен',
+                //'filter' => Html::activeTextInput($searchModel, 'domain', ['class' => 'form-control']),
                 'value' => function ($data) {
                     return '<div class="fixed-height fixed-width" title="' . $data->domain . '"><a href="'.$data->domain.'" target="_blank">' . $data->domain . '</a></div>';
                 }

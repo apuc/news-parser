@@ -33,7 +33,7 @@ class ParseService
 
                 $article = new Article();
                 $article->save_parse($this->getTitle($document, $site->title_rule),
-                    $this->getArticle($document, $site), $url, $source_id);
+                    $this->getArticle($document, $site) , $url, $source_id);
             } catch (\Exception $e) { }
         }
     }
@@ -72,6 +72,7 @@ class ParseService
                 array_push($new_urls, $link_attrs['path']);
         }
         $new_urls = array_unique($new_urls);
+        print_r($new_urls);
         $new_urls = array_diff($new_urls, $this->getExistedUrls());
 
         return $new_urls;
