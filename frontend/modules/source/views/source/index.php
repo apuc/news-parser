@@ -95,9 +95,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     return '<div class="fixed-height fixed-width" title="' . $data->links_rule . '">' . $data->links_rule . '</div>';
                 }
             ],
-            'title_rule',
-            'start_parse',
-            'end_parse',
+            [
+                'format' => 'raw',
+                'header' => 'Правило парсинга заголовка',
+                'value' => function ($data) {
+                    return $data->title_rule;
+                }
+            ],
+            [
+                'header' => 'Сартовая точка парсинга',
+                'value' => function ($data) {
+                    return $data->start_parse;
+                }
+            ],
+            [
+                'header' => 'Конечная точка парсинга',
+                'value' => function ($data) {
+                    return $data->end_parse;
+                }
+            ],
             [
                 'format' => 'raw',
                 'header' => 'Правило парсинга статьи',

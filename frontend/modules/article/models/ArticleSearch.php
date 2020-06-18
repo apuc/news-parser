@@ -20,7 +20,7 @@ class ArticleSearch extends Article
     {
         return [
             [['id', 'source_id', 'source_type', 'parent_id'], 'integer'],
-            [['name', 'text', 'category', 'title', 'keywords', 'description', 'url'], 'safe'],
+            [['name', 'text', 'category', 'title', 'keywords', 'description', 'url', 'new_url'], 'safe'],
         ];
     }
 
@@ -73,10 +73,15 @@ class ArticleSearch extends Article
             'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'source_id', $this->source_id])
-            ->andFilterWhere(['like', 'source_type', $this->source_type])
-            ->andFilterWhere(['like', 'text', $this->text])
+        $query->andFilterWhere(['like', 'article.name', $this->name])
+            ->andFilterWhere(['like', 'article.source_id', $this->source_id])
+            ->andFilterWhere(['like', 'article.source_type', $this->source_type])
+            ->andFilterWhere(['like', 'article.text', $this->text])
+            ->andFilterWhere(['like', 'article.title', $this->title])
+            ->andFilterWhere(['like', 'article.description', $this->description])
+            ->andFilterWhere(['like', 'article.keywords', $this->keywords])
+            ->andFilterWhere(['like', 'article.url', $this->url])
+            ->andFilterWhere(['like', 'article.new_url', $this->new_url])
             ->andFilterWhere(['like', 'category.name', $this->category]);
 
         return $dataProvider;

@@ -161,6 +161,275 @@ class ArticleController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**
+     * Read article from file
+     * @return mixed
+     */
+    public function actionRead()
+    {
+        $model = new ReadForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->csv = UploadedFile::getInstances($model, 'csv');
+            $model->upload();
+            return $this->render('read', ['model' => $model]);
+        }
+        return $this->render('read', ['model' => $model]);
+    }
+
+    /**
+     * Read article from file
+     */
+    public function actionReadFile()
+    {
+        if (Yii::$app->request->isAjax) {
+            $filename = $_POST['filename'];
+            if (($handle = fopen('articles/' . $filename, 'r')) !== FALSE) {
+                while (($data = fgetcsv($handle, 0, ',', '"')) !== FALSE) {
+                    $article = new Article();
+                    $article->name = $data[0];
+                    $article->text = $data[1];
+                    $article->save();
+                }
+                fclose($handle);
+            }
+        }
+    }
+
+    /**
+     * Sends articles to placement sites
+     */
+    public function actionShowDestinations()
+    {
+        if (Yii::$app->request->isAjax) {
+            $destinations_ids = json_decode($_POST['destinations_ids']);
+            $articles_ids = $_POST['articles_ids'];
+
+            foreach ($articles_ids as $id) {
+                $article = Article::findOne($id);
+                $article = $this->dataToSend($article);
+
+                foreach ($destinations_ids as $destinations) {
+                    $destination_article  = new DestinationArticle();
+                    $destination_article->_save($id, $destinations->id, 1);
+
+                    $destination = Destination::findOne($destinations->id);
+
+                    $ch = curl_init($destination->domain . '/store-article');
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
+                    curl_exec($ch);
+                    curl_close($ch);
+                }
+            }
+        }
+    }
+
+    /**
+     * Add articles to translate queue
+     * @return integer
+     */
+    public function actionTranslateQueue()
+    {
+        if (Yii::$app->request->isAjax) {
+            $article_id = Yii::$app->request->post('article_id');
+            $article_ids = Yii::$app->request->post('article_ids');
+            $language_ids = json_decode(Yii::$app->request->post('language_ids'));
+
+            if (!empty($article_id))
+                foreach ($language_ids as $language) {
+                    $tq = new TranslateQueue();
+                    $tq->_save($article_id, $language->id);
+                }
+            else
+                foreach ($article_ids as $id)
+                    foreach ($language_ids as $language) {
+                        $tq = new TranslateQueue();
+                        $tq->_save($id, $language->id);
+                    }
+            return 1;
+        } else
+            return -1;
+    }
+
+    /**
+     * Returns selected categories for article
+     */
+    public function actionSelected()
+    {
+        $themes = array();
+        if (Yii::$app->request->isAjax) {
+            $site = Article::findOne($_POST['id']);
+            if (isset($site->articleCategories))
+                foreach ($site->articleCategories as $val)
+                    array_push($themes, $val->category_id);
+        }
+        return json_encode($themes);
+    }
+
+    /**
+     * Saves changes in selected categories for article
+     */
+    public function actionCategory()
+    {
+        if (Yii::$app->request->isAjax) {
+            $category_ids = json_decode($_POST['category_ids']);
+            $selected_categories = ArticleCategory::find()->where(['article_id' => $_POST['article_id']])->all();
+            $new = array();
+            $old = array();
+
+            if ($category_ids)
+                foreach ($category_ids as $val)
+                    array_push($new, $val->id);
+
+            if ($selected_categories)
+                foreach ($selected_categories as $selected_category)
+                    array_push($old, $selected_category->category_id);
+
+            $add = array_diff($new, $old);
+            $del = array_diff($old, $new);
+
+            if ($add)
+                foreach ($add as $item) {
+                    $article_category = new ArticleCategory();
+                    $article_category->_save($_POST['article_id'], $item);
+                }
+
+            if ($del)
+                foreach ($del as $item)
+                    ArticleCategory::deleteAll(['article_id' => $_POST['article_id'], 'category_id' => $item]);
+        }
+    }
+
+    /**
+     * Returns selected destinations for article
+     */
+    public function actionSelectedDestination()
+    {
+        $destinations = array();
+        if (Yii::$app->request->isAjax) {
+            $site = Article::findOne(['id' => $_POST['id'], 'status' => 1]);
+            if (isset($site->destinationArticles))
+                foreach ($site->destinationArticles as $val)
+                    array_push($destinations, $val->destination_id);
+        }
+        return json_encode($destinations);
+    }
+
+    /**
+     * Saves changes in selected destinations for articles
+     * and sends articles to an placement sites
+     */
+    public function actionDestination()
+    {
+        if (Yii::$app->request->isAjax) {
+            $destination_ids = json_decode($_POST['destination_ids']);
+            $selected_destinations = DestinationArticle::find()->where(['article_id' => $_POST['article_id']])->all();
+            $new = array();
+            $old = array();
+
+            if ($destination_ids)
+                foreach ($destination_ids as $val)
+                    array_push($new, $val->id);
+
+            if ($selected_destinations)
+                foreach ($selected_destinations as $selected_destination)
+                    array_push($old, $selected_destination->destination_id);
+
+            $add = array_diff($new, $old);
+            $del = array_diff($old, $new);
+
+            if ($add)
+                foreach ($add as $item) {
+                    $article_destination = new DestinationArticle();
+                    $article_destination->_save($_POST['article_id'], $item, 1);
+                }
+
+            if ($del)
+                foreach ($del as $item) {
+                    $change_status = DestinationArticle::findOne(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
+                    $change_status->status = 0;
+                    $change_status->save();
+                    //DestinationArticle::deleteAll(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
+                }
+
+            $article = Article::findOne($_POST['article_id']);
+            $article = $this->dataToSend($article);
+
+            $da = DestinationArticle::find()->where(['article_id' => $_POST['article_id'], 'status' => 1])->all();
+            foreach ($da as $item) {
+                $destination = Destination::findOne($item->destination_id);
+
+                $ch = curl_init($destination->domain . '/store-article');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
+                curl_exec($ch);
+                curl_close($ch);
+            }
+        }
+    }
+
+    /**
+     * Auto select destinations when create or update article
+     */
+    public function actionDestinations()
+    {
+        if (Yii::$app->request->isAjax) {
+            $category_ids = json_decode($_POST['category_ids']);
+            $res = array();
+            foreach ($category_ids as $val) {
+                $destination = DestinationCategory::find()
+                    ->where(['category_id' => $val->id])
+                    ->all();
+                foreach ($destination as $item)
+                    array_push($res, $item->destination_id);
+            }
+            $res = array_unique($res);
+
+            $map = array();
+            foreach ($res as $item)
+                array_push($map, $item);
+
+            return json_encode($map);
+        } else return 0;
+    }
+
+    /**
+     * Add articles in parse queue
+     */
+    public function actionParse()
+    {
+        if (Yii::$app->request->isAjax) {
+            $keys = $_POST['keys'];
+            if ($keys)
+                foreach ($keys as $key) {
+                    $parse = new ParseQueue();
+                    $parse->source_id = $key;
+                    $parse->save();
+                }
+        }
+    }
+
+//    public function actionSend()
+//    {
+//        $articles = array();
+//        $categories = array();
+//        foreach ($_POST['keys'] as $key) {
+//            $article = Article::findOne($key);
+//            $article_category = ArticleCategory::find()->where(['article_id' => $article->id])->all();
+//
+//            foreach ($article_category as $value) {
+//                $category = Category::findOne($value->category_id);
+//                array_push($categories, $category->name);
+//            }
+//
+//            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories,
+//                'news.jpg', $article->title, $article->description, $article->keywords, $article->url);
+//            array_push($articles, $data);
+//        }
+//    }
+
+    // move to model
     public function relatedData($id)
     {
         $post = \Yii::$app->request->post('Article');
@@ -221,63 +490,7 @@ class ArticleController extends Controller
             }
     }
 
-    public function actionRead()
-    {
-        $model = new ReadForm();
-
-        if (Yii::$app->request->isPost) {
-            $model->csv = UploadedFile::getInstances($model, 'csv');
-            $model->upload();
-            return $this->render('read', ['model' => $model]);
-        }
-        return $this->render('read', ['model' => $model]);
-    }
-
-    public function actionShowDestinations()
-    {
-        if (Yii::$app->request->isAjax) {
-            $destinations_ids = json_decode($_POST['destinations_ids']);
-            $articles_ids = $_POST['articles_ids'];
-
-            foreach ($articles_ids as $id) {
-                $article = Article::findOne($id);
-                $article = $this->dataToSend($article);
-
-                foreach ($destinations_ids as $destinations) {
-                    $destination_article  = new DestinationArticle();
-                    $destination_article->_save($id, $destinations->id, 1);
-
-                    $destination = Destination::findOne($destinations->id);
-
-                    $ch = curl_init($destination->domain . '/store-article');
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
-                    curl_exec($ch);
-                    curl_close($ch);
-                }
-            }
-        }
-    }
-
-//    public function actionSend()
-//    {
-//        $articles = array();
-//        $categories = array();
-//        foreach ($_POST['keys'] as $key) {
-//            $article = Article::findOne($key);
-//            $article_category = ArticleCategory::find()->where(['article_id' => $article->id])->all();
-//
-//            foreach ($article_category as $value) {
-//                $category = Category::findOne($value->category_id);
-//                array_push($categories, $category->name);
-//            }
-//
-//            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories,
-//                'news.jpg', $article->title, $article->description, $article->keywords, $article->url);
-//            array_push($articles, $data);
-//        }
-//    }
-
+    // move to model
     public function dataToSend($model)
     {
         $categories = array();
@@ -296,6 +509,7 @@ class ArticleController extends Controller
         return json_encode($data);
     }
 
+    // move to model
     public function sendingData($model, $post, $action)
     {
         foreach ($model->destination as $id) {
@@ -306,188 +520,6 @@ class ArticleController extends Controller
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
             curl_exec($ch);
             curl_close($ch);
-        }
-    }
-
-    public function actionTranslateQueue()
-    {
-        if (Yii::$app->request->isAjax) {
-            $article_id = Yii::$app->request->post('article_id');
-            $article_ids = Yii::$app->request->post('article_ids');
-            $language_ids = json_decode(Yii::$app->request->post('language_ids'));
-
-            if (!empty($article_id))
-                foreach ($language_ids as $language) {
-                    $tq = new TranslateQueue();
-                    $tq->_save($article_id, $language->id);
-                }
-            else
-                foreach ($article_ids as $id)
-                    foreach ($language_ids as $language) {
-                        $tq = new TranslateQueue();
-                        $tq->_save($id, $language->id);
-                    }
-            return 1;
-        } else
-            return -1;
-    }
-
-    // selected categories for articles
-    public function actionSelected()
-    {
-        $themes = array();
-        if (Yii::$app->request->isAjax) {
-            $site = Article::findOne($_POST['id']);
-            if (isset($site->articleCategories))
-                foreach ($site->articleCategories as $val)
-                    array_push($themes, $val->category_id);
-        }
-        return json_encode($themes);
-    }
-    // select categories for articles
-    public function actionCategory()
-    {
-        if (Yii::$app->request->isAjax) {
-            $category_ids = json_decode($_POST['category_ids']);
-            $selected_categories = ArticleCategory::find()->where(['article_id' => $_POST['article_id']])->all();
-            $new = array();
-            $old = array();
-
-            if ($category_ids)
-                foreach ($category_ids as $val)
-                    array_push($new, $val->id);
-
-            if ($selected_categories)
-                foreach ($selected_categories as $selected_category)
-                    array_push($old, $selected_category->category_id);
-
-            $add = array_diff($new, $old);
-            $del = array_diff($old, $new);
-
-            if ($add)
-                foreach ($add as $item) {
-                    $article_category = new ArticleCategory();
-                    $article_category->_save($_POST['article_id'], $item);
-                }
-
-            if ($del)
-                foreach ($del as $item)
-                    ArticleCategory::deleteAll(['article_id' => $_POST['article_id'], 'category_id' => $item]);
-        }
-    }
-
-    // selected destinations for articles
-    public function actionSelectedDestination()
-    {
-        $destinations = array();
-        if (Yii::$app->request->isAjax) {
-            $site = Article::findOne(['id' => $_POST['id'], 'status' => 1]);
-            if (isset($site->destinationArticles))
-                foreach ($site->destinationArticles as $val)
-                    array_push($destinations, $val->destination_id);
-        }
-        return json_encode($destinations);
-    }
-    // select destinations for articles
-    public function actionDestination()
-    {
-        if (Yii::$app->request->isAjax) {
-            $destination_ids = json_decode($_POST['destination_ids']);
-            $selected_destinations = DestinationArticle::find()->where(['article_id' => $_POST['article_id']])->all();
-            $new = array();
-            $old = array();
-
-            if ($destination_ids)
-                foreach ($destination_ids as $val)
-                    array_push($new, $val->id);
-
-            if ($selected_destinations)
-                foreach ($selected_destinations as $selected_destination)
-                    array_push($old, $selected_destination->destination_id);
-
-            $add = array_diff($new, $old);
-            $del = array_diff($old, $new);
-
-            if ($add)
-                foreach ($add as $item) {
-                    $article_destination = new DestinationArticle();
-                    $article_destination->_save($_POST['article_id'], $item, 1);
-                }
-
-            if ($del)
-                foreach ($del as $item) {
-                    $change_status = DestinationArticle::findOne(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
-                    $change_status->status = 0;
-                    $change_status->save();
-                    //DestinationArticle::deleteAll(['article_id' => $_POST['article_id'], 'destination_id' => $item]);
-                }
-
-            $article = Article::findOne($_POST['article_id']);
-            $article = $this->dataToSend($article);
-
-            $da = DestinationArticle::find()->where(['article_id' => $_POST['article_id'], 'status' => 1])->all();
-            foreach ($da as $item) {
-                $destination = Destination::findOne($item->destination_id);
-
-                $ch = curl_init($destination->domain . '/store-article');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
-                curl_exec($ch);
-                curl_close($ch);
-            }
-        }
-    }
-
-    // auto select destinations when create or update article
-    public function actionDestinations()
-    {
-        if (Yii::$app->request->isAjax) {
-            $category_ids = json_decode($_POST['category_ids']);
-            $res = array();
-            foreach ($category_ids as $val) {
-                $destination = DestinationCategory::find()
-                    ->where(['category_id' => $val->id])
-                    ->all();
-                foreach ($destination as $item)
-                    array_push($res, $item->destination_id);
-            }
-            $res = array_unique($res);
-
-            $map = array();
-            foreach ($res as $item)
-                array_push($map, $item);
-
-            return json_encode($map);
-        } else return 0;
-    }
-
-    // reads articles from file
-    public function actionReadFile()
-    {
-        if (Yii::$app->request->isAjax) {
-            $filename = $_POST['filename'];
-            if (($handle = fopen('articles/' . $filename, 'r')) !== FALSE) {
-                while (($data = fgetcsv($handle, 0, ',', '"')) !== FALSE) {
-                    $article = new Article();
-                    $article->name = $data[0];
-                    $article->text = $data[1];
-                    $article->save();
-                }
-                fclose($handle);
-            }
-        }
-    }
-    // parse articles
-    public function actionParse()
-    {
-        if (Yii::$app->request->isAjax) {
-            $keys = $_POST['keys'];
-            if ($keys)
-                foreach ($keys as $key) {
-                    $parse = new ParseQueue();
-                    $parse->source_id = $key;
-                    $parse->save();
-                }
         }
     }
 }

@@ -32,7 +32,7 @@ class ParseService
                 $document = $this->getDocument('https://' . $domain . $url);
 
                 $article = new Article();
-                $article->save_parse($this->getTitle($document, $site->title_rule),
+                $article->__save($this->getTitle($document, $site->title_rule),
                     $this->getArticle($document, $site) , $url, $source_id);
             } catch (\Exception $e) { }
         }

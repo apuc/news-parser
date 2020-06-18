@@ -167,7 +167,7 @@ class Article extends ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    public function save_parse($title, $text, $url, $source_id)
+    public function __save($title, $text, $url, $source_id)
     {
         $source = Source::findOne($source_id);
         $source_categories = SourceCategory::find()->where(['source_id' => $source_id])->all();
