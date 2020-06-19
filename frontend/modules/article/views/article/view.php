@@ -1,5 +1,6 @@
 <?php
 
+use common\classes\TextHandler;
 use common\models\Language;
 use common\models\Source;
 use frontend\modules\article\models\Article;

@@ -40,4 +40,10 @@ class ParseQueue extends \yii\db\ActiveRecord
             'source_id' => 'Source ID',
         ];
     }
+
+    public function _save($source_id)
+    {
+        $this->source_id = $source_id;
+        $this->save();
+    }
 }

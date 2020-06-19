@@ -88,13 +88,13 @@ class ArticleController extends Controller
      */
     public function actionCreate()
     {
-        $model = new \frontend\modules\article\models\Article();
+        $model = new Article();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $this->relatedData($model->id);
+            $model->relatedData($model->id);
 
             if (isset($model->desctination))
-                $this->sendingData($model, $this->dataToSend($model), '/store-article');
+                $model->sendingData('/store-article');
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -116,10 +116,10 @@ class ArticleController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $this->relatedData($id);
+            $model->relatedData($id);
 
             if (isset($model->desctination))
-                $this->sendingData($model, $this->dataToSend($model), '/update-article');
+                $model->sendingData('/update-article');
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -172,6 +172,7 @@ class ArticleController extends Controller
         if (Yii::$app->request->isPost) {
             $model->csv = UploadedFile::getInstances($model, 'csv');
             $model->upload();
+
             return $this->render('read', ['model' => $model]);
         }
         return $this->render('read', ['model' => $model]);
@@ -187,9 +188,7 @@ class ArticleController extends Controller
             if (($handle = fopen('articles/' . $filename, 'r')) !== FALSE) {
                 while (($data = fgetcsv($handle, 0, ',', '"')) !== FALSE) {
                     $article = new Article();
-                    $article->name = $data[0];
-                    $article->text = $data[1];
-                    $article->save();
+                    $article->_save($data[0], $data[1]);
                 }
                 fclose($handle);
             }
@@ -207,19 +206,12 @@ class ArticleController extends Controller
 
             foreach ($articles_ids as $id) {
                 $article = Article::findOne($id);
-                $article = $this->dataToSend($article);
 
                 foreach ($destinations_ids as $destinations) {
                     $destination_article  = new DestinationArticle();
                     $destination_article->_save($id, $destinations->id, 1);
 
-                    $destination = Destination::findOne($destinations->id);
-
-                    $ch = curl_init($destination->domain . '/store-article');
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
-                    curl_exec($ch);
-                    curl_close($ch);
+                    $article->sendData($destinations->id, '/store-article');
                 }
             }
         }
@@ -275,16 +267,9 @@ class ArticleController extends Controller
         if (Yii::$app->request->isAjax) {
             $category_ids = json_decode($_POST['category_ids']);
             $selected_categories = ArticleCategory::find()->where(['article_id' => $_POST['article_id']])->all();
-            $new = array();
-            $old = array();
 
-            if ($category_ids)
-                foreach ($category_ids as $val)
-                    array_push($new, $val->id);
-
-            if ($selected_categories)
-                foreach ($selected_categories as $selected_category)
-                    array_push($old, $selected_category->category_id);
+            $new = Article::getArray($category_ids, 'id');
+            $old = Article::getArray($selected_categories, 'category_id');
 
             $add = array_diff($new, $old);
             $del = array_diff($old, $new);
@@ -325,16 +310,9 @@ class ArticleController extends Controller
         if (Yii::$app->request->isAjax) {
             $destination_ids = json_decode($_POST['destination_ids']);
             $selected_destinations = DestinationArticle::find()->where(['article_id' => $_POST['article_id']])->all();
-            $new = array();
-            $old = array();
 
-            if ($destination_ids)
-                foreach ($destination_ids as $val)
-                    array_push($new, $val->id);
-
-            if ($selected_destinations)
-                foreach ($selected_destinations as $selected_destination)
-                    array_push($old, $selected_destination->destination_id);
+            $new = Article::getArray($destination_ids, 'id');
+            $old = Article::getArray($selected_destinations, 'destination_id');
 
             $add = array_diff($new, $old);
             $del = array_diff($old, $new);
@@ -354,18 +332,10 @@ class ArticleController extends Controller
                 }
 
             $article = Article::findOne($_POST['article_id']);
-            $article = $this->dataToSend($article);
 
             $da = DestinationArticle::find()->where(['article_id' => $_POST['article_id'], 'status' => 1])->all();
-            foreach ($da as $item) {
-                $destination = Destination::findOne($item->destination_id);
-
-                $ch = curl_init($destination->domain . '/store-article');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $article);
-                curl_exec($ch);
-                curl_close($ch);
-            }
+            foreach ($da as $item)
+                $article->sendData($item->destination_id, '/store-article');
         }
     }
 
@@ -378,17 +348,11 @@ class ArticleController extends Controller
             $category_ids = json_decode($_POST['category_ids']);
             $res = array();
             foreach ($category_ids as $val) {
-                $destination = DestinationCategory::find()
-                    ->where(['category_id' => $val->id])
-                    ->all();
+                $destination = DestinationCategory::find()->where(['category_id' => $val->id])->all();
                 foreach ($destination as $item)
                     array_push($res, $item->destination_id);
             }
-            $res = array_unique($res);
-
-            $map = array();
-            foreach ($res as $item)
-                array_push($map, $item);
+            $map = Article::getArray(array_unique($res));
 
             return json_encode($map);
         } else return 0;
@@ -404,122 +368,8 @@ class ArticleController extends Controller
             if ($keys)
                 foreach ($keys as $key) {
                     $parse = new ParseQueue();
-                    $parse->source_id = $key;
-                    $parse->save();
+                    $parse->_save($key);
                 }
-        }
-    }
-
-//    public function actionSend()
-//    {
-//        $articles = array();
-//        $categories = array();
-//        foreach ($_POST['keys'] as $key) {
-//            $article = Article::findOne($key);
-//            $article_category = ArticleCategory::find()->where(['article_id' => $article->id])->all();
-//
-//            foreach ($article_category as $value) {
-//                $category = Category::findOne($value->category_id);
-//                array_push($categories, $category->name);
-//            }
-//
-//            $data = new \common\classes\Article($article->id, $article->name, $article->text, $article->language_id, $categories,
-//                'news.jpg', $article->title, $article->description, $article->keywords, $article->url);
-//            array_push($articles, $data);
-//        }
-//    }
-
-    // move to model
-    public function relatedData($id)
-    {
-        $post = \Yii::$app->request->post('Article');
-        $category_ids = $post['category'];
-        $selected_categories = ArticleCategory::find()->where(['article_id' => $this->id])->all();
-
-        $new = array();
-        if($category_ids)
-            foreach ($category_ids as $val)
-                array_push($new, $val);
-
-        $old = array();
-        if($selected_categories)
-            foreach ($selected_categories as $selected_category)
-                array_push($old, $selected_category->category_id);
-
-        $add = array_diff($new, $old);
-        $del = array_diff($old, $new);
-
-        if($add)
-            foreach ($add as $item) {
-                $article_category  = new ArticleCategory();
-                $article_category->_save($id, $item);
-            }
-
-        if($del)
-            foreach ($del as $item)
-                ArticleCategory::deleteAll(['article_id' => $this->id, 'category_id' => $item]);
-
-        $destination_ids = $post['destination'];
-        $existing_destinations = DestinationArticle::find()->where(['article_id' => $this->id])->all();
-
-        $new = array();
-        if($destination_ids)
-            foreach ($destination_ids as $val)
-                array_push($new, $val);
-
-        $old = array();
-        if($existing_destinations)
-            foreach ($existing_destinations as $existing_destination)
-                array_push($old, $existing_destination->destination_id);
-
-        $add = array_diff($new, $old);
-        $del = array_diff($old, $new);
-
-        if($add)
-            foreach ($add as $item) {
-                $article_destination = new DestinationArticle();
-                $article_destination->_save($id, $item, 1);
-            }
-
-        if($del)
-            foreach ($del as $item) {
-                $change_status = DestinationArticle::findOne(['article_id' => $this->id, 'destination_id' => $item]);
-                $change_status->status = 0;
-                $change_status->save();
-                // DestinationArticle::deleteAll(['article_id' => $this->id, 'destination_id' => $item]);
-            }
-    }
-
-    // move to model
-    public function dataToSend($model)
-    {
-        $categories = array();
-
-        $language = Language::findOne($model->language_id);
-
-        $article_category = ArticleCategory::find()->where(['article_id' => $model->id])->all();
-        foreach ($article_category as $value) {
-            $category = Category::findOne($value->category_id);
-            array_push($categories, $category->name);
-        }
-
-        $data = new \common\classes\Article($model->id, $model->name, $model->text, $language->language, $categories,
-            'news.jpg', $model->title, $model->description, $model->keywords, $model->url);
-
-        return json_encode($data);
-    }
-
-    // move to model
-    public function sendingData($model, $post, $action)
-    {
-        foreach ($model->destination as $id) {
-            $destination = Destination::findOne($id);
-
-            $ch = curl_init($destination->domain . $action);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-            curl_exec($ch);
-            curl_close($ch);
         }
     }
 }

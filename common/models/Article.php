@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use common\classes\Debug;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -35,15 +34,7 @@ class Article extends ActiveRecord
 
     public function init()
     {
-//        $category = ArrayHelper::getColumn(
-//            ArticleCategory::find()
-//                //->where(['article_id' => \Yii::$app->request->get('id')])
-//                ->all(),
-//            'category_id'
-//        );
 
-//        if (!empty($category))
-//            $this->category = $category;
     }
 
     /**
@@ -130,6 +121,15 @@ class Article extends ActiveRecord
         return $this->hasMany(View::className(), ['article_id' => 'id']);
     }
 
+    public function beforeSave($insert)
+    {
+        ($this->source_type) ? $this->source_type : $this->source_type = 1;
+        ($this->source_id) ? $this->source_id : $this->source_id = Yii::$app->user->identity->id;
+        ($this->parent_id) ? $this->parent_id : $this->parent_id = 0;
+
+        return parent::beforeSave($insert);
+    }
+
     public static function getCategory($data)
     {
         $result = '';
@@ -158,40 +158,7 @@ class Article extends ActiveRecord
         return $result;
     }
 
-    public function beforeSave($insert)
-    {
-        ($this->source_type) ? $this->source_type : $this->source_type = 1;
-        ($this->source_id) ? $this->source_id : $this->source_id = Yii::$app->user->identity->id;
-        ($this->parent_id) ? $this->parent_id : $this->parent_id = 0;
-
-        return parent::beforeSave($insert);
-    }
-
-    public function __save($title, $text, $url, $source_id)
-    {
-        $source = Source::findOne($source_id);
-        $source_categories = SourceCategory::find()->where(['source_id' => $source_id])->all();
-
-        $this->name = $title;
-        $this->text = $text;
-        $this->source_type = 4;
-        $this->source_id = $source_id;
-        $this->url = $url;
-        $this->title = $title;
-        $this->description = $this->description($text);
-        $this->language_id = $source->language_id;
-
-        $this->save();
-
-        foreach ($source_categories as $category) {
-            $ac = new ArticleCategory();
-            $ac->article_id = $this->id;
-            $ac->category_id = $category->category_id;
-            $ac->save();
-        }
-    }
-
-    public function description($text)
+    public function getDescription($text)
     {
         $regex = Regex::find()->all();
         foreach ($regex as $item)
@@ -200,5 +167,129 @@ class Article extends ActiveRecord
         $text = substr(strip_tags($text), 0, 220) . ' ...';
 
         return $text;
+    }
+
+    public function _save($title, $text, $url = null, $source_id = null)
+    {
+        $this->name = $title;
+        $this->text = $text;
+
+        if($url && $source_id) {
+            $source = Source::findOne($source_id);
+            $source_categories = SourceCategory::find()->where(['source_id' => $source_id])->all();
+
+            $this->source_type = 4;
+            $this->source_id = $source_id;
+            $this->url = $url;
+            $this->title = $title;
+            $this->description = $this->getDescription($text);
+            $this->language_id = $source->language_id;
+
+            $this->save();
+
+            foreach ($source_categories as $category) {
+                $ac = new ArticleCategory();
+                $ac->_save($this->id, $category->category_id);
+            }
+        } else
+            $this->save();
+    }
+
+    public static function getArray($obj, $field = null)
+    {
+        $array = array();
+        if ($obj)
+            foreach ($obj as $item)
+                if($field)
+                    array_push($array, $item->$field);
+                else
+                    array_push($array, $item);
+
+        return $array;
+    }
+
+    public function relatedData($id)
+    {
+        $post = \Yii::$app->request->post('Article');
+        $selected_categories = ArticleCategory::find()->where(['article_id' => $this->id])->all();
+        $existing_destinations = DestinationArticle::find()->where(['article_id' => $this->id])->all();
+
+        $new = self::getArray($post['category']);
+        $old = self::getArray($selected_categories, 'category_id');
+
+        $add = array_diff($new, $old);
+        $del = array_diff($old, $new);
+
+        if($add)
+            foreach ($add as $item) {
+                $article_category  = new ArticleCategory();
+                $article_category->_save($id, $item);
+            }
+
+        if($del)
+            foreach ($del as $item)
+                ArticleCategory::deleteAll(['article_id' => $this->id, 'category_id' => $item]);
+
+        $new = self::getArray($post['destination']);
+        $old = self::getArray($existing_destinations, 'destination_id');
+
+        $add = array_diff($new, $old);
+        $del = array_diff($old, $new);
+
+        if($add)
+            foreach ($add as $item) {
+                $article_destination = new DestinationArticle();
+                $article_destination->_save($id, $item, 1);
+            }
+
+        if($del)
+            foreach ($del as $item) {
+                $change_status = DestinationArticle::findOne(['article_id' => $this->id, 'destination_id' => $item]);
+                $change_status->status = 0;
+                $change_status->save();
+                // DestinationArticle::deleteAll(['article_id' => $this->id, 'destination_id' => $item]);
+            }
+    }
+
+    public function dataToSend()
+    {
+        $categories = array();
+
+        $language = Language::findOne($this->language_id);
+
+        $article_category = ArticleCategory::find()->where(['article_id' => $this->id])->all();
+        foreach ($article_category as $value) {
+            $category = Category::findOne($value->category_id);
+            array_push($categories, $category->name);
+        }
+
+        $data = new \common\classes\Article($this->id, $this->name, $this->text, $language->language, $categories,
+            'news.jpg', $this->title, $this->description, $this->keywords, $this->url);
+
+        return json_encode($data);
+    }
+
+    public function sendingData($action)
+    {
+        foreach ($this->destination as $id) {
+            $destination = Destination::findOne($id);
+
+            $ch = curl_init($destination->domain . $action);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->dataToSend());
+            curl_exec($ch);
+            curl_close($ch);
+        }
+    }
+
+    public function sendData($destination_id, $action)
+    {
+        $destination = Destination::findOne($destination_id);
+
+        $ch = curl_init($destination->domain . $action);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->dataToSend());
+        curl_exec($ch);
+        curl_close($ch);
     }
 }
