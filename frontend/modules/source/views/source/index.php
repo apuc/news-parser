@@ -20,7 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="source-index">
     <?php
-
     echo Html::a('Добавить', ['add'], ['class' => 'btn btn-success']).'&nbsp';
 
     echo Html::button('Получить заголовки', ['class' => 'btn btn-success title_source']).'&nbsp';

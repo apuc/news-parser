@@ -225,7 +225,6 @@ class Article extends ActiveRecord
                 $article_category  = new ArticleCategory();
                 $article_category->_save($id, $item);
             }
-
         if($del)
             foreach ($del as $item)
                 ArticleCategory::deleteAll(['article_id' => $this->id, 'category_id' => $item]);
@@ -241,13 +240,11 @@ class Article extends ActiveRecord
                 $article_destination = new DestinationArticle();
                 $article_destination->_save($id, $item, 1);
             }
-
         if($del)
             foreach ($del as $item) {
                 $change_status = DestinationArticle::findOne(['article_id' => $this->id, 'destination_id' => $item]);
                 $change_status->status = 0;
                 $change_status->save();
-                // DestinationArticle::deleteAll(['article_id' => $this->id, 'destination_id' => $item]);
             }
     }
 
